@@ -489,14 +489,14 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				// gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.tune, " TUNE ", tuner.IsTuned, q100color.btnBgdSelUrgent)
+				return ui.q100_Button(gtx, &ui.tune, " TUNE ", tuner.IsTuned, q100color.btnBgdSel)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				// gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.ptt, " PTT ", tuner.IsPtt, q100color.btnBgdSel)
+				return ui.q100_Button(gtx, &ui.ptt, " PTT ", tuner.IsPtt, q100color.btnBgdSelUrgent)
 			})
 		}),
 	)
