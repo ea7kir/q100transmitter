@@ -4,3 +4,11 @@
  */
 
 package hev10
+
+var (
+	hec = new(HeConfig)
+)
+
+func config(cfg HeConfig) {
+	// cfg.Audio_bitrate
+}

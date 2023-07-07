@@ -33,8 +33,6 @@ var (
 func Intitialize(tuc TuConfig) {
 	// find index in list
 	Band = newSelector(const_BAND_LIST, indexInList(const_BAND_LIST, tuc.Band))
-	beaconSymbolRate = newSelector(const_BEACON_SYMBOLRATE_LIST, 0)
-	beaconFrequency = newSelector(const_BEACON_FREQUENCY_LIST, 0)
 	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, indexInList(const_WIDE_SYMBOLRATE_LIST, tuc.WideSymbolrate))
 	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, indexInList(const_WIDE_FREQUENCY_LIST, tuc.WideFrequency))
 	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, indexInList(const_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate))
@@ -57,10 +55,10 @@ func Stop() {
 
 func Tune() {
 	if IsTuned {
-		hev10.UnConfig()
+
 		IsTuned = false
 	} else {
-		hev10.Config()
+
 		IsTuned = true
 	}
 	// logger.Info.Printf("IsTuned is %v", IsTuned)
@@ -68,8 +66,10 @@ func Tune() {
 
 func Ptt() {
 	if IsPtt {
+		hev10.UnConfig()
 		IsPtt = false
 	} else {
+		//hev10.Config()
 		IsPtt = true
 	}
 }
