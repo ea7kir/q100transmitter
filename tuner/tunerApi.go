@@ -19,6 +19,10 @@ type (
 		NarrowSymbolrate     string
 		VeryNarrowFrequency  string
 		VeryNarrowSymbolRate string
+
+		WideMode       string
+		NarrowMode     string
+		VeryNarrowMode string
 	}
 )
 
@@ -26,19 +30,24 @@ var (
 	Band       Selector
 	SymbolRate Selector
 	Frequency  Selector
-	IsTuned    = false
-	IsPtt      = false
+
+	Mode Selector
+
+	IsTuned = false
+	IsPtt   = false
 )
 
 func Intitialize(tuc TuConfig) {
 	// find index in list
-	Band = newSelector(const_BAND_LIST, indexInList(const_BAND_LIST, tuc.Band))
-	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, indexInList(const_WIDE_SYMBOLRATE_LIST, tuc.WideSymbolrate))
-	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, indexInList(const_WIDE_FREQUENCY_LIST, tuc.WideFrequency))
-	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, indexInList(const_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate))
-	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, indexInList(const_NARROW_FREQUENCY_LIST, tuc.NarrowFrequency))
-	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, indexInList(const_VERY_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate))
-	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, indexInList(const_VERY_NARROW_FREQUENCY_LIST, tuc.VeryNarrowFrequency))
+	Band = newSelector(const_BAND_LIST, tuc.Band)
+	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, tuc.WideSymbolrate)
+	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, tuc.WideFrequency)
+	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate)
+	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, tuc.NarrowFrequency)
+	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate)
+	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, tuc.VeryNarrowFrequency)
+
+	wideMode = newSelector(const_WIDE_MODE_LIST, tuc.WideMode)
 }
 
 func Start() {
@@ -124,6 +133,20 @@ func IncFrequencySelector(st *Selector) {
 }
 
 func DecFrequencySelector(st *Selector) {
+	if st.currIndex > 0 {
+		st.currIndex--
+		st.Value = st.list[st.currIndex]
+	}
+}
+
+func IncModeSelector(st *Selector) {
+	if st.currIndex < st.lastIndex {
+		st.currIndex++
+		st.Value = st.list[st.currIndex]
+	}
+}
+
+func DecModeSelector(st *Selector) {
 	if st.currIndex > 0 {
 		st.currIndex--
 		st.Value = st.list[st.currIndex]
