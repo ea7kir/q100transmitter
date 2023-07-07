@@ -177,7 +177,7 @@ func loop(w *app.Window) error {
 				if ui.tune.Clicked() {
 					tuner.Tune()
 				}
-				if ui.Ptt.Clicked() {
+				if ui.ptt.Clicked() {
 					tuner.Ptt()
 				}
 
@@ -225,6 +225,7 @@ type UI struct {
 	decBand, incBand             widget.Clickable
 	decSymbolRate, incSymbolRate widget.Clickable
 	decFrequency, incFrequency   widget.Clickable
+	decMode, incMode             widget.Clickable
 	tune, ptt                    widget.Clickable
 	th                           *material.Theme
 }
@@ -503,25 +504,31 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 
 // returns 3 columns of 4 rows + 1 column with 2 buttons
 func (ui *UI) q100_4ColumnsDataWithButtons(gtx C) D {
-	names1 := [4]string{"Frequency", "Symbol Rate", "Mode", "Constellation"}
-	values1 := [4]string{lmData.Frequency, lmData.SymbolRate, lmData.Mode, lmData.Constellation}
-	names2 := [4]string{"FEC", "Codecs", "dB MER", "dB Margin"}
-	values2 := [4]string{lmData.Fec, lmData.VideoCodec + " " + lmData.AudioCodec, lmData.DbMer, lmData.DbMargin}
-	names3 := [4]string{"dBm Power", "Null Ratio", "Provider", "Service"}
-	values3 := [4]string{lmData.DbmPower, lmData.NullRatio, lmData.Provider, lmData.Service}
+	// names1 := [4]string{"Frequency", "Symbol Rate", "Mode", "Constellation"}
+	// values1 := [4]string{lmData.Frequency, lmData.SymbolRate, lmData.Mode, lmData.Constellation}
+	// names2 := [4]string{"FEC", "Codecs", "dB MER", "dB Margin"}
+	// values2 := [4]string{lmData.Fec, lmData.VideoCodec + " " + lmData.AudioCodec, lmData.DbMer, lmData.DbMargin}
+	// names3 := [4]string{"dBm Power", "Null Ratio", "Provider", "Service"}
+	// values3 := [4]string{lmData.DbmPower, lmData.NullRatio, lmData.Provider, lmData.Service}
+
+	btnWidth := unit.Dp(10)
+	lblWidth := unit.Dp(30)
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
 		// Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Column4Rows(gtx, names1, values1)
+			// return ui.q100_Column4Rows(gtx, names1, values1)
+			return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Column4Rows(gtx, names2, values2)
+			// return ui.q100_Column4Rows(gtx, names1, values1)
+			return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Column4Rows(gtx, names3, values3)
+			// return ui.q100_Column4Rows(gtx, names1, values1)
+			return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return ui.q100_Column2Buttons(gtx)

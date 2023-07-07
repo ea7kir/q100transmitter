@@ -1,0 +1,98 @@
+Looking at the pluto comtroller webpage - pluto.php
+
+The page is sending 'requests.php' approx. every second.
+
+Pressing 'Apply Settings' appear to send:
+
+callsign=EA7KIR&pcrpts=800&patperiod=200&freq=2409.75&channel=2409.75&mode=DVBS2&mod=QPSK&sr=333&fec=34&pilots=Off&frame=LongFrame&rolloff=0.25&power=-2&h265box=undefined&remux=1
+
+to: ???
+
+There is 'save.php' and 'requests.php'
+
+Functions:
+
+function request_onair()
+xmlhttp = new XMLHttpRequest()
+xmlhttp.open("GET", "requests.php?onair", true);
+xmlhttp.send();
+
+function request_ptt()
+xmlhttp = new XMLHttpRequest()
+xmlhttp.open("GET", "requests.php?PTT=on", true);
+xmlhttp.send();
+
+function request_gain_change(level)
+xmlhttp = new XMLHttpRequest()
+xmlhttp.open("GET", "requests.php?gain=" + level, true);
+xmlhttp.send();
+
+IN PLUTO /www
+
+  568 -rw-r--r--    1 root     root        579244 Nov 14  2019 Chart.bundle.js
+   752 -rw-r--r--    1 root     root        768270 Feb  5  2020 LICENSE.html
+     4 -rw-r--r--    1 root     root          3136 Feb  3  2020 analysis.php
+     4 -rw-r--r--    1 root     root          3333 Nov 28  2019 encoder_control.php
+     0 drwxr-xr-x    2 root     root             0 Jan  1 00:00 img
+    20 -rw-r--r--    1 root     root         20235 Jan  1 00:00 index.html
+     4 -rw-r--r--    1 root     root           355 Nov 22  2019 load.php
+    20 -rw-r--r--    1 root     root         19626 Feb  5  2020 pluto.php
+     4 -rw-r--r--    1 root     root          2522 Feb  3  2020 requests.php
+     4 -rw-r--r--    1 root     root          1901 Feb  5  2020 save.php
+     4 -rw-r--r--    1 root     root           163 Jan  1 00:39 settings.txt
+     4 -rw-r--r--    1 root     root          1799 Nov 27  2019 upload.php
+     0 drwxr-xr-x    2 root     root             0 Nov 27  2019 uploaded_files
+
+settings.txt contains:
+
+callsign EA7KIR
+freq 2409.75
+mode DVBS2
+mod QPSK
+sr 333
+fec 34
+pilots Off
+frame LongFrame
+power -2
+rolloff 0.25
+pcrpts 800
+patperiod 200
+h265box undefined
+remux 1
+
+save.php saves everything to cookies and writes to setting.txt
+
+$settings="callsign ".$_POST["callsign"]."\n"."freq ".$_POST["freq"]."\n"."mode ".$_POST["mode"]."\n"."mod ".$_POST["mod"]."\n"."sr ".$_POST["sr"]."\n"."fec ".$_POST["fec"]."\n"."pilots ".$_POST["pilots"]."\n"."frame ".$_POST["frame"]."\n"."power ".$_POST["power"]."\n"."rolloff ".$_POST["rolloff"]."\n"."pcrpts ".$_POST["pcrpts"]."\n"."patperiod ".$_POST["patperiod"]."\n"."h265box ".$_POST["h265box"]."\n"."remux ".$_POST["remux"]."\n";
+    	file_put_contents("settings.txt",$settings) or die("Unable to write file!");;
+	//echo $settings;
+
+
+echo file_put_contents("test.txt","Hello World. Testing!");
+
+
+THEREFORE, I THINK ALL I NEED TO DO IS THIS:
+	RUN A WEB CLIENT and POST THE ABOVE VALUES
+
+####################################
+
+TRY:
+
+scp settings.txt root@pluto.local:/www/
+
+In order to access some USB functions without root privileges, it's recommended to install the PlutoSDR udev rules.
+
+Download: https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules
+
+And copy: sudo cp 53-adi-plutosdr-usb.rules /etc/udev/rules.d/
+
+Then: sudo udevadm control --reload-rules
+
+###################################
+
+mount | grep -i pluto. (Should appear as /media/analog/PlutoSDR
+
+
+######################################
+
+Also see: https://github.com/m0dts/HDMI-Encoder-Tools/blob/main/encoder.py
+For taking to an encoder
