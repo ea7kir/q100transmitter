@@ -250,7 +250,6 @@ func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActi
 		Left:   4,
 		Right:  4,
 	}
-
 	btn := material.Button(ui.th, button, label)
 	if btnActive {
 		btn.Background = btnActiveColor
@@ -315,6 +314,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 		Left:   4,
 		Right:  4,
 	}
+	btnHeight := unit.Dp(30)
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
@@ -325,12 +325,14 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
+				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Button(gtx, dec, "<", false, q100color.btnBgd)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(lblWidth)
+				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Label(gtx, value, q100color.scrTxtDataSelected)
 				// return inset.Layout(gtx, material.Body1(ui.th, value).Layout)
 			})
@@ -338,6 +340,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
+				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Button(gtx, inc, ">", false, q100color.btnBgd)
 			})
 		}),
