@@ -375,15 +375,14 @@ func (ui *UI) q100_TopRow(gtx C) D {
 }
 
 // returns [ button label button ]
-func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, lblWidth unit.Dp) D {
+func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btnWidth, lblWidth unit.Dp) D {
 	inset := layout.Inset{
 		Top:    2,
 		Bottom: 2,
 		Left:   4,
 		Right:  4,
 	}
-	btnHeight := unit.Dp(35)
-	btnWidth := unit.Dp(60)
+
 	return layout.Flex{
 		Axis: layout.Horizontal,
 		// Spacing: layout.SpaceBetween,
@@ -393,21 +392,18 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, lbl
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Button(gtx, dec, "<", false, q100color.btnBgd)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(lblWidth)
-				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Label(gtx, value, q100color.scrTxtDataSelected)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Button(gtx, inc, ">", false, q100color.btnBgd)
 			})
 		}),
@@ -416,18 +412,20 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, lbl
 
 // returns [    [ button label button ]  [ button label button ]  [ button label button ]   ]
 func (ui *UI) q100_TuneRow(gtx C) D {
+	const btnWidth = 0
+
 	return layout.Flex{
 		Axis:    layout.Horizontal,
 		Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, tuner.Band.Value, 100)
+			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, tuner.Band.Value, btnWidth, 100)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, tuner.SymbolRate.Value, 50)
+			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, tuner.SymbolRate.Value, btnWidth, 50)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, tuner.Frequency.Value, 100)
+			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, tuner.Frequency.Value, btnWidth, 100)
 		}),
 	)
 }
@@ -526,7 +524,8 @@ func (ui *UI) q100_LabelValue(gtx C, label, value string) D {
 
 // returns a column of 3 rows of [label__  label__]
 func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]widget.Clickable, value [3]string) D {
-	lblWidth := unit.Dp(65)
+	const btnWidth = 0
+	const lblWidth = 65
 
 	return layout.Flex{
 		Axis: layout.Vertical,
@@ -535,15 +534,15 @@ func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]widget.Clickable, value [3]str
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[0], value[0])
 			// return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
-			return ui.q100_Selector(gtx, &dec[0], &inc[0], value[0], lblWidth)
+			return ui.q100_Selector(gtx, &dec[0], &inc[0], value[0], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[1], value[1])
-			return ui.q100_Selector(gtx, &dec[1], &inc[1], value[1], lblWidth)
+			return ui.q100_Selector(gtx, &dec[1], &inc[1], value[1], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[2], value[2])
-			return ui.q100_Selector(gtx, &dec[2], &inc[2], value[2], lblWidth)
+			return ui.q100_Selector(gtx, &dec[2], &inc[2], value[2], btnWidth, lblWidth)
 		}),
 	)
 }
