@@ -418,6 +418,7 @@ func (ui *UI) q100_Spectrum(gtx C) D {
 	)
 }
 
+/*
 // returns [ label__  label__ ]
 func (ui *UI) q100_LabelValue(gtx C, label, value string) D {
 	const lblWidth = 105
@@ -453,6 +454,7 @@ func (ui *UI) q100_LabelValue(gtx C, label, value string) D {
 		}),
 	)
 }
+*/
 
 // returns a column of 4 rows of [label__  label__]
 func (ui *UI) q100_Column4Rows(gtx C, dec, inc [4]widget.Clickable, value [4]string) D {
