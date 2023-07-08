@@ -498,7 +498,7 @@ func (ui *UI) q100_Spectrum(gtx C) D {
 }
 
 // returns a column of 3 rows of [label__  label__]
-func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]widget.Clickable, value [3]string) D {
+func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]string) D {
 	const btnWidth = 0
 	const lblWidth = 65
 
@@ -509,15 +509,15 @@ func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]widget.Clickable, value [3]str
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[0], value[0])
 			// return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
-			return ui.q100_Selector(gtx, &dec[0], &inc[0], value[0], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, dec[0], inc[0], value[0], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[1], value[1])
-			return ui.q100_Selector(gtx, &dec[1], &inc[1], value[1], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, dec[1], inc[1], value[1], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[2], value[2])
-			return ui.q100_Selector(gtx, &dec[2], &inc[2], value[2], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, dec[2], inc[2], value[2], btnWidth, lblWidth)
 		}),
 	)
 }
@@ -555,16 +555,16 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 
 // returns 3 columns of 3 rows + 1 column with 2 buttons
 func (ui *UI) q100_4ColumnsDataWithButtons(gtx C) D {
-	dec1 := [3]widget.Clickable{ui.decCodecs, ui.decVideoBitRate, ui.decAudioBitRate}
-	inc1 := [3]widget.Clickable{ui.incCodecs, ui.incVideoBitRate, ui.incAudioBitRate}
+	dec1 := [3]*widget.Clickable{&ui.decCodecs, &ui.decVideoBitRate, &ui.decAudioBitRate}
+	inc1 := [3]*widget.Clickable{&ui.incCodecs, &ui.incVideoBitRate, &ui.incAudioBitRate}
 	val1 := [3]string{tuner.Codecs.Value, tuner.VideoBitRate.Value, tuner.AudioBitRate.Value}
 
-	dec2 := [3]widget.Clickable{ui.decMode, ui.decConstellation, ui.decFec}
-	inc2 := [3]widget.Clickable{ui.decMode, ui.decConstellation, ui.decFec}
+	dec2 := [3]*widget.Clickable{&ui.decMode, &ui.decConstellation, &ui.decFec}
+	inc2 := [3]*widget.Clickable{&ui.incMode, &ui.incConstellation, &ui.incFec}
 	val2 := [3]string{tuner.Mode.Value, tuner.Constellation.Value, tuner.Fec.Value}
 
-	dec3 := [3]widget.Clickable{ui.decSpare1, ui.decSpare2, ui.decGain}
-	inc3 := [3]widget.Clickable{ui.decSpare1, ui.decSpare2, ui.decGain}
+	dec3 := [3]*widget.Clickable{&ui.decSpare1, &ui.decSpare2, &ui.decGain}
+	inc3 := [3]*widget.Clickable{&ui.incSpare1, &ui.incSpare2, &ui.incGain}
 	val3 := [3]string{tuner.Spare1.Value, tuner.Spare2.Value, tuner.Gain.Value}
 
 	return layout.Flex{
