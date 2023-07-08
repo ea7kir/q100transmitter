@@ -205,7 +205,6 @@ func loop(w *app.Window) error {
 				if ui.incMode.Clicked() {
 					tuner.IncSelector(&tuner.Mode)
 				}
-
 				if ui.decCodecs.Clicked() {
 					tuner.DecSelector(&tuner.Codecs)
 				}
@@ -254,7 +253,6 @@ func loop(w *app.Window) error {
 				if ui.incGain.Clicked() {
 					tuner.IncSelector(&tuner.Gain)
 				}
-
 				if ui.tune.Clicked() {
 					tuner.Tune()
 				}
@@ -310,7 +308,6 @@ type UI struct {
 	decAudioBitRate, incAudioBitRate   widget.Clickable
 	decSpare1, incSpare1               widget.Clickable
 	decSpare2, incSpare2               widget.Clickable
-	decSpare3, incSpare3               widget.Clickable
 	decGain, incGain                   widget.Clickable
 	tune, ptt                          widget.Clickable
 	th                                 *material.Theme
