@@ -48,6 +48,8 @@ func Intitialize(tuc TuConfig) {
 	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, tuc.VeryNarrowFrequency)
 
 	wideMode = newSelector(const_WIDE_MODE_LIST, tuc.WideMode)
+	narrowMode = newSelector(const_NARROW_MODE_LIST, tuc.WideMode)
+	veryNarrowMode = newSelector(const_VERY_NARROW_MODE_LIST, tuc.WideMode)
 }
 
 func Start() {
@@ -125,30 +127,30 @@ func DecSelector(st *Selector) {
 	}
 }
 
-func IncFrequencySelector(st *Selector) {
-	if st.currIndex < st.lastIndex {
-		st.currIndex++
-		st.Value = st.list[st.currIndex]
-	}
-}
+// func IncFrequencySelector(st *Selector) {
+// 	if st.currIndex < st.lastIndex {
+// 		st.currIndex++
+// 		st.Value = st.list[st.currIndex]
+// 	}
+// }
 
-func DecFrequencySelector(st *Selector) {
-	if st.currIndex > 0 {
-		st.currIndex--
-		st.Value = st.list[st.currIndex]
-	}
-}
+// func DecFrequencySelector(st *Selector) {
+// 	if st.currIndex > 0 {
+// 		st.currIndex--
+// 		st.Value = st.list[st.currIndex]
+// 	}
+// }
 
-func IncModeSelector(st *Selector) {
-	if st.currIndex < st.lastIndex {
-		st.currIndex++
-		st.Value = st.list[st.currIndex]
-	}
-}
+// func IncModeSelector(st *Selector) {
+// 	if st.currIndex < st.lastIndex {
+// 		st.currIndex++
+// 		st.Value = st.list[st.currIndex]
+// 	}
+// }
 
-func DecModeSelector(st *Selector) {
-	if st.currIndex > 0 {
-		st.currIndex--
-		st.Value = st.list[st.currIndex]
-	}
-}
+// func DecModeSelector(st *Selector) {
+// 	if st.currIndex > 0 {
+// 		st.currIndex--
+// 		st.Value = st.list[st.currIndex]
+// 	}
+// }

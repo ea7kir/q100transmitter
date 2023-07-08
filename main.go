@@ -32,7 +32,7 @@ import (
 
 // application directory
 // NOTE: this only works if we are are already in the correct folder
-const appFolder = "/home/pi/Q100/q100transmitter-v1/"
+// const appFolder = "/home/pi/Q100/q100transmitter-v1/"
 
 // configuration data
 var (
@@ -149,9 +149,7 @@ func loop(w *app.Window) error {
 				return event.Err
 			case system.FrameEvent:
 				if ui.about.Clicked() {
-					{
-						// TODO: implement an About Box
-					}
+					showAboutBox()
 				}
 				if ui.shutdown.Clicked() {
 					w.Perform(system.ActionClose)
@@ -169,16 +167,16 @@ func loop(w *app.Window) error {
 					tuner.IncSelector(&tuner.SymbolRate)
 				}
 				if ui.decFrequency.Clicked() {
-					tuner.DecFrequencySelector(&tuner.Frequency)
+					tuner.DecSelector(&tuner.Frequency)
 				}
 				if ui.incFrequency.Clicked() {
-					tuner.IncFrequencySelector(&tuner.Frequency)
+					tuner.IncSelector(&tuner.Frequency)
 				}
 				if ui.decMode.Clicked() {
-					tuner.DecModeSelector(&tuner.Mode)
+					tuner.DecSelector(&tuner.Mode)
 				}
 				if ui.incMode.Clicked() {
-					tuner.IncModeSelector(&tuner.Mode)
+					tuner.IncSelector(&tuner.Mode)
 				}
 				if ui.tune.Clicked() {
 					tuner.Tune()
@@ -236,11 +234,15 @@ type UI struct {
 	th                           *material.Theme
 }
 
-// this make the code more readable2
+// this makes the code more readable2
 type (
 	C = layout.Context
 	D = layout.Dimensions
 )
+
+func showAboutBox() {
+	// TODO: implement an about box
+}
 
 // my customisable button
 func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActive bool, btnActiveColor color.NRGBA) D {
@@ -250,6 +252,7 @@ func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActi
 		Left:   4,
 		Right:  4,
 	}
+
 	btn := material.Button(ui.th, button, label)
 	if btnActive {
 		btn.Background = btnActiveColor
@@ -290,12 +293,11 @@ func (ui *UI) q100_TopRow(gtx C) D {
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				return ui.q100_Button(gtx, &ui.about, "Q-100 Receiver", false, q100color.btnBgd)
+				return ui.q100_Button(gtx, &ui.about, "Q-100 Transmitter", false, q100color.btnBgd)
 			})
 		}),
 		layout.Flexed(1, func(gtx C) D {
 			return ui.q100_Label(gtx, "server date goes here", q100color.scrTxtData)
-			// return inset.Layout(gtx, material.Body1(ui.th, lmData.State).Layout)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
@@ -307,7 +309,7 @@ func (ui *UI) q100_TopRow(gtx C) D {
 }
 
 // returns [ button label button ]
-func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btnWidth, lblWidth unit.Dp) D {
+func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, lblWidth unit.Dp) D {
 	inset := layout.Inset{
 		Top:    2,
 		Bottom: 2,
@@ -315,7 +317,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 		Right:  4,
 	}
 	btnHeight := unit.Dp(35)
-
+	btnWidth := unit.Dp(60)
 	return layout.Flex{
 		Axis: layout.Horizontal,
 		// Spacing: layout.SpaceBetween,
@@ -348,20 +350,18 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 
 // returns [    [ button label button ]  [ button label button ]  [ button label button ]   ]
 func (ui *UI) q100_TuneRow(gtx C) D {
-	const btnWidth = 50
-
 	return layout.Flex{
 		Axis:    layout.Horizontal,
 		Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, tuner.Band.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, tuner.Band.Value, 100)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, tuner.SymbolRate.Value, btnWidth, 50)
+			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, tuner.SymbolRate.Value, 50)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, tuner.Frequency.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, tuner.Frequency.Value, 100)
 		}),
 	)
 }
@@ -460,8 +460,7 @@ func (ui *UI) q100_LabelValue(gtx C, label, value string) D {
 
 // returns a column of 4 rows of [label__  label__]
 func (ui *UI) q100_Column4Rows(gtx C, dec, inc [4]widget.Clickable, value [4]string) D {
-	btnWidth := unit.Dp(10)
-	lblWidth := unit.Dp(30)
+	lblWidth := unit.Dp(65)
 
 	return layout.Flex{
 		Axis: layout.Vertical,
@@ -470,26 +469,26 @@ func (ui *UI) q100_Column4Rows(gtx C, dec, inc [4]widget.Clickable, value [4]str
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[0], value[0])
 			// return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
-			return ui.q100_Selector(gtx, &dec[0], &inc[0], value[0], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, &dec[0], &inc[0], value[0], lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[1], value[1])
-			return ui.q100_Selector(gtx, &dec[1], &inc[1], value[1], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, &dec[1], &inc[1], value[1], lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[2], value[2])
-			return ui.q100_Selector(gtx, &dec[2], &inc[2], value[2], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, &dec[2], &inc[2], value[2], lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[3], value[3])
-			return ui.q100_Selector(gtx, &dec[3], &inc[3], value[3], btnWidth, lblWidth)
+			return ui.q100_Selector(gtx, &dec[3], &inc[3], value[3], lblWidth)
 		}),
 	)
 }
 
 // returns a column with 2 buttons
 func (ui *UI) q100_Column2Buttons(gtx C) D {
-	// const btnWidth = 80
+	const btnWidth = 70
 	const btnHeight = 50
 	inset := layout.Inset{
 		Top:    2,
@@ -503,16 +502,16 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
-				// gtx.Constraints.Min.X = gtx.Dp(btnWidth)
+				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.tune, " TUNE ", tuner.IsTuned, q100color.btnBgdSel)
+				return ui.q100_Button(gtx, &ui.tune, "TUNE", tuner.IsTuned, q100color.btnBgdSel)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
-				// gtx.Constraints.Min.X = gtx.Dp(btnWidth)
+				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.ptt, " PTT ", tuner.IsPtt, q100color.btnBgdSelUrgent)
+				return ui.q100_Button(gtx, &ui.ptt, "PTT", tuner.IsPtt, q100color.btnBgdSelUrgent)
 			})
 		}),
 	)
