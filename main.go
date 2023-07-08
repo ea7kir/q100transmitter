@@ -74,6 +74,7 @@ var (
 		NarrowSymbolrate:     "333",
 		VeryNarrowFrequency:  "10496.00 / 14",
 		VeryNarrowSymbolRate: "125",
+		// TODO: add other rows
 	}
 )
 
@@ -523,8 +524,8 @@ func (ui *UI) q100_LabelValue(gtx C, label, value string) D {
 }
 */
 
-// returns a column of 4 rows of [label__  label__]
-func (ui *UI) q100_Column4Rows(gtx C, dec, inc [4]widget.Clickable, value [4]string) D {
+// returns a column of 3 rows of [label__  label__]
+func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]widget.Clickable, value [3]string) D {
 	lblWidth := unit.Dp(65)
 
 	return layout.Flex{
@@ -543,10 +544,6 @@ func (ui *UI) q100_Column4Rows(gtx C, dec, inc [4]widget.Clickable, value [4]str
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[2], value[2])
 			return ui.q100_Selector(gtx, &dec[2], &inc[2], value[2], lblWidth)
-		}),
-		layout.Rigid(func(gtx C) D {
-			// return ui.q100_LabelValue(gtx, name[3], value[3])
-			return ui.q100_Selector(gtx, &dec[3], &inc[3], value[3], lblWidth)
 		}),
 	)
 }
@@ -582,24 +579,32 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 	)
 }
 
-// returns 3 columns of 4 rows + 1 column with 2 buttons
+// returns 3 columns of 3 rows + 1 column with 2 buttons
 func (ui *UI) q100_4ColumnsDataWithButtons(gtx C) D {
-	dec1 := [4]widget.Clickable{ui.decMode, ui.decMode, ui.decMode, ui.decMode}
-	inc1 := [4]widget.Clickable{ui.incMode, ui.incMode, ui.incMode, ui.incMode}
-	val1 := [4]string{tuner.Mode.Value, tuner.Mode.Value, tuner.Mode.Value, tuner.Mode.Value}
+	dec1 := [3]widget.Clickable{ui.decCodecs, ui.decVideoBitRate, ui.decAudioBitRate}
+	inc1 := [3]widget.Clickable{ui.incCodecs, ui.incVideoBitRate, ui.incAudioBitRate}
+	val1 := [3]string{tuner.Codecs.Value, tuner.VideoBitRate.Value, tuner.AudioBitRate.Value}
+
+	dec2 := [3]widget.Clickable{ui.decMode, ui.decConstellation, ui.decFec}
+	inc2 := [3]widget.Clickable{ui.decMode, ui.decConstellation, ui.decFec}
+	val2 := [3]string{tuner.Mode.Value, tuner.Constellation.Value, tuner.Fec.Value}
+
+	dec3 := [3]widget.Clickable{ui.decSpare1, ui.decSpare2, ui.decGain}
+	inc3 := [3]widget.Clickable{ui.decSpare1, ui.decSpare2, ui.decGain}
+	val3 := [3]string{tuner.Spare1.Value, tuner.Spare2.Value, tuner.Gain.Value}
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
 		// Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Column4Rows(gtx, dec1, inc1, val1)
+			return ui.q100_Column3Rows(gtx, dec1, inc1, val1)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Column4Rows(gtx, dec1, inc1, val1)
+			return ui.q100_Column3Rows(gtx, dec2, inc2, val2)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Column4Rows(gtx, dec1, inc1, val1)
+			return ui.q100_Column3Rows(gtx, dec3, inc3, val3)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return ui.q100_Column2Buttons(gtx)
