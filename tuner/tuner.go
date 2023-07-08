@@ -118,6 +118,9 @@ var (
 	const_NARROW_VIDEO_BITRATE_LIST = []string{
 		"290", "300", "310", "330", "340", "350", "360",
 	}
+	const_VERY_NARROW_VIDEO_BITRATE_LIST = []string{
+		"290", "300", "310", "330", "340", "350", "360",
+	}
 	const_WIDE_AUDIO_BITRATE_LIST = []string{
 		"32000", "64000",
 	}
@@ -126,6 +129,15 @@ var (
 	}
 	const_VERY_NARROW_AUDIO_BITRATE_LIST = []string{
 		"32000", "64000",
+	}
+	const_WIDE_SPARE1_LIST = []string{
+		"sp1-a", "sp1-b",
+	}
+	const_NARROW_SPARE1_LIST = []string{
+		"sp1-a", "sp1-b",
+	}
+	const_VERY_NARROW_SPARE1_LIST = []string{
+		"sp1-a", "sp1-b",
 	}
 	const_WIDE_SPARE2_LIST = []string{
 		"sp2-a", "sp2-b",
@@ -165,11 +177,11 @@ var (
 	narrowMode              Selector
 	veryNarrowMode          Selector
 	wideCodecs              Selector
-	narrowCdecs             Selector
+	narrowCodecs            Selector
 	veryNarrowCodecs        Selector
 	wideConstellation       Selector
 	narrowConstellation     Selector
-	veryNarrorConstellation Selector
+	veryNarrowConstellation Selector
 	wideFec                 Selector
 	narrowFec               Selector
 	veryNarrowFec           Selector
@@ -221,13 +233,40 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		SymbolRate = wideSymbolRate
 		Frequency = wideFrequency
 		Mode = wideMode
+		Codecs = wideCodecs
+		Constellation = wideConstellation
+		Fec = wideFec
+		VideoBitRate = wideVideoBitRate
+		AudioBitRate = wideAudioBitRate
+		Spare1 = wideSpare1
+		Spare2 = wideSpare2
+		Spare3 = wideSpare3
+		Gain = wideGain
 	case const_BAND_LIST[1]: // narrow
 		SymbolRate = narrowSymbolRate
 		Frequency = narrowFrequency
 		Mode = narrowMode
+		Codecs = narrowCodecs
+		Constellation = narrowConstellation
+		Fec = narrowFec
+		VideoBitRate = narrowVideoBitRate
+		AudioBitRate = narrowAudioBitRate
+		Spare1 = narrowSpare1
+		Spare2 = narrowSpare2
+		Spare3 = narrowSpare3
+		Gain = narrowGain
 	case const_BAND_LIST[2]: // very narrow
 		SymbolRate = veryNarrowSymbolRate
 		Frequency = veryNarrowFrequency
 		Mode = veryNarrowMode
+		Codecs = veryNarrowCodecs
+		Constellation = veryNarrowConstellation
+		Fec = veryNarrowFec
+		VideoBitRate = veryNarrowVideoBitRate
+		AudioBitRate = veryNarrowAudioBitRate
+		Spare1 = veryNarrowSpare1
+		Spare2 = veryNarrowSpare2
+		Spare3 = veryNarrowSpare3
+		Gain = veryNarrowGain
 	}
 }

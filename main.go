@@ -178,6 +178,62 @@ func loop(w *app.Window) error {
 				if ui.incMode.Clicked() {
 					tuner.IncSelector(&tuner.Mode)
 				}
+
+				if ui.decCodecs.Clicked() {
+					tuner.DecSelector(&tuner.Codecs)
+				}
+				if ui.incCodecs.Clicked() {
+					tuner.IncSelector(&tuner.Codecs)
+				}
+				if ui.decConstellation.Clicked() {
+					tuner.DecSelector(&tuner.Constellation)
+				}
+				if ui.incConstellation.Clicked() {
+					tuner.IncSelector(&tuner.Constellation)
+				}
+				if ui.decFec.Clicked() {
+					tuner.DecSelector(&tuner.Fec)
+				}
+				if ui.incFec.Clicked() {
+					tuner.IncSelector(&tuner.Fec)
+				}
+				if ui.decVideoBitRate.Clicked() {
+					tuner.DecSelector(&tuner.VideoBitRate)
+				}
+				if ui.incVideoBitRate.Clicked() {
+					tuner.IncSelector(&tuner.VideoBitRate)
+				}
+				if ui.decAudioBitRate.Clicked() {
+					tuner.DecSelector(&tuner.AudioBitRate)
+				}
+				if ui.incAudioBitRate.Clicked() {
+					tuner.IncSelector(&tuner.AudioBitRate)
+				}
+				if ui.decSpare1.Clicked() {
+					tuner.DecSelector(&tuner.Spare1)
+				}
+				if ui.incSpare1.Clicked() {
+					tuner.IncSelector(&tuner.Spare1)
+				}
+				if ui.decSpare2.Clicked() {
+					tuner.DecSelector(&tuner.Spare2)
+				}
+				if ui.incSpare2.Clicked() {
+					tuner.IncSelector(&tuner.Spare2)
+				}
+				if ui.decSpare3.Clicked() {
+					tuner.DecSelector(&tuner.Spare3)
+				}
+				if ui.incSpare3.Clicked() {
+					tuner.IncSelector(&tuner.Spare3)
+				}
+				if ui.decGain.Clicked() {
+					tuner.DecSelector(&tuner.Gain)
+				}
+				if ui.incGain.Clicked() {
+					tuner.IncSelector(&tuner.Gain)
+				}
+
 				if ui.tune.Clicked() {
 					tuner.Tune()
 				}
@@ -225,13 +281,22 @@ var q100color = struct {
 
 // define all the buttons
 type UI struct {
-	about, shutdown              widget.Clickable
-	decBand, incBand             widget.Clickable
-	decSymbolRate, incSymbolRate widget.Clickable
-	decFrequency, incFrequency   widget.Clickable
-	decMode, incMode             widget.Clickable
-	tune, ptt                    widget.Clickable
-	th                           *material.Theme
+	about, shutdown                    widget.Clickable
+	decBand, incBand                   widget.Clickable
+	decSymbolRate, incSymbolRate       widget.Clickable
+	decFrequency, incFrequency         widget.Clickable
+	decMode, incMode                   widget.Clickable
+	decCodecs, incCodecs               widget.Clickable
+	decConstellation, incConstellation widget.Clickable
+	decFec, incFec                     widget.Clickable
+	decVideoBitRate, incVideoBitRate   widget.Clickable
+	decAudioBitRate, incAudioBitRate   widget.Clickable
+	decSpare1, incSpare1               widget.Clickable
+	decSpare2, incSpare2               widget.Clickable
+	decSpare3, incSpare3               widget.Clickable
+	decGain, incGain                   widget.Clickable
+	tune, ptt                          widget.Clickable
+	th                                 *material.Theme
 }
 
 // this makes the code more readable2
