@@ -314,7 +314,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 		Left:   4,
 		Right:  4,
 	}
-	btnHeight := unit.Dp(30)
+	btnHeight := unit.Dp(35)
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
@@ -334,7 +334,6 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 				gtx.Constraints.Min.X = gtx.Dp(lblWidth)
 				gtx.Constraints.Max.Y = gtx.Dp(btnHeight)
 				return ui.q100_Label(gtx, value, q100color.scrTxtDataSelected)
-				// return inset.Layout(gtx, material.Body1(ui.th, value).Layout)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
