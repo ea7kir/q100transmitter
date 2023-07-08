@@ -244,7 +244,7 @@ func loop(w *app.Window) error {
 
 				gtx := layout.NewContext(&ops, event)
 				// set background to black
-				paint.Fill(gtx.Ops, q100color.scrBgd)
+				paint.Fill(gtx.Ops, q100color.screenGrey)
 				ui.layoutFlexes(gtx)
 				event.Frame(gtx.Ops)
 			}
@@ -254,30 +254,26 @@ func loop(w *app.Window) error {
 
 // custom color scheme
 var q100color = struct {
-	scrBgd, scrTxt                             color.NRGBA
-	scrTxtData, scrTxtDataSelected             color.NRGBA
-	btnTxt, btnBgd, btnBgdSel, btnBgdSelUrgent color.NRGBA
-	gfxBgd, gfxGreen, gfxGraticule, gfxLabel   color.NRGBA
-	gfxBeacon, gfxMarker                       color.NRGBA
-	active                                     bool
+	screenGrey                               color.NRGBA
+	labelWhite, labelOrange                  color.NRGBA
+	buttonGrey, buttonGreen, buttonRed       color.NRGBA
+	gfxBgd, gfxGreen, gfxGraticule, gfxLabel color.NRGBA
+	gfxBeacon, gfxMarker                     color.NRGBA
 }{
 	// see: https://pkg.go.dev/golang.org/x/image/colornames
 	// but maybe I should just create my own colors
-	scrBgd:             color.NRGBA{R: 16, G: 16, B: 16, A: 255}, // no LightBlack
-	scrTxt:             color.NRGBA(colornames.White),
-	scrTxtData:         color.NRGBA(colornames.Darkorange),  // or Orange or Darkorange or Gold
-	scrTxtDataSelected: color.NRGBA(colornames.Greenyellow), // or Green or Greenyellow
-	btnTxt:             color.NRGBA(colornames.White),
-	btnBgd:             color.NRGBA{R: 32, G: 32, B: 32, A: 255}, // DarkGrey is too light
-	btnBgdSel:          color.NRGBA(colornames.Green),
-	btnBgdSelUrgent:    color.NRGBA(colornames.Red),
-	gfxBgd:             color.NRGBA(colornames.Black),
-	gfxGreen:           color.NRGBA(colornames.Green),
-	gfxBeacon:          color.NRGBA(colornames.Red),
-	gfxMarker:          color.NRGBA{R: 10, G: 10, B: 10, A: 255},
-	gfxGraticule:       color.NRGBA(colornames.Darkgray),
-	gfxLabel:           color.NRGBA{R: 32, G: 32, B: 32, A: 255}, // DarkGrey is too light
-	active:             false,
+	screenGrey:   color.NRGBA{R: 16, G: 16, B: 16, A: 255}, // no LightBlack
+	labelWhite:   color.NRGBA(colornames.White),
+	labelOrange:  color.NRGBA(colornames.Darkorange),       // or Orange or Darkorange or Gold
+	buttonGrey:   color.NRGBA{R: 32, G: 32, B: 32, A: 255}, // DarkGrey is too light
+	buttonGreen:  color.NRGBA(colornames.Green),
+	buttonRed:    color.NRGBA(colornames.Red),
+	gfxBgd:       color.NRGBA(colornames.Black),
+	gfxGreen:     color.NRGBA(colornames.Green),
+	gfxBeacon:    color.NRGBA(colornames.Red),
+	gfxMarker:    color.NRGBA{R: 10, G: 10, B: 10, A: 255},
+	gfxGraticule: color.NRGBA(colornames.Darkgray),
+	gfxLabel:     color.NRGBA{R: 32, G: 32, B: 32, A: 255}, // DarkGrey is too light
 }
 
 // define all the buttons
@@ -323,9 +319,9 @@ func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActi
 	if btnActive {
 		btn.Background = btnActiveColor
 	} else {
-		btn.Background = q100color.btnBgd
+		btn.Background = q100color.buttonGrey
 	}
-	btn.Color = q100color.btnTxt
+	btn.Color = q100color.labelWhite
 	return inset.Layout(gtx, btn.Layout)
 }
 
@@ -359,16 +355,16 @@ func (ui *UI) q100_TopRow(gtx C) D {
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				return ui.q100_Button(gtx, &ui.about, "Q-100 Transmitter", false, q100color.btnBgd)
+				return ui.q100_Button(gtx, &ui.about, "Q-100 Transmitter", false, q100color.buttonGrey)
 			})
 		}),
 		layout.Flexed(1, func(gtx C) D {
-			return ui.q100_Label(gtx, "server date goes here", q100color.scrTxtData)
+			return ui.q100_Label(gtx, "server date goes here", q100color.labelOrange)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				return ui.q100_Button(gtx, &ui.shutdown, "Shutdown", false, q100color.btnBgd)
+				return ui.q100_Button(gtx, &ui.shutdown, "Shutdown", false, q100color.buttonGrey)
 			})
 		}),
 	)
@@ -392,19 +388,19 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				return ui.q100_Button(gtx, dec, "<", false, q100color.btnBgd)
+				return ui.q100_Button(gtx, dec, "<", false, q100color.buttonGrey)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(lblWidth)
-				return ui.q100_Label(gtx, value, q100color.scrTxtDataSelected)
+				return ui.q100_Label(gtx, value, q100color.labelOrange)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				return ui.q100_Button(gtx, inc, ">", false, q100color.btnBgd)
+				return ui.q100_Button(gtx, inc, ">", false, q100color.buttonGrey)
 			})
 		}),
 	)
@@ -484,44 +480,6 @@ func (ui *UI) q100_Spectrum(gtx C) D {
 	)
 }
 
-/*
-// returns [ label__  label__ ]
-func (ui *UI) q100_LabelValue(gtx C, label, value string) D {
-	const lblWidth = 105
-	const valWidth = 110
-	inset := layout.Inset{
-		Top:    2,
-		Bottom: 2,
-		Left:   4,
-		Right:  4,
-	}
-
-	return layout.Flex{
-		Axis: layout.Horizontal,
-		// Spacing: layout.SpaceEnd,
-		// Alignment: layout.Middle,
-		// WeightSum: 0.3,
-	}.Layout(gtx,
-		layout.Rigid(func(gtx C) D {
-			return inset.Layout(gtx, func(gtx C) D {
-				gtx.Constraints.Min.X = gtx.Dp(lblWidth)
-				gtx.Constraints.Max.X = gtx.Dp(lblWidth)
-				return ui.q100_Label(gtx, label, q100color.scrTxt)
-				// return inset.Layout(gtx, material.Body1(ui.th, label).Layout)
-			})
-		}),
-		layout.Rigid(func(gtx C) D {
-			return inset.Layout(gtx, func(gtx C) D {
-				gtx.Constraints.Min.X = gtx.Dp(valWidth)
-				gtx.Constraints.Max.X = gtx.Dp(valWidth)
-				return ui.q100_Label(gtx, value, q100color.scrTxtData)
-				// return inset.Layout(gtx, material.Body1(ui.th, value).Layout)
-			})
-		}),
-	)
-}
-*/
-
 // returns a column of 3 rows of [label__  label__]
 func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]widget.Clickable, value [3]string) D {
 	const btnWidth = 0
@@ -565,14 +523,14 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.tune, "TUNE", tuner.IsTuned, q100color.btnBgdSel)
+				return ui.q100_Button(gtx, &ui.tune, "TUNE", tuner.IsTuned, q100color.buttonGreen)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.ptt, "PTT", tuner.IsPtt, q100color.btnBgdSelUrgent)
+				return ui.q100_Button(gtx, &ui.ptt, "PTT", tuner.IsPtt, q100color.buttonRed)
 			})
 		}),
 	)
