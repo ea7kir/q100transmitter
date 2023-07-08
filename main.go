@@ -67,14 +67,40 @@ var (
 	}
 
 	tuConfig = tuner.TuConfig{
-		Band:                 "Narrow",
-		WideFrequency:        "10494.75 / 09",
-		WideSymbolrate:       "1000",
-		NarrowFrequency:      "10499.25 / 27",
-		NarrowSymbolrate:     "333",
-		VeryNarrowFrequency:  "10496.00 / 14",
-		VeryNarrowSymbolRate: "125",
-		// TODO: add other rows
+		Band:                    "Narrow",
+		WideSymbolrate:          "1000",
+		NarrowSymbolrate:        "333",
+		VeryNarrowSymbolRate:    "125",
+		WideFrequency:           "2405.25 / 09",
+		NarrowFrequency:         "2409.75 / 27",
+		VeryNarrowFrequency:     "2406.50 / 14",
+		WideMode:                "DVB-S2",
+		NarrowMode:              "DVB-S2",
+		VeryNarrowMode:          "DVB-S2",
+		WideCodecs:              "H265 ACC",
+		NarrowCdecs:             "H265 ACC",
+		VeryNarrowCodecs:        "H265 ACC",
+		WideConstellation:       "QPSK",
+		NarrowConstellation:     "QPSK",
+		VeryNarrorConstellation: "QPSK",
+		WideFec:                 "3/4",
+		NarrowFec:               "3/4",
+		VeryNarrowFec:           "3/4",
+		WideVideoBitRate:        "350",
+		NarrowVideoBitRate:      "350",
+		VeryNarrowVideoBitRate:  "350",
+		WideAudioBitRate:        "64000",
+		NarrowAudioBitRate:      "64000",
+		VeryNarrowAudioBitRate:  "64000",
+		WideSpare1:              "sp1-a",
+		NarrowSpare1:            "sp1-a",
+		VeryNarrowSpare1:        "sp1-a",
+		WideSpare2:              "sp2-a",
+		NarrowSpare2:            "sp2-a",
+		VeryNarrowSpare2:        "sp2-a",
+		WideGain:                "-16",
+		NarrowGain:              "-16",
+		VeryNarrowGain:          "-16",
 	}
 )
 
@@ -221,12 +247,6 @@ func loop(w *app.Window) error {
 				}
 				if ui.incSpare2.Clicked() {
 					tuner.IncSelector(&tuner.Spare2)
-				}
-				if ui.decSpare3.Clicked() {
-					tuner.DecSelector(&tuner.Spare3)
-				}
-				if ui.incSpare3.Clicked() {
-					tuner.IncSelector(&tuner.Spare3)
 				}
 				if ui.decGain.Clicked() {
 					tuner.DecSelector(&tuner.Gain)

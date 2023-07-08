@@ -43,9 +43,6 @@ type (
 		WideSpare2              string
 		NarrowSpare2            string
 		VeryNarrowSpare2        string
-		WideSpare3              string
-		NarrowSpare3            string
-		VeryNarrowSpare3        string
 		WideGain                string
 		NarrowGain              string
 		VeryNarrowGain          string
@@ -64,7 +61,6 @@ var (
 	AudioBitRate  Selector
 	Spare1        Selector
 	Spare2        Selector
-	Spare3        Selector
 	Gain          Selector
 
 	IsTuned = false
@@ -78,7 +74,7 @@ func Intitialize(tuc TuConfig) {
 	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, tuc.WideFrequency)
 	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate)
 	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, tuc.NarrowFrequency)
-	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, tuc.NarrowSymbolrate)
+	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, tuc.VeryNarrowSymbolRate)
 	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, tuc.VeryNarrowFrequency)
 
 	wideMode = newSelector(const_WIDE_MODE_LIST, tuc.WideMode)
@@ -112,10 +108,6 @@ func Intitialize(tuc TuConfig) {
 	wideSpare2 = newSelector(const_WIDE_SPARE2_LIST, tuc.WideSpare2)
 	narrowSpare2 = newSelector(const_NARROW_SPARE2_LIST, tuc.NarrowSpare2)
 	veryNarrowSpare2 = newSelector(const_VERY_NARROW_SPARE2_LIST, tuc.VeryNarrowSpare2)
-
-	wideSpare3 = newSelector(const_WIDE_SPARE3_LIST, tuc.VeryNarrowSpare3)
-	narrowSpare3 = newSelector(const_NARROW_SPARE3_LIST, tuc.NarrowSpare3)
-	veryNarrowSpare3 = newSelector(const_VERY_NARROW_SPARE3_LIST, tuc.VeryNarrowSpare3)
 
 	wideGain = newSelector(const_WIDE_GAIN_LIST, tuc.WideGain)
 	narrowGain = newSelector(const_NARROW_GAIN_LIST, tuc.NarrowGain)

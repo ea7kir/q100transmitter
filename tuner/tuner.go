@@ -148,15 +148,6 @@ var (
 	const_VERY_NARROW_SPARE2_LIST = []string{
 		"sp2-a", "sp2-b",
 	}
-	const_WIDE_SPARE3_LIST = []string{
-		"sp3-a", "sp3-b",
-	}
-	const_NARROW_SPARE3_LIST = []string{
-		"sp3-a", "sp3-b",
-	}
-	const_VERY_NARROW_SPARE3_LIST = []string{
-		"sp3-a", "sp3-b",
-	}
 	const_WIDE_GAIN_LIST = []string{
 		"-20", "-19", "-18", "-17", "-16", "-15", "-14", "-13", "-12", "-11", "-10", // "-9","-8","-7","-6","-5","-4","-3","-2","-1","0",
 	}
@@ -197,9 +188,6 @@ var (
 	wideSpare2              Selector
 	narrowSpare2            Selector
 	veryNarrowSpare2        Selector
-	wideSpare3              Selector
-	narrowSpare3            Selector
-	veryNarrowSpare3        Selector
 	wideGain                Selector
 	narrowGain              Selector
 	veryNarrowGain          Selector
@@ -240,7 +228,6 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		AudioBitRate = wideAudioBitRate
 		Spare1 = wideSpare1
 		Spare2 = wideSpare2
-		Spare3 = wideSpare3
 		Gain = wideGain
 	case const_BAND_LIST[1]: // narrow
 		SymbolRate = narrowSymbolRate
@@ -253,7 +240,6 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		AudioBitRate = narrowAudioBitRate
 		Spare1 = narrowSpare1
 		Spare2 = narrowSpare2
-		Spare3 = narrowSpare3
 		Gain = narrowGain
 	case const_BAND_LIST[2]: // very narrow
 		SymbolRate = veryNarrowSymbolRate
@@ -266,7 +252,6 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		AudioBitRate = veryNarrowAudioBitRate
 		Spare1 = veryNarrowSpare1
 		Spare2 = veryNarrowSpare2
-		Spare3 = veryNarrowSpare3
 		Gain = veryNarrowGain
 	}
 }
