@@ -15,7 +15,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// room for 916 datapoints + start and end zero points
+// room for 916 datapoints + start and end zero points to close the polygon
 const numPoints = 918
 
 var (

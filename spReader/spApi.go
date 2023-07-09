@@ -19,13 +19,10 @@ type (
 )
 
 var (
-	cfg *SpConfig
-	Xp  = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
+	Xp = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
 )
 
-func Intitialize(spc SpConfig, ch chan SpData) {
-	cfg = &spc
-	// url = spc.Url
+func Intitialize(cfg SpConfig, ch chan SpData) {
 	spChannel = ch
 	Xp[0] = 0
 	for i := 1; i < numPoints-1; i++ {
@@ -36,19 +33,13 @@ func Intitialize(spc SpConfig, ch chan SpData) {
 	go readAndDecode(cfg.Url, spChannel)
 }
 
-// func Start() {
-// 	// logger.Info.Printf("spectrum.readAndDecode will start...")
-// 	logger.Info.Printf("Spectrum will start...")
-// 	go readAndDecode(cfg.Url, spChannel)
-// 	logger.Info.Printf("Spectrum has started")
-// }
-
 func Stop() {
-	logger.Info.Printf("Spectrum will stop... - DOES NOTHING")
+	logger.Warn.Printf("Spectrum will stop... - NOT IMPLELENTED")
 	//
-	logger.Info.Printf("Spectrum has stopped")
+	logger.Info.Printf("Spectrum has stopped - NOT IMPLELENTED")
 }
 
+// Sets the spData Marker values
 func SetMarker(frequency, symbolRate string) {
 	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
 }

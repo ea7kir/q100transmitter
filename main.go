@@ -30,9 +30,8 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-// application directory
-// NOTE: this only works if we are are already in the correct folder
-// const appFolder = "/home/pi/Q100/q100transmitter-v1/"
+// application directory for the configuration data
+// const appFolder = "/home/pi/Q100/q100transmitter/"
 
 // configuration data
 var (
@@ -114,17 +113,14 @@ func main() {
 	os.Setenv("DISPLAY", ":0") // required for X11
 
 	spReader.Intitialize(spConfig, spChannel)
-	// spReader.Start()
 
 	hev10.Initialize(heConfig)
 
 	pluto.Intitialize(plConfig)
 
 	tuner.Intitialize(tuConfig)
-	// tuner.Start()
 
 	go func() {
-		// TODO: add signal to catch interupts
 		w := app.NewWindow(app.Fullscreen.Option())
 		app.Size(800, 480) // I don't know if this is help in any way
 		if err := loop(w); err != nil {
@@ -132,9 +128,9 @@ func main() {
 			// log.Fatal(err)
 		}
 
-		tuner.Stop() // does nothing yet
+		tuner.Stop()
 		// lmReader.Stop()
-		spReader.Stop() // does nothing yet
+		spReader.Stop()
 
 		os.Exit(0)
 	}()
@@ -146,7 +142,7 @@ func loop(w *app.Window) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 	ui := UI{
-		th: material.NewTheme(gofont.Collection()), // TODO: change text colors, fonts, etc ?
+		th: material.NewTheme(gofont.Collection()),
 	}
 	var ops op.Ops
 	// Capture the context done channel in a variable so that we can nil it
@@ -261,7 +257,7 @@ func loop(w *app.Window) error {
 				}
 
 				gtx := layout.NewContext(&ops, event)
-				// set background to black
+				// set the screen background to to dark grey
 				paint.Fill(gtx.Ops, q100color.screenGrey)
 				ui.layoutFlexes(gtx)
 				event.Frame(gtx.Ops)
@@ -313,17 +309,18 @@ type UI struct {
 	th                                 *material.Theme
 }
 
-// this makes the code more readable
+// makes the code more readable
 type (
 	C = layout.Context
 	D = layout.Dimensions
 )
 
+// Returns an About box
 func showAboutBox() {
 	// TODO: implement an about box
 }
 
-// customisable button
+// Return a customisable button
 func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActive bool, btnActiveColor color.NRGBA) D {
 	inset := layout.Inset{
 		Top:    2,
@@ -342,7 +339,7 @@ func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActi
 	return inset.Layout(gtx, btn.Layout)
 }
 
-// custom label
+// Returns a customisable label
 func (ui *UI) q100_Label(gtx C, label string, txtColor color.NRGBA) D {
 	inset := layout.Inset{
 		Top:    2,
@@ -387,7 +384,7 @@ func (ui *UI) q100_TopStatusRow(gtx C) D {
 	)
 }
 
-// returns [ button label button ]
+// returns a single Selector as [ button label button ]
 func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btnWidth, lblWidth unit.Dp) D {
 	inset := layout.Inset{
 		Top:    2,
@@ -444,6 +441,8 @@ func (ui *UI) q100_MainTuningRow(gtx C) D {
 }
 
 // Returns the Spectrum display
+//
+// see: github.com/ajstarks/giocanvas for docs
 func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 	// see: github.com/ajstarks/giocanvas
 

@@ -57,13 +57,14 @@ var (
 	}
 )
 
-// Mbn returns frequency and bandWidth as float32
+// Returns frequency and bandWidth Markers as float32
 func getMarkers(frequency, sysmbolRate string) (float32, float32) {
 	centre := frequencyCentre[frequency]
 	width := symbolRateWidth[sysmbolRate]
 	return centre, width
 }
 
+// TODO: implement CalibratetionPoints()
 /*
 func CalibratetionPoints() {
 	var yp [918]float32
