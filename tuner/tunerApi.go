@@ -114,26 +114,28 @@ func Intitialize(tuc TuConfig) {
 	wideGain = newSelector(const_WIDE_GAIN_LIST, tuc.WideGain)
 	narrowGain = newSelector(const_NARROW_GAIN_LIST, tuc.NarrowGain)
 	veryNarrowGain = newSelector(const_VERY_NARROW_GAIN_LIST, tuc.VeryNarrowGain)
+
+	switchBand()
 }
 
-func Start() {
-	logger.Info.Printf("Tuner will start...")
-	switchBand()
-	logger.Info.Printf("Tuner has started")
-}
+// func Start() {
+// 	// logger.Info.Printf("Tuner will start...")
+// 	// switchBand()
+// 	// logger.Info.Printf("Tuner has started")
+// }
 
 func Stop() {
-	logger.Info.Printf("Tuner will stop... - DOES NOTHING")
-	//
+	logger.Info.Printf("Tuner will stop...")
+	IsPtt = rfSwitch.SetPtt(false)
 	logger.Info.Printf("Tuner has stopped")
 }
 
 func Tune() {
 	if IsTuned {
-		if IsPtt {
-			rfSwitch.SetPtt(false)
-			IsPtt = false
-		}
+		// if IsPtt {
+		IsPtt = rfSwitch.SetPtt(false)
+		// 	// IsPtt = false
+		// }
 		IsTuned = false
 	} else {
 		hev10.SetParams(nil)

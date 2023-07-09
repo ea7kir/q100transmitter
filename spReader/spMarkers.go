@@ -58,7 +58,7 @@ var (
 )
 
 // Mbn returns frequency and bandWidth as float32
-func TuningMarker(frequency, sysmbolRate string) (float32, float32) {
+func getMarkers(frequency, sysmbolRate string) (float32, float32) {
 	centre := frequencyCentre[frequency]
 	width := symbolRateWidth[sysmbolRate]
 	return centre, width

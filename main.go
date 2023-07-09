@@ -114,14 +114,14 @@ func main() {
 	os.Setenv("DISPLAY", ":0") // required for X11
 
 	spReader.Intitialize(spConfig, spChannel)
-	spReader.Start()
+	// spReader.Start()
 
 	hev10.Initialize(heConfig)
 
 	pluto.Intitialize(plConfig)
 
 	tuner.Intitialize(tuConfig)
-	tuner.Start()
+	// tuner.Start()
 
 	go func() {
 		// TODO: add signal to catch interupts
@@ -463,8 +463,8 @@ func (ui *UI) q100_Spectrum(gtx C) D {
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
 				// TODO: get this from somewheresle !
-				markerCentre, markerWidth := spReader.TuningMarker(tuner.Frequency.Value, tuner.SymbolRate.Value)
-				canvas.Rect(markerCentre, 50, markerWidth, 100, q100color.gfxMarker)
+				// markerCentre, markerWidth := spReader.TuningMarker(tuner.Frequency.Value, tuner.SymbolRate.Value)
+				canvas.Rect(spData.MarkerCentre, 50, spData.MarkerWidth, 100, q100color.gfxMarker)
 				// polygon
 				canvas.Polygon(spReader.Xp, spData.Yp, q100color.gfxGreen)
 				// graticule

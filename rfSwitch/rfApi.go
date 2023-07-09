@@ -8,6 +8,6 @@ func Stop() {
 
 }
 
-func SetPtt(on bool) {
-	setPtt(on)
+func SetPtt(on bool) bool {
+	return setPtt(on)
 }

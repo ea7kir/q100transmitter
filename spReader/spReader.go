@@ -20,8 +20,10 @@ const numPoints = 918
 
 var (
 	spData = SpData{
-		Yp:          make([]float32, numPoints),
-		BeaconLevel: 0.5,
+		Yp:           make([]float32, numPoints),
+		BeaconLevel:  0.5,
+		MarkerCentre: 0.5,
+		MarkerWidth:  0.5,
 	}
 	spChannel chan SpData
 )

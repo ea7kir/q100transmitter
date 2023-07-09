@@ -12,8 +12,9 @@ type (
 		Url string
 	}
 	SpData struct {
-		Yp          []float32
-		BeaconLevel float32
+		Yp                        []float32
+		BeaconLevel               float32
+		MarkerCentre, MarkerWidth float32
 	}
 )
 
@@ -31,17 +32,23 @@ func Intitialize(spc SpConfig, ch chan SpData) {
 		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
 	}
 	Xp[numPoints-1] = 100
+
+	go readAndDecode(cfg.Url, spChannel)
 }
 
-func Start() {
-	// logger.Info.Printf("spectrum.readAndDecode will start...")
-	logger.Info.Printf("Spectrum will start...")
-	go readAndDecode(cfg.Url, spChannel)
-	logger.Info.Printf("Spectrum has started")
-}
+// func Start() {
+// 	// logger.Info.Printf("spectrum.readAndDecode will start...")
+// 	logger.Info.Printf("Spectrum will start...")
+// 	go readAndDecode(cfg.Url, spChannel)
+// 	logger.Info.Printf("Spectrum has started")
+// }
 
 func Stop() {
 	logger.Info.Printf("Spectrum will stop... - DOES NOTHING")
 	//
 	logger.Info.Printf("Spectrum has stopped")
+}
+
+func SetMarker(frequency, symbolRate string) {
+	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
 }

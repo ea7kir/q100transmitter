@@ -5,7 +5,10 @@
 
 package tuner
 
-import "q100transmitter/rfSwitch"
+import (
+	"q100transmitter/rfSwitch"
+	"q100transmitter/spReader"
+)
 
 var (
 	const_BAND_LIST = []string{
@@ -256,10 +259,12 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		Spare2 = veryNarrowSpare2
 		Gain = veryNarrowGain
 	}
+	somethingChanged()
 }
 
 func somethingChanged() {
 	rfSwitch.SetPtt(false)
 	IsPtt = false
 	IsTuned = false
+	spReader.SetMarker(Frequency.Value, SymbolRate.Value)
 }
