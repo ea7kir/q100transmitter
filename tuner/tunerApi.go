@@ -8,6 +8,8 @@ package tuner
 import (
 	"q100transmitter/hev10"
 	"q100transmitter/logger"
+	"q100transmitter/pluto"
+	"q100transmitter/rfSwitch"
 )
 
 type (
@@ -128,21 +130,28 @@ func Stop() {
 
 func Tune() {
 	if IsTuned {
-
+		if IsPtt {
+			rfSwitch.SetPtt(false)
+			IsPtt = false
+		}
 		IsTuned = false
 	} else {
-
+		hev10.SetParams(nil)
+		pluto.SetParams(nil)
 		IsTuned = true
 	}
 	// logger.Info.Printf("IsTuned is %v", IsTuned)
 }
 
 func Ptt() {
+	if !IsTuned {
+		return
+	}
 	if IsPtt {
-		hev10.UnConfig()
+		rfSwitch.SetPtt(false)
 		IsPtt = false
 	} else {
-		//hev10.Config()
+		rfSwitch.SetPtt(true)
 		IsPtt = true
 	}
 }
@@ -156,14 +165,15 @@ type Selector struct {
 
 func IncBandSelector(st *Selector) {
 	if st.currIndex < st.lastIndex {
-		if IsTuned {
-			IsTuned = false
-			logger.Info.Printf("IsTuned is %v", IsTuned)
+		// if IsTuned {
+		// 	IsTuned = false
+		// 	logger.Info.Printf("IsTuned is %v", IsTuned)
 
-		}
+		// }
 		st.currIndex++
 		st.Value = st.list[st.currIndex]
 		switchBand()
+		somethingChanged()
 	}
 }
 
@@ -172,6 +182,7 @@ func DecBandSelector(st *Selector) {
 		st.currIndex--
 		st.Value = st.list[st.currIndex]
 		switchBand()
+		somethingChanged()
 	}
 }
 
@@ -179,6 +190,7 @@ func IncSelector(st *Selector) {
 	if st.currIndex < st.lastIndex {
 		st.currIndex++
 		st.Value = st.list[st.currIndex]
+		somethingChanged()
 	}
 }
 
@@ -186,5 +198,6 @@ func DecSelector(st *Selector) {
 	if st.currIndex > 0 {
 		st.currIndex--
 		st.Value = st.list[st.currIndex]
+		somethingChanged()
 	}
 }
