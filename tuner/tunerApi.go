@@ -70,7 +70,6 @@ var (
 )
 
 func Intitialize(tuc TuConfig) {
-	// find index in list
 	Band = newSelector(const_BAND_LIST, tuc.Band)
 	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, tuc.WideSymbolrate)
 	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, tuc.WideFrequency)
@@ -118,12 +117,6 @@ func Intitialize(tuc TuConfig) {
 	switchBand()
 }
 
-// func Start() {
-// 	// logger.Info.Printf("Tuner will start...")
-// 	// switchBand()
-// 	// logger.Info.Printf("Tuner has started")
-// }
-
 func Stop() {
 	logger.Info.Printf("Tuner will stop...")
 	IsPtt = rfSwitch.SetPtt(false)
@@ -167,15 +160,9 @@ type Selector struct {
 
 func IncBandSelector(st *Selector) {
 	if st.currIndex < st.lastIndex {
-		// if IsTuned {
-		// 	IsTuned = false
-		// 	logger.Info.Printf("IsTuned is %v", IsTuned)
-
-		// }
 		st.currIndex++
 		st.Value = st.list[st.currIndex]
 		switchBand()
-		somethingChanged()
 	}
 }
 
@@ -184,7 +171,6 @@ func DecBandSelector(st *Selector) {
 		st.currIndex--
 		st.Value = st.list[st.currIndex]
 		switchBand()
-		somethingChanged()
 	}
 }
 

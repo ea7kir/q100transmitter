@@ -294,7 +294,7 @@ var q100color = struct {
 	gfxLabel:     color.NRGBA{R: 32, G: 32, B: 32, A: 255}, // DarkGrey is too light
 }
 
-// define all the buttons
+// define all buttons
 type UI struct {
 	about, shutdown                    widget.Clickable
 	decBand, incBand                   widget.Clickable
@@ -313,7 +313,7 @@ type UI struct {
 	th                                 *material.Theme
 }
 
-// this makes the code more readable2
+// this makes the code more readable
 type (
 	C = layout.Context
 	D = layout.Dimensions
@@ -323,7 +323,7 @@ func showAboutBox() {
 	// TODO: implement an about box
 }
 
-// my customisable button
+// customisable button
 func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActive bool, btnActiveColor color.NRGBA) D {
 	inset := layout.Inset{
 		Top:    2,
@@ -342,7 +342,7 @@ func (ui *UI) q100_Button(gtx C, button *widget.Clickable, label string, btnActi
 	return inset.Layout(gtx, btn.Layout)
 }
 
-// my custom label
+// custom label
 func (ui *UI) q100_Label(gtx C, label string, txtColor color.NRGBA) D {
 	inset := layout.Inset{
 		Top:    2,
@@ -356,8 +356,8 @@ func (ui *UI) q100_Label(gtx C, label string, txtColor color.NRGBA) D {
 	return inset.Layout(gtx, lbl.Layout)
 }
 
-// returns [ [ button ]  [ label_____________________________________________ ]  [ button ] ]
-func (ui *UI) q100_TopRow(gtx C) D {
+// Returns 1 row of 2 buttons and a label for About, Status and Shutdown
+func (ui *UI) q100_TopStatusRow(gtx C) D {
 	const btnWidth = 30
 	inset := layout.Inset{
 		Top:    2,
@@ -423,8 +423,8 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 	)
 }
 
-// returns [    [ button label button ]  [ button label button ]  [ button label button ]   ]
-func (ui *UI) q100_TuneRow(gtx C) D {
+// Returns 1 row of 3 Selectors for Band SymbolRate and Frequency
+func (ui *UI) q100_MainTuningRow(gtx C) D {
 	const btnWidth = 0
 
 	return layout.Flex{
@@ -443,8 +443,8 @@ func (ui *UI) q100_TuneRow(gtx C) D {
 	)
 }
 
-// returns [ [ ------------------------------- spectrum --------------------------------- ] ]
-func (ui *UI) q100_Spectrum(gtx C) D {
+// Returns the Spectrum display
+func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 	// see: github.com/ajstarks/giocanvas
 
 	return layout.Flex{
@@ -462,8 +462,6 @@ func (ui *UI) q100_Spectrum(gtx C) D {
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
-				// TODO: get this from somewheresle !
-				// markerCentre, markerWidth := spReader.TuningMarker(tuner.Frequency.Value, tuner.SymbolRate.Value)
 				canvas.Rect(spData.MarkerCentre, 50, spData.MarkerWidth, 100, q100color.gfxMarker)
 				// polygon
 				canvas.Polygon(spReader.Xp, spData.Yp, q100color.gfxGreen)
@@ -554,8 +552,8 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 	)
 }
 
-// returns 3 columns of 3 rows + 1 column with 2 buttons
-func (ui *UI) q100_4ColumnsDataWithButtons(gtx C) D {
+// Returns a 3x3 matrix of selectors + 1 column with 2 buttons
+func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 	dec1 := [3]*widget.Clickable{&ui.decCodecs, &ui.decVideoBitRate, &ui.decAudioBitRate}
 	inc1 := [3]*widget.Clickable{&ui.incCodecs, &ui.incVideoBitRate, &ui.incAudioBitRate}
 	val1 := [3]string{tuner.Codecs.Value, tuner.VideoBitRate.Value, tuner.AudioBitRate.Value}
@@ -587,7 +585,7 @@ func (ui *UI) q100_4ColumnsDataWithButtons(gtx C) D {
 	)
 }
 
-// returns the entire display
+// layoutFlexes returns the entire display
 func (ui *UI) layoutFlexes(gtx C) D {
 	// inset := layout.Inset{
 	// 	Top:    2,
@@ -605,14 +603,10 @@ func (ui *UI) layoutFlexes(gtx C) D {
 				// Spacing:   layout.SpaceEnd,
 				// Alignment: layout.Alignment(layout.N),
 			}.Layout(gtx,
-				// top row displays [ [ button ]  [ label_____________________________________________ ]  [ button ] ]
-				layout.Rigid(ui.q100_TopRow),
-				// spectrum displays [ [ ------------------------------- spectrum --------------------------------- ] ]
-				layout.Rigid(ui.q100_Spectrum),
-				// tuning row displays [    [ button label button ]  [ button label button ]  [ button label button ]   ]
-				layout.Rigid(ui.q100_TuneRow),
-				// data + buttons [ [ label__  label__ ]   [ label__  label__ ]   [ label__  label__ ]  [ button ] ]
-				layout.Rigid(ui.q100_4ColumnsDataWithButtons),
+				layout.Rigid(ui.q100_TopStatusRow),
+				layout.Rigid(ui.q100_SpectrumDisplay),
+				layout.Rigid(ui.q100_MainTuningRow),
+				layout.Rigid(ui.q100_3x3selectorMatrixPlus2buttons),
 			)
 		}),
 	)
