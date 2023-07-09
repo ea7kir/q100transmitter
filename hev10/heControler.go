@@ -5,10 +5,8 @@
 
 package hev10
 
-var (
-	hec = new(HeConfig)
-)
+import "q100transmitter/logger"
 
-func config(cfg HeConfig) {
-	// cfg.Audio_bitrate
+func setParams(cfg *HeConfig) {
+	logger.Info.Printf("writing params to the HEV-10 Encoder")
 }

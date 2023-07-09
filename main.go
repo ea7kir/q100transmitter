@@ -462,6 +462,7 @@ func (ui *UI) q100_Spectrum(gtx C) D {
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
+				// TODO: get this from somewheresle !
 				markerCentre, markerWidth := spReader.TuningMarker(tuner.Frequency.Value, tuner.SymbolRate.Value)
 				canvas.Rect(markerCentre, 50, markerWidth, 100, q100color.gfxMarker)
 				// polygon

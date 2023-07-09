@@ -26,6 +26,11 @@ type (
 	}
 )
 
-func Intitialize(args PlConfig) {
-	// plc = cfg
+func Intitialize(cfg PlConfig) {
+	setParams(&cfg)
+}
+
+// WriteParams is called from tuner. The function will write the params to a folder on the Pluto.
+func SetParams(cfg *PlConfig) {
+	setParams(cfg)
 }

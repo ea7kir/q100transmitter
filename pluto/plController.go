@@ -4,3 +4,9 @@
  */
 
 package pluto
+
+import "q100transmitter/logger"
+
+func setParams(cfg *PlConfig) {
+	logger.Info.Printf("writing params to a folder on the Pluto")
+}

@@ -5,6 +5,8 @@
 
 package tuner
 
+import "q100transmitter/rfSwitch"
+
 var (
 	const_BAND_LIST = []string{
 		"Wide",
@@ -254,4 +256,10 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		Spare2 = veryNarrowSpare2
 		Gain = veryNarrowGain
 	}
+}
+
+func somethingChanged() {
+	rfSwitch.SetPtt(false)
+	IsPtt = false
+	IsTuned = false
 }
