@@ -11,7 +11,7 @@ import (
 	"image/color"
 	"os"
 	"os/signal"
-	"q100transmitter/hev10"
+	"q100transmitter/encoderWriter"
 	"q100transmitter/logger"
 	"q100transmitter/plutoWriter"
 	"q100transmitter/spReader"
@@ -43,7 +43,7 @@ var (
 		IP_Address: "txserver.local",
 		IP_Port:    8765,
 	}
-	heConfig = hev10.HeConfig{
+	heConfig = encoderWriter.HeConfig{
 		Audio_codec:   "ACC",
 		Audio_bitrate: "64000",
 		Video_codec:   "H.265",
@@ -124,7 +124,7 @@ func main() {
 
 	svrReader.Initialize(svrConfig, svrChannel)
 
-	hev10.Initialize(heConfig)
+	encoderWriter.Initialize(heConfig)
 
 	plutoWriter.Intitialize(plConfig)
 

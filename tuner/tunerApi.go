@@ -6,7 +6,7 @@
 package tuner
 
 import (
-	"q100transmitter/hev10"
+	"q100transmitter/encoderWriter"
 	"q100transmitter/logger"
 	"q100transmitter/plutoWriter"
 	"q100transmitter/rfSwitch"
@@ -131,7 +131,7 @@ func Tune() {
 		// }
 		IsTuned = false
 	} else {
-		hev10.SetParams(nil)
+		encoderWriter.SetParams(nil)
 		plutoWriter.SetParams(nil)
 		IsTuned = true
 	}
