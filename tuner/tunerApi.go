@@ -8,7 +8,7 @@ package tuner
 import (
 	"q100transmitter/hev10"
 	"q100transmitter/logger"
-	"q100transmitter/pluto"
+	"q100transmitter/plutoWriter"
 	"q100transmitter/rfSwitch"
 )
 
@@ -132,7 +132,7 @@ func Tune() {
 		IsTuned = false
 	} else {
 		hev10.SetParams(nil)
-		pluto.SetParams(nil)
+		plutoWriter.SetParams(nil)
 		IsTuned = true
 	}
 	// logger.Info.Printf("IsTuned is %v", IsTuned)

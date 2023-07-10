@@ -3,7 +3,7 @@
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
-package pluto
+package plutoWriter
 
 type (
 	PlConfig struct {
@@ -28,10 +28,10 @@ type (
 )
 
 func Intitialize(cfg PlConfig) {
-	setParams(&cfg)
+	writePluto(&cfg)
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.
 func SetParams(cfg *PlConfig) {
-	setParams(cfg)
+	writePluto(cfg)
 }

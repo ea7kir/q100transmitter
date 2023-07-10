@@ -1,4 +1,4 @@
-package server
+package svrReader
 
 import (
 	"fmt"

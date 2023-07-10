@@ -3,10 +3,10 @@
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
-package pluto
+package plutoWriter
 
 import "q100transmitter/logger"
 
-func setParams(cfg *PlConfig) {
+func writePluto(cfg *PlConfig) {
 	logger.Info.Printf("writing params to a folder on the Pluto")
 }

@@ -13,9 +13,9 @@ import (
 	"os/signal"
 	"q100transmitter/hev10"
 	"q100transmitter/logger"
-	"q100transmitter/pluto"
-	"q100transmitter/server"
+	"q100transmitter/plutoWriter"
 	"q100transmitter/spReader"
+	"q100transmitter/svrReader"
 	"q100transmitter/tuner"
 
 	"gioui.org/app"
@@ -39,7 +39,7 @@ var (
 	spConfig = spReader.SpConfig{
 		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 	}
-	svrConfig = server.SvrConfig{
+	svrConfig = svrReader.SvrConfig{
 		IP_Address: "txserver.local",
 		IP_Port:    8765,
 	}
@@ -52,7 +52,7 @@ var (
 		Url:           "udp://192.168.3.10:8282",
 		IP_Address:    "192.168.3.1",
 	}
-	plConfig = pluto.PlConfig{
+	plConfig = plutoWriter.PlConfig{
 		Frequency:        "2409.75",
 		Mode:             "DBS2",
 		Constellation:    "QPSK",
@@ -113,8 +113,8 @@ var (
 var (
 	spData     spReader.SpData
 	spChannel  = make(chan spReader.SpData, 5)
-	svrData    server.SvrData
-	svrChannel = make(chan server.SvrData, 5)
+	svrData    svrReader.SvrData
+	svrChannel = make(chan svrReader.SvrData, 5)
 )
 
 func main() {
@@ -122,11 +122,11 @@ func main() {
 
 	spReader.Intitialize(spConfig, spChannel)
 
-	server.Initialize(svrConfig, svrChannel)
+	svrReader.Initialize(svrConfig, svrChannel)
 
 	hev10.Initialize(heConfig)
 
-	pluto.Intitialize(plConfig)
+	plutoWriter.Intitialize(plConfig)
 
 	tuner.Intitialize(tuConfig)
 
@@ -139,7 +139,7 @@ func main() {
 		}
 
 		tuner.Stop()
-		server.Stop()
+		svrReader.Stop()
 		spReader.Stop()
 
 		os.Exit(0)
