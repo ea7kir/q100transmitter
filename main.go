@@ -139,7 +139,7 @@ func main() {
 		}
 
 		tuner.Stop()
-		// lmReader.Stop()
+		server.Stop()
 		spReader.Stop()
 
 		os.Exit(0)

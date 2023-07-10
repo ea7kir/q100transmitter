@@ -6,6 +6,8 @@ var (
 	state bool
 )
 
+// there is a command app called: raspi-gpio
+
 /* Analog Devices HMC349 RF Switch
 
 # HVC349 RF Switch
