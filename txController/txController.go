@@ -3,7 +3,7 @@
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
-package tuner
+package txController
 
 import (
 	"q100transmitter/rfSwitch"

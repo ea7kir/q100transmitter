@@ -16,7 +16,7 @@ import (
 	"q100transmitter/plutoWriter"
 	"q100transmitter/spReader"
 	"q100transmitter/svrReader"
-	"q100transmitter/tuner"
+	"q100transmitter/txController"
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
@@ -71,7 +71,7 @@ var (
 		Service:          "Michael", // NOTE: not implemented
 		IP_Address:       "192.168.2.1",
 	}
-	tuConfig = tuner.TuConfig{
+	tuConfig = txController.TuConfig{
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
 		NarrowSymbolrate:        "333",
@@ -128,7 +128,7 @@ func main() {
 
 	plutoWriter.Intitialize(plConfig)
 
-	tuner.Intitialize(tuConfig)
+	txController.Intitialize(tuConfig)
 
 	go func() {
 		w := app.NewWindow(app.Fullscreen.Option())
@@ -138,7 +138,7 @@ func main() {
 			// log.Fatal(err)
 		}
 
-		tuner.Stop()
+		txController.Stop()
 		svrReader.Stop()
 		spReader.Stop()
 
@@ -168,7 +168,7 @@ func loop(w *app.Window) error {
 			// Log something to make it obvious this happened.
 			// logger.Info.Printf("context cancelled")
 			// Initiate window shutdown.
-			tuner.Stop() // TODO: does nothing yet
+			txController.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
 			spReader.Stop() // TODO: does nothing yet - bombs with Control=C
 			w.Perform(system.ActionClose)
@@ -188,82 +188,82 @@ func loop(w *app.Window) error {
 					w.Perform(system.ActionClose)
 				}
 				if ui.decBand.Clicked() {
-					tuner.DecBandSelector(&tuner.Band)
+					txController.DecBandSelector(&txController.Band)
 				}
 				if ui.incBand.Clicked() {
-					tuner.IncBandSelector(&tuner.Band)
+					txController.IncBandSelector(&txController.Band)
 				}
 				if ui.decSymbolRate.Clicked() {
-					tuner.DecSelector(&tuner.SymbolRate)
+					txController.DecSelector(&txController.SymbolRate)
 				}
 				if ui.incSymbolRate.Clicked() {
-					tuner.IncSelector(&tuner.SymbolRate)
+					txController.IncSelector(&txController.SymbolRate)
 				}
 				if ui.decFrequency.Clicked() {
-					tuner.DecSelector(&tuner.Frequency)
+					txController.DecSelector(&txController.Frequency)
 				}
 				if ui.incFrequency.Clicked() {
-					tuner.IncSelector(&tuner.Frequency)
+					txController.IncSelector(&txController.Frequency)
 				}
 				if ui.decMode.Clicked() {
-					tuner.DecSelector(&tuner.Mode)
+					txController.DecSelector(&txController.Mode)
 				}
 				if ui.incMode.Clicked() {
-					tuner.IncSelector(&tuner.Mode)
+					txController.IncSelector(&txController.Mode)
 				}
 				if ui.decCodecs.Clicked() {
-					tuner.DecSelector(&tuner.Codecs)
+					txController.DecSelector(&txController.Codecs)
 				}
 				if ui.incCodecs.Clicked() {
-					tuner.IncSelector(&tuner.Codecs)
+					txController.IncSelector(&txController.Codecs)
 				}
 				if ui.decConstellation.Clicked() {
-					tuner.DecSelector(&tuner.Constellation)
+					txController.DecSelector(&txController.Constellation)
 				}
 				if ui.incConstellation.Clicked() {
-					tuner.IncSelector(&tuner.Constellation)
+					txController.IncSelector(&txController.Constellation)
 				}
 				if ui.decFec.Clicked() {
-					tuner.DecSelector(&tuner.Fec)
+					txController.DecSelector(&txController.Fec)
 				}
 				if ui.incFec.Clicked() {
-					tuner.IncSelector(&tuner.Fec)
+					txController.IncSelector(&txController.Fec)
 				}
 				if ui.decVideoBitRate.Clicked() {
-					tuner.DecSelector(&tuner.VideoBitRate)
+					txController.DecSelector(&txController.VideoBitRate)
 				}
 				if ui.incVideoBitRate.Clicked() {
-					tuner.IncSelector(&tuner.VideoBitRate)
+					txController.IncSelector(&txController.VideoBitRate)
 				}
 				if ui.decAudioBitRate.Clicked() {
-					tuner.DecSelector(&tuner.AudioBitRate)
+					txController.DecSelector(&txController.AudioBitRate)
 				}
 				if ui.incAudioBitRate.Clicked() {
-					tuner.IncSelector(&tuner.AudioBitRate)
+					txController.IncSelector(&txController.AudioBitRate)
 				}
 				if ui.decSpare1.Clicked() {
-					tuner.DecSelector(&tuner.Spare1)
+					txController.DecSelector(&txController.Spare1)
 				}
 				if ui.incSpare1.Clicked() {
-					tuner.IncSelector(&tuner.Spare1)
+					txController.IncSelector(&txController.Spare1)
 				}
 				if ui.decSpare2.Clicked() {
-					tuner.DecSelector(&tuner.Spare2)
+					txController.DecSelector(&txController.Spare2)
 				}
 				if ui.incSpare2.Clicked() {
-					tuner.IncSelector(&tuner.Spare2)
+					txController.IncSelector(&txController.Spare2)
 				}
 				if ui.decGain.Clicked() {
-					tuner.DecSelector(&tuner.Gain)
+					txController.DecSelector(&txController.Gain)
 				}
 				if ui.incGain.Clicked() {
-					tuner.IncSelector(&tuner.Gain)
+					txController.IncSelector(&txController.Gain)
 				}
 				if ui.tune.Clicked() {
-					tuner.Tune()
+					txController.Tune()
 				}
 				if ui.ptt.Clicked() {
-					tuner.Ptt()
+					txController.Ptt()
 				}
 
 				gtx := layout.NewContext(&ops, event)
@@ -439,13 +439,13 @@ func (ui *UI) q100_MainTuningRow(gtx C) D {
 		Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, tuner.Band.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, txController.Band.Value, btnWidth, 100)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, tuner.SymbolRate.Value, btnWidth, 50)
+			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, txController.SymbolRate.Value, btnWidth, 50)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, tuner.Frequency.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, txController.Frequency.Value, btnWidth, 100)
 		}),
 	)
 }
@@ -516,7 +516,7 @@ func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]st
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
 			// return ui.q100_LabelValue(gtx, name[0], value[0])
-			// return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, tuner.Mode.Value, btnWidth, lblWidth)
+			// return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, txController.Mode.Value, btnWidth, lblWidth)
 			return ui.q100_Selector(gtx, dec[0], inc[0], value[0], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
@@ -548,14 +548,14 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.tune, "TUNE", tuner.IsTuned, q100color.buttonGreen)
+				return ui.q100_Button(gtx, &ui.tune, "TUNE", txController.IsTuned, q100color.buttonGreen)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.ptt, "PTT", tuner.IsPtt, q100color.buttonRed)
+				return ui.q100_Button(gtx, &ui.ptt, "PTT", txController.IsPtt, q100color.buttonRed)
 			})
 		}),
 	)
@@ -565,15 +565,15 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 	dec1 := [3]*widget.Clickable{&ui.decCodecs, &ui.decVideoBitRate, &ui.decAudioBitRate}
 	inc1 := [3]*widget.Clickable{&ui.incCodecs, &ui.incVideoBitRate, &ui.incAudioBitRate}
-	val1 := [3]string{tuner.Codecs.Value, tuner.VideoBitRate.Value, tuner.AudioBitRate.Value}
+	val1 := [3]string{txController.Codecs.Value, txController.VideoBitRate.Value, txController.AudioBitRate.Value}
 
 	dec2 := [3]*widget.Clickable{&ui.decMode, &ui.decConstellation, &ui.decFec}
 	inc2 := [3]*widget.Clickable{&ui.incMode, &ui.incConstellation, &ui.incFec}
-	val2 := [3]string{tuner.Mode.Value, tuner.Constellation.Value, tuner.Fec.Value}
+	val2 := [3]string{txController.Mode.Value, txController.Constellation.Value, txController.Fec.Value}
 
 	dec3 := [3]*widget.Clickable{&ui.decSpare1, &ui.decSpare2, &ui.decGain}
 	inc3 := [3]*widget.Clickable{&ui.incSpare1, &ui.incSpare2, &ui.incGain}
-	val3 := [3]string{tuner.Spare1.Value, tuner.Spare2.Value, tuner.Gain.Value}
+	val3 := [3]string{txController.Spare1.Value, txController.Spare2.Value, txController.Gain.Value}
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
