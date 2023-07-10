@@ -7,9 +7,34 @@ package pttSwitch
 
 import "q100transmitter/logger"
 
+// API
+func Initialize() {
+
+}
+
+// API
+func Stop() {
+
+}
+
+// API
+func SetPtt(on bool) bool {
+	return setPtt(on)
+}
+
 var (
 	state bool
 )
+
+func setPtt(on bool) bool {
+	if on {
+		state = true
+	} else {
+		state = false
+	}
+	logger.Info.Printf("PTT is %v", state)
+	return state
+}
 
 // there is a command app called: raspi-gpio
 
@@ -53,13 +78,3 @@ def switch_rf_switch_Off():
     _switch_HMC349(RF_SWITCH_CTRL_GPIO, RF_SWITCH_HIGH)
 
 */
-
-func setPtt(on bool) bool {
-	if on {
-		state = true
-	} else {
-		state = false
-	}
-	logger.Info.Printf("PTT is %v", state)
-	return state
-}

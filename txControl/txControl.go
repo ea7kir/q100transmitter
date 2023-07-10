@@ -16,6 +16,8 @@ import (
 // API
 type (
 	TuConfig struct {
+		Provider                string
+		Service                 string // NOTE: not implemented
 		Band                    string
 		WideFrequency           string
 		WideSymbolrate          string
@@ -326,6 +328,15 @@ func Tune() {
 	if !IsTuned {
 		encoderClient.SetParams(nil)
 		plutoParam = plutoClient.PlConfig{}
+
+		plutoParam.Provider = "CALLSIGN"
+		plutoParam.Frequency = Frequency.Value
+		plutoParam.Mode = Mode.Value
+		plutoParam.Constellation = Constellation.Value
+		plutoParam.SymbolRate = SymbolRate.Value
+		plutoParam.Fec = Fec.Value
+		plutoParam.Gain = Gain.Value
+
 		plutoClient.SetParams(&plutoParam)
 		IsTuned = true
 	} else {

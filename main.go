@@ -53,25 +53,27 @@ var (
 		IP_Address:    "192.168.3.1",
 	}
 	plConfig = plutoClient.PlConfig{
-		Frequency:        "2409.75",
-		Mode:             "DBS2",
-		Constellation:    "QPSK",
-		Symbol_rate:      "333",
-		Fec:              "23",
-		Gain:             "-10",
-		Calibration_mode: "nocalib",   // NOTE: not implemented
-		Pcr_pts:          "800",       // NOTE: not implemented
-		Pat_period:       "200",       // NOTE: not implemented
-		Roll_off:         "0.35",      // NOTE: not implemented
-		Pilots:           "off",       // NOTE: not implemented
-		Frame:            "LongFrame", // NOTE: not implemented
-		H265box:          "undefined", // NOTE: not implemented
-		Remux:            "1",         // NOTE: not implemented
-		Provider:         "EA7KIR",
-		Service:          "Michael", // NOTE: not implemented
-		IP_Address:       "192.168.2.1",
+		Frequency:       "2409.75",
+		Mode:            "DBS2",
+		Constellation:   "QPSK",
+		SymbolRate:      "333",
+		Fec:             "23",
+		Gain:            "-10",
+		CalibrationMode: "nocalib",   // NOTE: not implemented
+		Pcr_pts:         "800",       // NOTE: not implemented
+		Pat_period:      "200",       // NOTE: not implemented
+		Roll_off:        "0.35",      // NOTE: not implemented
+		Pilots:          "off",       // NOTE: not implemented
+		Frame:           "LongFrame", // NOTE: not implemented
+		H265box:         "undefined", // NOTE: not implemented
+		Remux:           "1",         // NOTE: not implemented
+		Provider:        "EA7KIR",
+		Service:         "Michael", // NOTE: not implemented
+		IP_Address:      "192.168.2.1",
 	}
 	tuConfig = txControl.TuConfig{
+		Provider:                "EA7KIR",
+		Service:                 "Michael", // NOTE: not implemented
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
 		NarrowSymbolrate:        "333",
@@ -120,13 +122,13 @@ var (
 func main() {
 	os.Setenv("DISPLAY", ":0") // required for X11
 
-	spectrumClient.Intitialize(spConfig, spChannel)
+	spectrumClient.Intitialize(&spConfig, spChannel)
 
-	paClient.Initialize(svrConfig, svrChannel)
+	paClient.Initialize(&svrConfig, svrChannel)
 
-	encoderClient.Initialize(heConfig)
+	encoderClient.Initialize(&heConfig)
 
-	plutoClient.Initialize(plConfig)
+	plutoClient.Initialize(&plConfig)
 
 	txControl.Initialize(&tuConfig)
 

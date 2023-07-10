@@ -10,6 +10,14 @@ import (
 	"os"
 )
 
+// API
+var (
+	Info  *log.Logger
+	Warn  *log.Logger
+	Error *log.Logger
+	Fatal *log.Logger
+)
+
 // type aggregatedLogger struct {
 // 	infoLogger  *log.Logger
 // 	warnLogger  *log.Logger

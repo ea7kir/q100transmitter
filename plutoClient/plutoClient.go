@@ -10,6 +10,93 @@ import (
 	"q100transmitter/logger"
 )
 
+// API
+type (
+	PlConfig struct {
+		Frequency       string // "2409.75"
+		Mode            string // "DBS2"
+		Constellation   string // "QPSK"
+		SymbolRate      string // "333"
+		Fec             string // "23"
+		Gain            string // "-10"
+		CalibrationMode string // "nocalib"
+		Pcr_pts         string // "800"
+		Pat_period      string // "200"
+		Roll_off        string // "0.35"
+		Pilots          string // "off"
+		Frame           string // "LongFrame"
+		H265box         string // "undefined"
+		Remux           string // "1"
+		Provider        string // "EA7KIR"
+		Service         string // "Michael"
+		IP_Address      string // "192.168.2.1",
+
+		// callsign  string // EA7KIR
+		// freq      string // 2409.75
+		// mode      string // DVBS2
+		// mod       string // QPSK
+		// sr        string // 333
+		// fec       string // 34
+		// pilots    string // Off
+		// frame     string // LongFrame
+		// power     string // -2
+		// rolloff   string // 0.25
+		// pcrpts    string // 800
+		// patperiod string // 200
+		// h265box   string // undefined
+		// remux     string // 1
+
+	}
+)
+
+var (
+	arg = PlConfig{}
+)
+
+func Initialize(cfg *PlConfig) {
+	arg.CalibrationMode = cfg.CalibrationMode // NOTE: not implemented
+	arg.Pcr_pts = cfg.Pcr_pts                 // NOTE: not implemented
+	arg.Pat_period = cfg.Pat_period           // NOTE: not implemented
+	arg.Roll_off = cfg.Roll_off               // NOTE: not implemented
+	arg.Pilots = cfg.Pilots                   // NOTE: not implemented
+	arg.Frame = cfg.Frame                     // NOTE: not implemented
+	arg.H265box = cfg.H265box                 // NOTE: not implemented
+	arg.Remux = cfg.Remux                     // NOTE: not implementearg
+}
+
+// Called from tuner to copy the params into a folder in the Pluto.
+func SetParams(cfg *PlConfig) {
+
+	arg.Provider = cfg.Provider
+	arg.Frequency = cfg.Frequency
+	arg.Mode = cfg.Mode
+	arg.Constellation = cfg.Constellation
+	arg.SymbolRate = cfg.SymbolRate
+	arg.Fec = cfg.Fec
+	arg.Gain = cfg.Gain
+	writePluto()
+}
+
+func writePluto() {
+	str := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
+		arg.Provider,
+		arg.Frequency,
+		arg.Mode,
+		arg.Constellation,
+		arg.SymbolRate,
+		arg.Fec,
+		arg.Pilots,
+		arg.Frame,
+		arg.Gain,
+		arg.Roll_off,
+		arg.Pcr_pts,
+		arg.Pat_period,
+		arg.H265box,
+		arg.Remux)
+
+	logger.Info.Printf("writing params to a folder on the Pluto: \n%v\n", str)
+}
+
 /*
 import subprocess
 #import sys
@@ -116,22 +203,3 @@ def setup_pluto(args):
 		IP_Address:       "192.168.2.1",
 	}
 */
-func writePluto(cfg *PlConfig) {
-	str := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
-		cfg.Provider,
-		cfg.Frequency,
-		cfg.Mode,
-		cfg.Constellation,
-		cfg.Symbol_rate,
-		cfg.Fec,
-		cfg.Pilots,
-		cfg.Frame,
-		cfg.Gain,
-		cfg.Roll_off,
-		cfg.Pcr_pts,
-		cfg.Pat_period,
-		cfg.H265box,
-		cfg.Remux)
-
-	logger.Info.Printf("writing params to a folder on the Pluto: \n%v\n", str)
-}

@@ -15,6 +15,47 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// API
+type (
+	SpConfig struct {
+		Url string
+	}
+	SpData struct {
+		Yp                        []float32
+		BeaconLevel               float32
+		MarkerCentre, MarkerWidth float32
+	}
+)
+
+// API
+var (
+	Xp = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
+)
+
+// API
+func Intitialize(cfg *SpConfig, ch chan SpData) {
+	spChannel = ch
+	Xp[0] = 0
+	for i := 1; i < numPoints-1; i++ {
+		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
+	}
+	Xp[numPoints-1] = 100
+
+	go readAndDecode(cfg.Url, spChannel)
+}
+
+// API
+func Stop() {
+	logger.Warn.Printf("Spectrum will stop... - NOT IMPLELENTED")
+	//
+	logger.Info.Printf("Spectrum has stopped - NOT IMPLELENTED")
+}
+
+// Sets the spData Marker values
+func SetMarker(frequency, symbolRate string) {
+	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
+}
+
 // room for 916 datapoints + start and end zero points to close the polygon
 const numPoints = 918
 
