@@ -3,10 +3,10 @@
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
-package txController
+package txControll
 
 import (
-	"q100transmitter/pttSwitcher"
+	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
 )
 
@@ -263,7 +263,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 }
 
 func somethingChanged() {
-	pttSwitcher.SetPtt(false)
+	pttSwitch.SetPtt(false)
 	IsPtt = false
 	IsTuned = false
 	spectrumClient.SetMarker(Frequency.Value, SymbolRate.Value)

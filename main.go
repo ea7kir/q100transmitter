@@ -11,12 +11,12 @@ import (
 	"image/color"
 	"os"
 	"os/signal"
-	"q100transmitter/encoderWriter"
+	"q100transmitter/encoderClient"
 	"q100transmitter/logger"
-	"q100transmitter/plutoWriter"
+	"q100transmitter/paClient"
+	"q100transmitter/plutoClient"
 	"q100transmitter/spectrumClient"
-	"q100transmitter/svrReader"
-	"q100transmitter/txController"
+	"q100transmitter/txControll"
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
@@ -39,11 +39,11 @@ var (
 	spConfig = spectrumClient.SpConfig{
 		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 	}
-	svrConfig = svrReader.SvrConfig{
+	svrConfig = paClient.SvrConfig{
 		IP_Address: "txserver.local",
 		IP_Port:    8765,
 	}
-	heConfig = encoderWriter.HeConfig{
+	heConfig = encoderClient.HeConfig{
 		Audio_codec:   "ACC",
 		Audio_bitrate: "64000",
 		Video_codec:   "H.265",
@@ -52,7 +52,7 @@ var (
 		Url:           "udp://192.168.3.10:8282",
 		IP_Address:    "192.168.3.1",
 	}
-	plConfig = plutoWriter.PlConfig{
+	plConfig = plutoClient.PlConfig{
 		Frequency:        "2409.75",
 		Mode:             "DBS2",
 		Constellation:    "QPSK",
@@ -71,7 +71,7 @@ var (
 		Service:          "Michael", // NOTE: not implemented
 		IP_Address:       "192.168.2.1",
 	}
-	tuConfig = txController.TuConfig{
+	tuConfig = txControll.TuConfig{
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
 		NarrowSymbolrate:        "333",
@@ -113,8 +113,8 @@ var (
 var (
 	spData     spectrumClient.SpData
 	spChannel  = make(chan spectrumClient.SpData, 5)
-	svrData    svrReader.SvrData
-	svrChannel = make(chan svrReader.SvrData, 5)
+	svrData    paClient.SvrData
+	svrChannel = make(chan paClient.SvrData, 5)
 )
 
 func main() {
@@ -122,13 +122,13 @@ func main() {
 
 	spectrumClient.Intitialize(spConfig, spChannel)
 
-	svrReader.Initialize(svrConfig, svrChannel)
+	paClient.Initialize(svrConfig, svrChannel)
 
-	encoderWriter.Initialize(heConfig)
+	encoderClient.Initialize(heConfig)
 
-	plutoWriter.Intitialize(plConfig)
+	plutoClient.Intitialize(plConfig)
 
-	txController.Intitialize(tuConfig)
+	txControll.Intitialize(tuConfig)
 
 	go func() {
 		w := app.NewWindow(app.Fullscreen.Option())
@@ -138,8 +138,8 @@ func main() {
 			// log.Fatal(err)
 		}
 
-		txController.Stop()
-		svrReader.Stop()
+		txControll.Stop()
+		paClient.Stop()
 		spectrumClient.Stop()
 
 		os.Exit(0)
@@ -168,7 +168,7 @@ func loop(w *app.Window) error {
 			// Log something to make it obvious this happened.
 			// logger.Info.Printf("context cancelled")
 			// Initiate window shutdown.
-			txController.Stop() // TODO: does nothing yet
+			txControll.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
 			spectrumClient.Stop() // TODO: does nothing yet - bombs with Control=C
 			w.Perform(system.ActionClose)
@@ -188,82 +188,82 @@ func loop(w *app.Window) error {
 					w.Perform(system.ActionClose)
 				}
 				if ui.decBand.Clicked() {
-					txController.DecBandSelector(&txController.Band)
+					txControll.DecBandSelector(&txControll.Band)
 				}
 				if ui.incBand.Clicked() {
-					txController.IncBandSelector(&txController.Band)
+					txControll.IncBandSelector(&txControll.Band)
 				}
 				if ui.decSymbolRate.Clicked() {
-					txController.DecSelector(&txController.SymbolRate)
+					txControll.DecSelector(&txControll.SymbolRate)
 				}
 				if ui.incSymbolRate.Clicked() {
-					txController.IncSelector(&txController.SymbolRate)
+					txControll.IncSelector(&txControll.SymbolRate)
 				}
 				if ui.decFrequency.Clicked() {
-					txController.DecSelector(&txController.Frequency)
+					txControll.DecSelector(&txControll.Frequency)
 				}
 				if ui.incFrequency.Clicked() {
-					txController.IncSelector(&txController.Frequency)
+					txControll.IncSelector(&txControll.Frequency)
 				}
 				if ui.decMode.Clicked() {
-					txController.DecSelector(&txController.Mode)
+					txControll.DecSelector(&txControll.Mode)
 				}
 				if ui.incMode.Clicked() {
-					txController.IncSelector(&txController.Mode)
+					txControll.IncSelector(&txControll.Mode)
 				}
 				if ui.decCodecs.Clicked() {
-					txController.DecSelector(&txController.Codecs)
+					txControll.DecSelector(&txControll.Codecs)
 				}
 				if ui.incCodecs.Clicked() {
-					txController.IncSelector(&txController.Codecs)
+					txControll.IncSelector(&txControll.Codecs)
 				}
 				if ui.decConstellation.Clicked() {
-					txController.DecSelector(&txController.Constellation)
+					txControll.DecSelector(&txControll.Constellation)
 				}
 				if ui.incConstellation.Clicked() {
-					txController.IncSelector(&txController.Constellation)
+					txControll.IncSelector(&txControll.Constellation)
 				}
 				if ui.decFec.Clicked() {
-					txController.DecSelector(&txController.Fec)
+					txControll.DecSelector(&txControll.Fec)
 				}
 				if ui.incFec.Clicked() {
-					txController.IncSelector(&txController.Fec)
+					txControll.IncSelector(&txControll.Fec)
 				}
 				if ui.decVideoBitRate.Clicked() {
-					txController.DecSelector(&txController.VideoBitRate)
+					txControll.DecSelector(&txControll.VideoBitRate)
 				}
 				if ui.incVideoBitRate.Clicked() {
-					txController.IncSelector(&txController.VideoBitRate)
+					txControll.IncSelector(&txControll.VideoBitRate)
 				}
 				if ui.decAudioBitRate.Clicked() {
-					txController.DecSelector(&txController.AudioBitRate)
+					txControll.DecSelector(&txControll.AudioBitRate)
 				}
 				if ui.incAudioBitRate.Clicked() {
-					txController.IncSelector(&txController.AudioBitRate)
+					txControll.IncSelector(&txControll.AudioBitRate)
 				}
 				if ui.decSpare1.Clicked() {
-					txController.DecSelector(&txController.Spare1)
+					txControll.DecSelector(&txControll.Spare1)
 				}
 				if ui.incSpare1.Clicked() {
-					txController.IncSelector(&txController.Spare1)
+					txControll.IncSelector(&txControll.Spare1)
 				}
 				if ui.decSpare2.Clicked() {
-					txController.DecSelector(&txController.Spare2)
+					txControll.DecSelector(&txControll.Spare2)
 				}
 				if ui.incSpare2.Clicked() {
-					txController.IncSelector(&txController.Spare2)
+					txControll.IncSelector(&txControll.Spare2)
 				}
 				if ui.decGain.Clicked() {
-					txController.DecSelector(&txController.Gain)
+					txControll.DecSelector(&txControll.Gain)
 				}
 				if ui.incGain.Clicked() {
-					txController.IncSelector(&txController.Gain)
+					txControll.IncSelector(&txControll.Gain)
 				}
 				if ui.tune.Clicked() {
-					txController.Tune()
+					txControll.Tune()
 				}
 				if ui.ptt.Clicked() {
-					txController.Ptt()
+					txControll.Ptt()
 				}
 
 				gtx := layout.NewContext(&ops, event)
@@ -439,13 +439,13 @@ func (ui *UI) q100_MainTuningRow(gtx C) D {
 		Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, txController.Band.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, txControll.Band.Value, btnWidth, 100)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, txController.SymbolRate.Value, btnWidth, 50)
+			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, txControll.SymbolRate.Value, btnWidth, 50)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, txController.Frequency.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, txControll.Frequency.Value, btnWidth, 100)
 		}),
 	)
 }
@@ -548,14 +548,14 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.tune, "TUNE", txController.IsTuned, q100color.buttonGreen)
+				return ui.q100_Button(gtx, &ui.tune, "TUNE", txControll.IsTuned, q100color.buttonGreen)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.ptt, "PTT", txController.IsPtt, q100color.buttonRed)
+				return ui.q100_Button(gtx, &ui.ptt, "PTT", txControll.IsPtt, q100color.buttonRed)
 			})
 		}),
 	)
@@ -565,15 +565,15 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 	dec1 := [3]*widget.Clickable{&ui.decCodecs, &ui.decVideoBitRate, &ui.decAudioBitRate}
 	inc1 := [3]*widget.Clickable{&ui.incCodecs, &ui.incVideoBitRate, &ui.incAudioBitRate}
-	val1 := [3]string{txController.Codecs.Value, txController.VideoBitRate.Value, txController.AudioBitRate.Value}
+	val1 := [3]string{txControll.Codecs.Value, txControll.VideoBitRate.Value, txControll.AudioBitRate.Value}
 
 	dec2 := [3]*widget.Clickable{&ui.decMode, &ui.decConstellation, &ui.decFec}
 	inc2 := [3]*widget.Clickable{&ui.incMode, &ui.incConstellation, &ui.incFec}
-	val2 := [3]string{txController.Mode.Value, txController.Constellation.Value, txController.Fec.Value}
+	val2 := [3]string{txControll.Mode.Value, txControll.Constellation.Value, txControll.Fec.Value}
 
 	dec3 := [3]*widget.Clickable{&ui.decSpare1, &ui.decSpare2, &ui.decGain}
 	inc3 := [3]*widget.Clickable{&ui.incSpare1, &ui.incSpare2, &ui.incGain}
-	val3 := [3]string{txController.Spare1.Value, txController.Spare2.Value, txController.Gain.Value}
+	val3 := [3]string{txControll.Spare1.Value, txControll.Spare2.Value, txControll.Gain.Value}
 
 	return layout.Flex{
 		Axis: layout.Horizontal,

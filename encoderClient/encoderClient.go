@@ -3,10 +3,10 @@
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
-package plutoWriter
+package encoderClient
 
 import "q100transmitter/logger"
 
-func writePluto(cfg *PlConfig) {
-	logger.Info.Printf("writing params to a folder on the Pluto")
+func setParams(cfg *HeConfig) {
+	logger.Info.Printf("writing params to the HEV-10 Encoder")
 }

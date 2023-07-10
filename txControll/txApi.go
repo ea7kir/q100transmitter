@@ -3,13 +3,13 @@
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
-package txController
+package txControll
 
 import (
-	"q100transmitter/encoderWriter"
+	"q100transmitter/encoderClient"
 	"q100transmitter/logger"
-	"q100transmitter/plutoWriter"
-	"q100transmitter/pttSwitcher"
+	"q100transmitter/plutoClient"
+	"q100transmitter/pttSwitch"
 )
 
 type (
@@ -119,20 +119,20 @@ func Intitialize(tuc TuConfig) {
 
 func Stop() {
 	logger.Info.Printf("Tuner will stop...")
-	IsPtt = pttSwitcher.SetPtt(false)
+	IsPtt = pttSwitch.SetPtt(false)
 	logger.Info.Printf("Tuner has stopped")
 }
 
 func Tune() {
 	if IsTuned {
 		// if IsPtt {
-		IsPtt = pttSwitcher.SetPtt(false)
+		IsPtt = pttSwitch.SetPtt(false)
 		// 	// IsPtt = false
 		// }
 		IsTuned = false
 	} else {
-		encoderWriter.SetParams(nil)
-		plutoWriter.SetParams(nil)
+		encoderClient.SetParams(nil)
+		plutoClient.SetParams(nil)
 		IsTuned = true
 	}
 	// logger.Info.Printf("IsTuned is %v", IsTuned)
@@ -143,10 +143,10 @@ func Ptt() {
 		return
 	}
 	if IsPtt {
-		pttSwitcher.SetPtt(false)
+		pttSwitch.SetPtt(false)
 		IsPtt = false
 	} else {
-		pttSwitcher.SetPtt(true)
+		pttSwitch.SetPtt(true)
 		IsPtt = true
 	}
 }
