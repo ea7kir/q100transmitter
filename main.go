@@ -14,6 +14,7 @@ import (
 	"q100transmitter/hev10"
 	"q100transmitter/logger"
 	"q100transmitter/pluto"
+	"q100transmitter/server"
 	"q100transmitter/spReader"
 	"q100transmitter/tuner"
 
@@ -38,6 +39,10 @@ var (
 	spConfig = spReader.SpConfig{
 		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 	}
+	svrConfig = server.SvrConfig{
+		IP_Address: "txserver.local",
+		IP_Port:    8765,
+	}
 	heConfig = hev10.HeConfig{
 		Audio_codec:   "ACC",
 		Audio_bitrate: "64000",
@@ -45,6 +50,7 @@ var (
 		Video_size:    "1280x720",
 		Video_bitrate: "330",
 		Url:           "udp://192.168.3.10:8282",
+		IP_Address:    "192.168.3.1",
 	}
 	plConfig = pluto.PlConfig{
 		Frequency:        "2409.75",
@@ -62,9 +68,9 @@ var (
 		H265box:          "undefined", // NOTE: not implemented
 		Remux:            "1",         // NOTE: not implemented
 		Provider:         "EA7KIR",
-		Service:          "Michael",
+		Service:          "Michael", // NOTE: not implemented
+		IP_Address:       "192.168.2.1",
 	}
-
 	tuConfig = tuner.TuConfig{
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
@@ -105,14 +111,18 @@ var (
 
 // local data
 var (
-	spData    spReader.SpData
-	spChannel = make(chan spReader.SpData, 5)
+	spData     spReader.SpData
+	spChannel  = make(chan spReader.SpData, 5)
+	svrData    server.SvrData
+	svrChannel = make(chan server.SvrData, 5)
 )
 
 func main() {
 	os.Setenv("DISPLAY", ":0") // required for X11
 
 	spReader.Intitialize(spConfig, spChannel)
+
+	server.Initialize(svrConfig, svrChannel)
 
 	hev10.Initialize(heConfig)
 
@@ -162,8 +172,8 @@ func loop(w *app.Window) error {
 			// lmReader.Stop() // TODO: does nothing yet
 			spReader.Stop() // TODO: does nothing yet - bombs with Control=C
 			w.Perform(system.ActionClose)
-		// case lmData = <-lmChannel:
-		// 	w.Invalidate()
+		case svrData = <-svrChannel:
+			w.Invalidate()
 		case spData = <-spChannel:
 			w.Invalidate()
 		case event := <-w.Events():
@@ -373,7 +383,7 @@ func (ui *UI) q100_TopStatusRow(gtx C) D {
 			})
 		}),
 		layout.Flexed(1, func(gtx C) D {
-			return ui.q100_Label(gtx, "server date goes here", q100color.labelOrange)
+			return ui.q100_Label(gtx, svrData.Status, q100color.labelOrange)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {

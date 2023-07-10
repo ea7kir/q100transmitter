@@ -13,6 +13,7 @@ type (
 		Video_size    string // "1280x720"
 		Video_bitrate string // "330"
 		Url           string // "udp://192.168.3.10:8282"
+		IP_Address    string // 192.168.3.1"
 	}
 )
 
