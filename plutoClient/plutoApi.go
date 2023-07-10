@@ -24,6 +24,22 @@ type (
 		Provider         string // "EA7KIR"
 		Service          string // "Michael"
 		IP_Address       string // "192.168.2.1",
+
+		// callsign  string // EA7KIR
+		// freq      string // 2409.75
+		// mode      string // DVBS2
+		// mod       string // QPSK
+		// sr        string // 333
+		// fec       string // 34
+		// pilots    string // Off
+		// frame     string // LongFrame
+		// power     string // -2
+		// rolloff   string // 0.25
+		// pcrpts    string // 800
+		// patperiod string // 200
+		// h265box   string // undefined
+		// remux     string // 1
+
 	}
 )
 

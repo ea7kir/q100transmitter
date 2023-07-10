@@ -7,6 +7,8 @@ package encoderClient
 
 import "q100transmitter/logger"
 
+// see _MOTES/HVEC
+
 func setParams(cfg *HeConfig) {
 	logger.Info.Printf("writing params to the HEV-10 Encoder")
 }

@@ -6,6 +6,7 @@
 package txControl
 
 import (
+	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
 )
@@ -218,6 +219,10 @@ func newSelector(values []string, with string) Selector {
 	}
 	return st
 }
+
+var (
+	plutoParam = plutoClient.PlConfig{}
+)
 
 func switchBand() { // TODO: should switch back to previosly use settings
 	switch Band.Value {

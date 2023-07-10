@@ -132,7 +132,8 @@ func Tune() {
 		IsTuned = false
 	} else {
 		encoderClient.SetParams(nil)
-		plutoClient.SetParams(nil)
+		plutoParam = plutoClient.PlConfig{}
+		plutoClient.SetParams(&plutoParam)
 		IsTuned = true
 	}
 	// logger.Info.Printf("IsTuned is %v", IsTuned)
