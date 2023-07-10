@@ -6,8 +6,8 @@
 package txController
 
 import (
-	"q100transmitter/rfSwitch"
-	"q100transmitter/spReader"
+	"q100transmitter/pttSwitcher"
+	"q100transmitter/spectrumClient"
 )
 
 var (
@@ -263,8 +263,8 @@ func switchBand() { // TODO: should switch back to previosly use settings
 }
 
 func somethingChanged() {
-	rfSwitch.SetPtt(false)
+	pttSwitcher.SetPtt(false)
 	IsPtt = false
 	IsTuned = false
-	spReader.SetMarker(Frequency.Value, SymbolRate.Value)
+	spectrumClient.SetMarker(Frequency.Value, SymbolRate.Value)
 }

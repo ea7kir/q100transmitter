@@ -14,7 +14,7 @@ import (
 	"q100transmitter/encoderWriter"
 	"q100transmitter/logger"
 	"q100transmitter/plutoWriter"
-	"q100transmitter/spReader"
+	"q100transmitter/spectrumClient"
 	"q100transmitter/svrReader"
 	"q100transmitter/txController"
 
@@ -36,7 +36,7 @@ import (
 
 // configuration data
 var (
-	spConfig = spReader.SpConfig{
+	spConfig = spectrumClient.SpConfig{
 		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 	}
 	svrConfig = svrReader.SvrConfig{
@@ -111,8 +111,8 @@ var (
 
 // local data
 var (
-	spData     spReader.SpData
-	spChannel  = make(chan spReader.SpData, 5)
+	spData     spectrumClient.SpData
+	spChannel  = make(chan spectrumClient.SpData, 5)
 	svrData    svrReader.SvrData
 	svrChannel = make(chan svrReader.SvrData, 5)
 )
@@ -120,7 +120,7 @@ var (
 func main() {
 	os.Setenv("DISPLAY", ":0") // required for X11
 
-	spReader.Intitialize(spConfig, spChannel)
+	spectrumClient.Intitialize(spConfig, spChannel)
 
 	svrReader.Initialize(svrConfig, svrChannel)
 
@@ -140,7 +140,7 @@ func main() {
 
 		txController.Stop()
 		svrReader.Stop()
-		spReader.Stop()
+		spectrumClient.Stop()
 
 		os.Exit(0)
 	}()
@@ -170,7 +170,7 @@ func loop(w *app.Window) error {
 			// Initiate window shutdown.
 			txController.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
-			spReader.Stop() // TODO: does nothing yet - bombs with Control=C
+			spectrumClient.Stop() // TODO: does nothing yet - bombs with Control=C
 			w.Perform(system.ActionClose)
 		case svrData = <-svrChannel:
 			w.Invalidate()
@@ -473,7 +473,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 				// tuning marker
 				canvas.Rect(spData.MarkerCentre, 50, spData.MarkerWidth, 100, q100color.gfxMarker)
 				// polygon
-				canvas.Polygon(spReader.Xp, spData.Yp, q100color.gfxGreen)
+				canvas.Polygon(spectrumClient.Xp, spData.Yp, q100color.gfxGreen)
 				// graticule
 				const fyBase float32 = 3
 				const fyInc float32 = 5.88235

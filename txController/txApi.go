@@ -9,7 +9,7 @@ import (
 	"q100transmitter/encoderWriter"
 	"q100transmitter/logger"
 	"q100transmitter/plutoWriter"
-	"q100transmitter/rfSwitch"
+	"q100transmitter/pttSwitcher"
 )
 
 type (
@@ -119,14 +119,14 @@ func Intitialize(tuc TuConfig) {
 
 func Stop() {
 	logger.Info.Printf("Tuner will stop...")
-	IsPtt = rfSwitch.SetPtt(false)
+	IsPtt = pttSwitcher.SetPtt(false)
 	logger.Info.Printf("Tuner has stopped")
 }
 
 func Tune() {
 	if IsTuned {
 		// if IsPtt {
-		IsPtt = rfSwitch.SetPtt(false)
+		IsPtt = pttSwitcher.SetPtt(false)
 		// 	// IsPtt = false
 		// }
 		IsTuned = false
@@ -143,10 +143,10 @@ func Ptt() {
 		return
 	}
 	if IsPtt {
-		rfSwitch.SetPtt(false)
+		pttSwitcher.SetPtt(false)
 		IsPtt = false
 	} else {
-		rfSwitch.SetPtt(true)
+		pttSwitcher.SetPtt(true)
 		IsPtt = true
 	}
 }
