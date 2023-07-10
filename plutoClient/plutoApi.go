@@ -43,7 +43,7 @@ type (
 	}
 )
 
-func Intitialize(cfg PlConfig) {
+func Initialize(cfg PlConfig) {
 	writePluto(&cfg)
 }
 

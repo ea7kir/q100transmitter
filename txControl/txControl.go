@@ -6,9 +6,75 @@
 package txControl
 
 import (
+	"q100transmitter/encoderClient"
+	"q100transmitter/logger"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
+)
+
+// API
+type (
+	TuConfig struct {
+		Band                    string
+		WideFrequency           string
+		WideSymbolrate          string
+		NarrowFrequency         string
+		NarrowSymbolrate        string
+		VeryNarrowFrequency     string
+		VeryNarrowSymbolRate    string
+		WideMode                string
+		NarrowMode              string
+		VeryNarrowMode          string
+		WideCodecs              string
+		NarrowCdecs             string
+		VeryNarrowCodecs        string
+		WideConstellation       string
+		NarrowConstellation     string
+		VeryNarrorConstellation string
+		WideFec                 string
+		NarrowFec               string
+		VeryNarrowFec           string
+		WideVideoBitRate        string
+		NarrowVideoBitRate      string
+		VeryNarrowVideoBitRate  string
+		WideAudioBitRate        string
+		NarrowAudioBitRate      string
+		VeryNarrowAudioBitRate  string
+		WideSpare1              string
+		NarrowSpare1            string
+		VeryNarrowSpare1        string
+		WideSpare2              string
+		NarrowSpare2            string
+		VeryNarrowSpare2        string
+		WideGain                string
+		NarrowGain              string
+		VeryNarrowGain          string
+	}
+	Selector struct {
+		currIndex int
+		lastIndex int
+		list      []string
+		Value     string
+	}
+)
+
+// API
+var (
+	Band          Selector
+	SymbolRate    Selector
+	Frequency     Selector
+	Mode          Selector
+	Codecs        Selector
+	Constellation Selector
+	Fec           Selector
+	VideoBitRate  Selector
+	AudioBitRate  Selector
+	Spare1        Selector
+	Spare2        Selector
+	Gain          Selector
+	IsTuned       bool
+	IsPtt         bool
 )
 
 var (
@@ -198,6 +264,129 @@ var (
 	narrowGain              Selector
 	veryNarrowGain          Selector
 )
+
+// API
+func Initialize(cfg *TuConfig) {
+	Band = newSelector(const_BAND_LIST, cfg.Band)
+	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, cfg.WideSymbolrate)
+	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, cfg.WideFrequency)
+	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, cfg.NarrowSymbolrate)
+	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, cfg.NarrowFrequency)
+	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, cfg.VeryNarrowSymbolRate)
+	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, cfg.VeryNarrowFrequency)
+
+	wideMode = newSelector(const_WIDE_MODE_LIST, cfg.WideMode)
+	narrowMode = newSelector(const_NARROW_MODE_LIST, cfg.WideMode)
+	veryNarrowMode = newSelector(const_VERY_NARROW_MODE_LIST, cfg.WideMode)
+
+	wideCodecs = newSelector(const_WIDE_CODECS_LIST, cfg.WideCodecs)
+	narrowCodecs = newSelector(const_NARROW_CODECS_LIST, cfg.NarrowCdecs)
+	veryNarrowCodecs = newSelector(const_VERY_NARROW_CODECS_LIST, cfg.VeryNarrowCodecs)
+
+	wideConstellation = newSelector(const_WIDE_CONSTELLATION_LIST, cfg.WideConstellation)
+	narrowConstellation = newSelector(const_NARROW_CONSTELLATION_LIST, cfg.NarrowConstellation)
+	veryNarrowConstellation = newSelector(const_VERY_NARROW_CONSTELLATION_LIST, cfg.VeryNarrorConstellation)
+
+	wideFec = newSelector(const_WIDE_FEC_LIST, cfg.WideFec)
+	narrowFec = newSelector(const_NARROW_FEC_LIST, cfg.NarrowFec)
+	veryNarrowFec = newSelector(const_VERY_NARROW_FEC_LIST, cfg.VeryNarrowFec)
+
+	wideVideoBitRate = newSelector(const_WIDE_VIDEO_BITRATE_LIST, cfg.WideVideoBitRate)
+	narrowVideoBitRate = newSelector(const_NARROW_VIDEO_BITRATE_LIST, cfg.NarrowVideoBitRate)
+	veryNarrowVideoBitRate = newSelector(const_VERY_NARROW_VIDEO_BITRATE_LIST, cfg.VeryNarrowVideoBitRate)
+
+	wideAudioBitRate = newSelector(const_WIDE_AUDIO_BITRATE_LIST, cfg.WideAudioBitRate)
+	narrowAudioBitRate = newSelector(const_NARROW_AUDIO_BITRATE_LIST, cfg.NarrowAudioBitRate)
+	veryNarrowAudioBitRate = newSelector(const_VERY_NARROW_AUDIO_BITRATE_LIST, cfg.VeryNarrowAudioBitRate)
+
+	wideSpare1 = newSelector(const_WIDE_SPARE1_LIST, cfg.WideSpare1)
+	narrowSpare1 = newSelector(const_NARROW_SPARE1_LIST, cfg.NarrowSpare1)
+	veryNarrowSpare1 = newSelector(const_VERY_NARROW_SPARE1_LIST, cfg.VeryNarrowSpare1)
+
+	wideSpare2 = newSelector(const_WIDE_SPARE2_LIST, cfg.WideSpare2)
+	narrowSpare2 = newSelector(const_NARROW_SPARE2_LIST, cfg.NarrowSpare2)
+	veryNarrowSpare2 = newSelector(const_VERY_NARROW_SPARE2_LIST, cfg.VeryNarrowSpare2)
+
+	wideGain = newSelector(const_WIDE_GAIN_LIST, cfg.WideGain)
+	narrowGain = newSelector(const_NARROW_GAIN_LIST, cfg.NarrowGain)
+	veryNarrowGain = newSelector(const_VERY_NARROW_GAIN_LIST, cfg.VeryNarrowGain)
+
+	switchBand()
+}
+
+// API
+func Stop() {
+	logger.Info.Printf("Tuner will stop...")
+	IsPtt = pttSwitch.SetPtt(false)
+	logger.Info.Printf("Tuner has stopped")
+}
+
+// API
+func Tune() {
+	if !IsTuned {
+		encoderClient.SetParams(nil)
+		plutoParam = plutoClient.PlConfig{}
+		plutoClient.SetParams(&plutoParam)
+		IsTuned = true
+	} else {
+		// if IsPtt {
+		IsPtt = pttSwitch.SetPtt(false)
+		// 	// IsPtt = false
+		// }
+		IsTuned = false
+	}
+	// logger.Info.Printf("IsTuned is %v", IsTuned)
+}
+
+// API
+func Ptt() {
+	if !IsTuned {
+		return
+	}
+	if IsPtt {
+		pttSwitch.SetPtt(false)
+		IsPtt = false
+	} else {
+		pttSwitch.SetPtt(true)
+		IsPtt = true
+	}
+}
+
+// API
+func IncBandSelector(st *Selector) {
+	if st.currIndex < st.lastIndex {
+		st.currIndex++
+		st.Value = st.list[st.currIndex]
+		switchBand()
+	}
+}
+
+// API
+func DecBandSelector(st *Selector) {
+	if st.currIndex > 0 {
+		st.currIndex--
+		st.Value = st.list[st.currIndex]
+		switchBand()
+	}
+}
+
+// API
+func IncSelector(st *Selector) {
+	if st.currIndex < st.lastIndex {
+		st.currIndex++
+		st.Value = st.list[st.currIndex]
+		somethingChanged()
+	}
+}
+
+// API
+func DecSelector(st *Selector) {
+	if st.currIndex > 0 {
+		st.currIndex--
+		st.Value = st.list[st.currIndex]
+		somethingChanged()
+	}
+}
 
 // TODO: add error chatching
 func indexInList(list []string, with string) int {

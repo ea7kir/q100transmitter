@@ -126,9 +126,9 @@ func main() {
 
 	encoderClient.Initialize(heConfig)
 
-	plutoClient.Intitialize(plConfig)
+	plutoClient.Initialize(plConfig)
 
-	txControl.Intitialize(tuConfig)
+	txControl.Initialize(&tuConfig)
 
 	go func() {
 		w := app.NewWindow(app.Fullscreen.Option())
