@@ -8,7 +8,7 @@ Control and monitor a DATV transmiter with a touch screen.
 - Raspberry Pi Official 7" Touch Screen
 - ADALM Pluto SRD Revision: C/D
 - ADALM 20db Amplifier
-- ADALM RF Switch
+- ADALM RF Switch Model: 
 - DDMAL HDMI Video Encoder Model: HEV-10
 
 **A keyboard and mouse are not required for normal use.**
