@@ -30,7 +30,7 @@ type (
 		Remux           string // "1"
 		Provider        string // "EA7KIR"
 		Service         string // "Michael"
-		IP_Address      string // "192.168.2.1",
+		Url             string // "192.168.2.1",
 	}
 )
 

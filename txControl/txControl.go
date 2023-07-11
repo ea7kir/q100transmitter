@@ -16,8 +16,6 @@ import (
 // API
 type (
 	TuConfig struct {
-		Provider                string
-		Service                 string // NOTE: not implemented
 		Band                    string
 		WideFrequency           string
 		WideSymbolrate          string

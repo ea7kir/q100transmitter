@@ -14,8 +14,8 @@ import (
 type (
 	// API
 	SvrConfig struct {
-		IP_Address string
-		IP_Port    int16
+		Url  string
+		Port int16
 	}
 	// API
 	SvrData struct {

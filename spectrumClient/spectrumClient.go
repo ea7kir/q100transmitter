@@ -7,6 +7,7 @@ package spectrumClient
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"q100transmitter/logger"
@@ -18,7 +19,8 @@ import (
 // API
 type (
 	SpConfig struct {
-		Url string
+		Url  string
+		Port int16
 	}
 	SpData struct {
 		Yp                        []float32
@@ -40,8 +42,8 @@ func Intitialize(cfg *SpConfig, ch chan SpData) {
 		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
 	}
 	Xp[numPoints-1] = 100
-
-	go readAndDecode(cfg.Url, spChannel)
+	url := fmt.Sprintf("%v:%v/", cfg.Url, cfg.Port)
+	go readAndDecode(url, spChannel)
 }
 
 // API

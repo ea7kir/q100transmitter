@@ -37,11 +37,12 @@ import (
 // configuration data
 var (
 	spConfig = spectrumClient.SpConfig{
-		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
+		Url:  "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller",
+		Port: 443,
 	}
 	svrConfig = paClient.SvrConfig{
-		IP_Address: "txserver.local",
-		IP_Port:    8765,
+		Url:  "txserver.local",
+		Port: 8765,
 	}
 	heConfig = encoderClient.HeConfig{
 		Audio_codec:   "ACC",
@@ -53,27 +54,19 @@ var (
 		IP_Address:    "192.168.3.1",
 	}
 	plConfig = plutoClient.PlConfig{
-		Frequency:       "2409.75",
-		Mode:            "DBS2",
-		Constellation:   "QPSK",
-		SymbolRate:      "333",
-		Fec:             "23",
-		Gain:            "-10",
-		CalibrationMode: "nocalib",   // NOTE: not implemented
-		Pcr_pts:         "800",       // NOTE: not implemented
-		Pat_period:      "200",       // NOTE: not implemented
-		Roll_off:        "0.35",      // NOTE: not implemented
-		Pilots:          "off",       // NOTE: not implemented
-		Frame:           "LongFrame", // NOTE: not implemented
-		H265box:         "undefined", // NOTE: not implemented
-		Remux:           "1",         // NOTE: not implemented
-		Provider:        "EA7KIR",
-		Service:         "Michael", // NOTE: not implemented
-		IP_Address:      "192.168.2.1",
+		Provider: "EA7KIR",
+		Service:  "Michael", // NOTE: current Pluto firmware doesn't provide a way to set this
+		// alter the following with caution
+		CalibrationMode: "nocalib",
+		Pcr_pts:         "800",
+		Pat_period:      "200",
+		Pilots:          "off",
+		Frame:           "LongFrame",
+		H265box:         "undefined",
+		Remux:           "1",
+		Url:             "pluto.local", // or maybe "192.168.2.1"
 	}
 	tuConfig = txControl.TuConfig{
-		Provider:                "EA7KIR",
-		Service:                 "Michael", // NOTE: not implemented
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
 		NarrowSymbolrate:        "333",
