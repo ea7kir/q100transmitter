@@ -20,20 +20,32 @@ type (
 	}
 )
 
+var (
+	arg = HeConfig{}
+)
+
 // API
 func Initialize(cfg *HeConfig) {
-	setParams(cfg)
+	// settings not used by the GUI
+	arg.Audio_codec = cfg.Audio_bitrate
+	arg.Audio_bitrate = cfg.Audio_bitrate
+	arg.Video_codec = cfg.Video_codec
+	arg.Video_size = cfg.Video_size
+	arg.Video_bitrate = cfg.Video_bitrate
+	arg.Url = cfg.Url
+	arg.IP_Address = cfg.IP_Address
 }
 
 // API
 //
 // setarams is called from tuner. The function will write the params to a folder on the Pluto.
 func SetParams(cfg *HeConfig) {
-	setParams(cfg)
+	// settings used by the GUI
+
+	writeEncoder()
 }
 
-// see _MOTES/HVEC
+func writeEncoder() {
 
-func setParams(cfg *HeConfig) {
 	logger.Info.Printf("writing params to the HEV-10 Encoder")
 }

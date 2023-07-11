@@ -39,18 +39,20 @@ var (
 )
 
 func Initialize(cfg *PlConfig) {
-	arg.CalibrationMode = cfg.CalibrationMode // NOTE: not implemented
-	arg.Pcr_pts = cfg.Pcr_pts                 // NOTE: not implemented
-	arg.Pat_period = cfg.Pat_period           // NOTE: not implemented
-	arg.Roll_off = cfg.Roll_off               // NOTE: not implemented
-	arg.Pilots = cfg.Pilots                   // NOTE: not implemented
-	arg.Frame = cfg.Frame                     // NOTE: not implemented
-	arg.H265box = cfg.H265box                 // NOTE: not implemented
-	arg.Remux = cfg.Remux                     // NOTE: not implementearg
+	// settings not used by the GUI
+	arg.CalibrationMode = cfg.CalibrationMode
+	arg.Pcr_pts = cfg.Pcr_pts
+	arg.Pat_period = cfg.Pat_period
+	arg.Roll_off = cfg.Roll_off
+	arg.Pilots = cfg.Pilots
+	arg.Frame = cfg.Frame
+	arg.H265box = cfg.H265box
+	arg.Remux = cfg.Remux
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.
 func SetParams(cfg *PlConfig) {
+	// settings used by the GUI
 	arg.Provider = cfg.Provider
 	arg.Frequency = strings.Fields(cfg.Frequency)[0] // remove " / 27" etc
 	arg.Mode = strings.Replace(cfg.Mode, "-", "", 1) // remove "-""
