@@ -70,9 +70,9 @@ func Initialize(cfg *HeConfig) {
 	arg.gop = "50"    // The range is [1-600]
 	arg.profile = "1" // baseline is 0, main is 1, high is 2
 	arg.rc_mode = "0" // bit rate control mode, CBR is 0, VBR is 1, AVBR is 2, FixQP is 3
-	arg.qp1 = ""      // bit rate control parameters, related to rc_mode value.
-	arg.qp2 = ""      // bit rate control parameters, related to rc_mode value.
-	arg.qp3 = ""      // bit rate control parameters, related to rc_mode value.
+	arg.qp1 = "0"     // bit rate control parameters, related to rc_mode value.
+	arg.qp2 = "0"     // bit rate control parameters, related to rc_mode value.
+	arg.qp3 = "0"     // bit rate control parameters, related to rc_mode value.
 	// When rc_mode = 3:
 	// qp1: iqp, the value range is [0, 50]
 	// qp2: pqp, the value range is [0, 50]
@@ -80,6 +80,7 @@ func Initialize(cfg *HeConfig) {
 
 	arg.Url = cfg.Url
 	arg.IP_Address = cfg.IP_Address
+
 }
 
 // API
