@@ -8,6 +8,7 @@ package plutoClient
 import (
 	"fmt"
 	"q100transmitter/logger"
+	"strings"
 )
 
 // API
@@ -30,22 +31,6 @@ type (
 		Provider        string // "EA7KIR"
 		Service         string // "Michael"
 		IP_Address      string // "192.168.2.1",
-
-		// callsign  string // EA7KIR
-		// freq      string // 2409.75
-		// mode      string // DVBS2
-		// mod       string // QPSK
-		// sr        string // 333
-		// fec       string // 34
-		// pilots    string // Off
-		// frame     string // LongFrame
-		// power     string // -2
-		// rolloff   string // 0.25
-		// pcrpts    string // 800
-		// patperiod string // 200
-		// h265box   string // undefined
-		// remux     string // 1
-
 	}
 )
 
@@ -66,19 +51,18 @@ func Initialize(cfg *PlConfig) {
 
 // Called from tuner to copy the params into a folder in the Pluto.
 func SetParams(cfg *PlConfig) {
-
 	arg.Provider = cfg.Provider
-	arg.Frequency = cfg.Frequency
-	arg.Mode = cfg.Mode
+	arg.Frequency = strings.Fields(cfg.Frequency)[0] // remove " / 27" etc
+	arg.Mode = strings.Replace(cfg.Mode, "-", "", 1) // remove "-""
 	arg.Constellation = cfg.Constellation
 	arg.SymbolRate = cfg.SymbolRate
-	arg.Fec = cfg.Fec
+	arg.Fec = strings.Replace(cfg.Fec, "/", "", 1) // remove "/""
 	arg.Gain = cfg.Gain
 	writePluto()
 }
 
 func writePluto() {
-	str := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
+	settings := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
 		arg.Provider,
 		arg.Frequency,
 		arg.Mode,
@@ -94,10 +78,36 @@ func writePluto() {
 		arg.H265box,
 		arg.Remux)
 
-	logger.Info.Printf("writing params to a folder on the Pluto: \n%v\n", str)
+	logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
+
+	// f = open("/home/pi/settings.txt", "w")
+	// f.write(settings)
+	// f.close()
+
+	argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
+	logger.Info.Printf("2: argAry to run: \n%v\n\n", argAry)
+	// or
+	cmdStr := "/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1"
+	logger.Info.Printf("2: cmdStr to run: \n%v\n\n", cmdStr)
+	// check result for error
+
+	// # args = ['/usr/bin/sshpass', '-panalog', '/usr/bin/scp', '/home/pi/settings.txt', 'root@pluto.local:/www/']
+	// # result = subprocess.run(args)
+
+	// cmd_str = '/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1'
+	// result = subprocess.run(cmd_str, shell=True)
+
+	// if result.returncode != 0:
+	//     print('ERROR updating pluto settings.txt', flush=True)
+	// #else:
+	// #    print('pluto configured ok', flush=True)
+	// # start_pluto()
+
 }
 
 /*
+THE PYTHON WAY
+
 import subprocess
 #import sys
 
@@ -138,7 +148,7 @@ AND FOR PASSWORDS:
 wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
 sudo apt install sshpass
 
-Now I can ssh and scp like this...
+Now we can ssh and scp like this...
 
 sshpass -panalog ssh root@pluto.local
 sshpass -panalog ssh root@192.168.2.1 # not working
@@ -180,26 +190,4 @@ def setup_pluto(args):
     # start_pluto()
 
 
-*/
-
-/*
-	plConfig = plutoClient.PlConfig{
-		Frequency:        "2409.75",
-		Mode:             "DBS2",
-		Constellation:    "QPSK",
-		Symbol_rate:      "333",
-		Fec:              "23",
-		Gain:             "-10",
-		Calibration_mode: "nocalib",   // NOTE: not implemented
-		Pcr_pts:          "800",       // NOTE: not implemented
-		Pat_period:       "200",       // NOTE: not implemented
-		Roll_off:         "0.35",      // NOTE: not implemented
-		Pilots:           "off",       // NOTE: not implemented
-		Frame:            "LongFrame", // NOTE: not implemented
-		H265box:          "undefined", // NOTE: not implemented
-		Remux:            "1",         // NOTE: not implemented
-		Provider:         "EA7KIR",
-		Service:          "Michael", // NOTE: not implemented
-		IP_Address:       "192.168.2.1",
-	}
 */
