@@ -40,6 +40,7 @@ var (
 
 func Initialize(cfg *PlConfig) {
 	// settings not used by the GUI
+	arg.Provider = cfg.Provider
 	arg.CalibrationMode = cfg.CalibrationMode
 	arg.Pcr_pts = cfg.Pcr_pts
 	arg.Pat_period = cfg.Pat_period
@@ -87,10 +88,10 @@ func writePluto() {
 	// f.close()
 
 	argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
-	logger.Info.Printf("2: argAry to run: \n%v\n\n", argAry)
+	logger.Info.Printf("2: argAry to run: \n\t%v\n\n", argAry)
 	// or
 	cmdStr := "/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1"
-	logger.Info.Printf("2: cmdStr to run: \n%v\n\n", cmdStr)
+	logger.Info.Printf("2: cmdStr to run: \n\t%v\n\n", cmdStr)
 	// check result for error
 
 	// # args = ['/usr/bin/sshpass', '-panalog', '/usr/bin/scp', '/home/pi/settings.txt', 'root@pluto.local:/www/']

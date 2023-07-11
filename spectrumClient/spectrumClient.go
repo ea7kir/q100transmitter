@@ -20,7 +20,7 @@ import (
 type (
 	SpConfig struct {
 		Url  string
-		Port int16
+		Port int
 	}
 	SpData struct {
 		Yp                        []float32

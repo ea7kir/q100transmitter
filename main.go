@@ -45,13 +45,9 @@ var (
 		Port: 8765,
 	}
 	heConfig = encoderClient.HeConfig{
-		Audio_codec:   "ACC",
-		Audio_bitrate: "64000",
-		Video_codec:   "H.265",
-		Video_size:    "1280x720",
-		Video_bitrate: "330",
-		Url:           "udp://192.168.3.10:8282",
-		IP_Address:    "192.168.3.1",
+		// alter the following with caution
+		Url:        "udp://192.168.3.10:8282",
+		IP_Address: "192.168.3.1",
 	}
 	plConfig = plutoClient.PlConfig{
 		Provider: "EA7KIR",

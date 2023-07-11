@@ -15,7 +15,7 @@ type (
 	// API
 	SvrConfig struct {
 		Url  string
-		Port int16
+		Port int
 	}
 	// API
 	SvrData struct {

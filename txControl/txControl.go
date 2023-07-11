@@ -324,18 +324,30 @@ func Stop() {
 // API
 func Tune() {
 	if !IsTuned {
-		encoderClient.SetParams(nil)
-		plutoParam = plutoClient.PlConfig{}
-
-		plutoParam.Provider = "CALLSIGN"
-		plutoParam.Frequency = Frequency.Value
-		plutoParam.Mode = Mode.Value
-		plutoParam.Constellation = Constellation.Value
-		plutoParam.SymbolRate = SymbolRate.Value
-		plutoParam.Fec = Fec.Value
-		plutoParam.Gain = Gain.Value
-
+		plutoParam := plutoClient.PlConfig{
+			Frequency:     Frequency.Value,
+			Mode:          Mode.Value,
+			Constellation: Constellation.Value,
+			SymbolRate:    SymbolRate.Value,
+			Fec:           Fec.Value,
+			Gain:          Gain.Value,
+		}
 		plutoClient.SetParams(&plutoParam)
+
+		encoderArgs := encoderClient.HeConfig{
+			Codecs:       Codecs.Value,
+			AudioBitRate: AudioBitRate.Value,
+			VideoBitRate: VideoBitRate.Value,
+			Spare1:       Spare1.Value,
+			Spare2:       Spare2.Value,
+			// Audio_codec:   strings.Fields(Codecs.Value)[1],
+			// Audio_bitrate: AudioBitRate.Value,
+			// Video_codec:   strings.Fields(Codecs.Value)[0],
+			// Video_size:    "1x1",
+			// Video_bitrate: VideoBitRate.Value,
+		}
+		encoderClient.SetParams(&encoderArgs)
+
 		IsTuned = true
 	} else {
 		// if IsPtt {
