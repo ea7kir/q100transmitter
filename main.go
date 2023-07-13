@@ -15,6 +15,7 @@ import (
 	"q100transmitter/logger"
 	"q100transmitter/paClient"
 	"q100transmitter/plutoClient"
+	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
 	"q100transmitter/txControl"
 
@@ -118,6 +119,8 @@ func main() {
 	encoderClient.Initialize(&heConfig)
 
 	plutoClient.Initialize(&plConfig)
+
+	pttSwitch.Initialize()
 
 	txControl.Initialize(&tuConfig)
 
