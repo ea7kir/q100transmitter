@@ -43,7 +43,7 @@ var (
 	}
 	svrConfig = paClient.SvrConfig{
 		Url:  "txserver.local",
-		Port: 8765,
+		Port: 9999, //8765,
 	}
 	heConfig = encoderClient.HeConfig{
 		// alter the following with caution

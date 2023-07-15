@@ -7,6 +7,7 @@ package paClient
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -56,7 +57,9 @@ func Stop() {
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func new_readServer(cfg *SvrConfig, ch chan SvrData) {
-	con, err := net.Dial("tcp", "0.0.0.0:9999")
+	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
+	fmt.Printf(">%v<\n", url)
+	con, err := net.Dial("tcp", url) // "0.0.0.0:9999")
 	if err != nil {
 		log.Fatalln(err)
 	}
