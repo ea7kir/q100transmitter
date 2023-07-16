@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	gioui.org v0.1.0
-	github.com/ajstarks/giocanvas v0.0.0-20230705123151-abb43f46408c
+	github.com/ajstarks/giocanvas v0.0.0-20230715183509-e8f76be3185d
 	github.com/gorilla/websocket v1.5.0
 	github.com/warthog618/gpiod v0.8.1
 	golang.org/x/image v0.9.0

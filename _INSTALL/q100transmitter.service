@@ -1,0 +1,31 @@
+# cd /home/pi/TxTouch/_Resources
+# sudo cp q100transmitter.service /etc/systemd/system/
+# sudo chmod 644 /etc/systemd/system/q100transmitter.service
+# sudo systemctl daemon-reload
+#
+# sudo systemctl enable q100transmitter
+# sudo systemctl start q100transmitter
+#
+# sudo systemctl status q100transmitter
+#
+# sudo systemctl stop q100transmitter
+# sudo systemctl disable q100transmitter
+#
+[Unit]
+Description=Q-100 Transmitter for the Es'Hail-2 satellite
+After=multi-user.target
+
+[Service]
+User=pi
+
+#WorkingDirectory=/home/pi/Q100/q100transmitter
+
+ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
+
+#SuccessExitStatus=143
+#TimeoutStopSec=10
+#Restart=on-failure
+#RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
