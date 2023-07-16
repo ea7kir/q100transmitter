@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd
-
 echo
 echo "-------------------------------"
 echo "-- Installing GIT"

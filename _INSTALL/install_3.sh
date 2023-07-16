@@ -1,18 +1,10 @@
 #!/bin/bash
 
-cd
-
 echo
 echo "-------------------------------"
 echo "-- Configuring the Network"
 echo "-------------------------------"
 echo
-
-# #/home/pi/TxTouch/_Resources/Zz.txt
-# #original /etc/network/interfaces looks like this
-# #interfaces(5) file used by ifup(8) and ifdown(8)
-# #Include files from /etc/network/interfaces.d:
-# source /etc/network/interfaces.d/*
 
 TXT="
 auto eth1
