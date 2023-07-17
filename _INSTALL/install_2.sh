@@ -27,13 +27,13 @@ sudo rm -rf /usr/local/go && tar -C /usr/local -xzf $GOVERSION
 
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.6.linux-arm64.tar.gz
  
-echo
-echo "-------------------------------"
-echo "-- Install gio"
-echo "-------------------------------"
-echo
-
-go install gioui.org/cmd/gogio@latest
+#echo
+#echo "-------------------------------"
+#echo "-- Install gio"
+#echo "-------------------------------"
+#echo
+#
+#go install gioui.org/cmd/gogio@latest
 
 echo
 echo "-------------------------------"
