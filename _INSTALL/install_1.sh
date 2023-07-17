@@ -30,11 +30,11 @@ echo -e '\n\nexport PATH=$PATH:/usr/local/go/bin\n\n' >> /home/pi/.profile
 
 echo
 echo "-------------------------------"
-echo "-- Updating eeprom firmware"
+echo "-- create Q100 directory"
 echo "-------------------------------"
 echo
 
-echo "DO NOT USE sudo rpi-update. See: https://forums.raspberrypi.com/viewtopic.php?t=344246"
+mkdir /home/pi/Q100
 
 echo
 echo "-------------------------------"
