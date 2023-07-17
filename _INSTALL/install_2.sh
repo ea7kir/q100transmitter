@@ -27,13 +27,13 @@ sudo rm -rf /usr/local/go && tar -C /usr/local -xzf $GOVERSION
 
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.6.linux-arm64.tar.gz
  
-#echo
-#echo "-------------------------------"
-#echo "-- Install gio"
-#echo "-------------------------------"
-#echo
-#
-#go install gioui.org/cmd/gogio@latest
+echo
+echo "-------------------------------"
+echo "-- Install gioui dependencies"
+echo "-------------------------------"
+echo
+
+sudo apt install gcc pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
 echo
 echo "-------------------------------"
