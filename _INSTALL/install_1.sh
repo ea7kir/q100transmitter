@@ -22,6 +22,14 @@ rfkill block 1
 
 echo
 echo "-------------------------------"
+echo "-- Setting .profile"
+echo "-------------------------------"
+echo
+
+echo -e '\n\nexport PATH=$PATH:/usr/local/go/bin\n\n' >> /home/pi/.profile
+
+echo
+echo "-------------------------------"
 echo "-- Updating eeprom firmware"
 echo "-------------------------------"
 echo
