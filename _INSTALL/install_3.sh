@@ -108,7 +108,6 @@ echo "-- Install Pluto Udev Rules"
 echo "-------------------------------"
 echo
 
-cd
 wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules
 sudo cp 53-adi-plutosdr-usb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
