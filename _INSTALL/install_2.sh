@@ -15,7 +15,7 @@ git config --global init.defaultBranch main
 echo
 echo "-------------------------------"
 echo "-- Installing Go"
-echo "--"
+echo
 echo "-- this will take some time..."
 echo "-------------------------------"
 echo
@@ -27,19 +27,10 @@ sudo tar -C /usr/local -xzf go1.20.6.linux-arm64.tar.gz
 
 echo
 echo "-------------------------------"
-echo "-- Setting .profile"
-echo "-------------------------------"
-echo
-
-echo "TODO"
-
-echo
-echo "-------------------------------"
 echo "-- Install gio"
 echo "-------------------------------"
 echo
 
-export PATH=$PATH:/usr/local/go/bin
 go install gioui.org/cmd/gogio@latest
 
 echo
