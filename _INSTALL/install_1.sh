@@ -34,7 +34,7 @@ echo "-- Updating eeprom firmware"
 echo "-------------------------------"
 echo
 
-sudo rpi-update
+echo "DO NOT USE sudo rpi-update. See: https://forums.raspberrypi.com/viewtopic.php?t=344246"
 
 echo
 echo "-------------------------------"
