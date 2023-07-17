@@ -5,7 +5,7 @@ NOTE: CURRENTLY REQUIRES PI OS BULLSEYE 64-BIT (FULL DESKTOP VERSION)
 ## Using Raspberry Pi Imager:
 
 ```
-CHOOSE OS: Raspberry Pi OS -> Raspberry Pi OS (64-bit)
+CHOOSE OS: Raspberry Pi OS (other) -> Raspberry Pi OS (64-bit)
 
 CONFIGURE:
 	Set hostname:			q100transmitter
@@ -23,7 +23,7 @@ SAVE and WRITE
 
 Insert the card into the Raspberry Pi and switch on
 
-WARNING: the Pi will rebot during the install, so please allow it to complete
+WARNING: the Pi may reboot during the install, so please allow it to complete
 
 ## Remote login from a Mac, PC or Linux host
 
