@@ -20,11 +20,13 @@ echo "-- this will take some time..."
 echo "-------------------------------"
 echo
 
-sudo wget https://go.dev/dl/go1.20.6.linux-arm64.tar.gz
-sudo mv go1.20.6.linux-arm64.tar.gz /usr/local/
-sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.20.6.linux-arm64.tar.gz
+GOVERSION=go1.20.6.linux-arm64.tar.gz
+cd /usr/local
+sudo wget https://go.dev/dl/$GOVERSION
+sudo rm -rf /usr/local/go && tar -C /usr/local -xzf $GOVERSION
 
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.6.linux-arm64.tar.gz
+ 
 echo
 echo "-------------------------------"
 echo "-- Install gio"
