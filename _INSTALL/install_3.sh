@@ -124,4 +124,7 @@ echo "using: https://github.com/ea7kir/q100transmitter.git"
 echo
 echo "To run q100transmitter, type: ./q100transmitter"
 
+sleep 5
+
 sudo reboot
+
