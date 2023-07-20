@@ -31,29 +31,17 @@ type (
 func Initialize(cfg *SvrConfig, ch chan SvrData) {
 	// go readServer(cfg, ch)
 	go new_readServer(cfg, ch)
+	// TODO: create the connection in loop to retry
+	// defer
+	// if ok the start a tickker and go client
 }
 
 // API
 func Stop() {
 	logger.Warn.Printf("SvrClient will stop... - NOT IMPLELENTED")
-	//
+	// is it coonected?  send an EOF
 	logger.Info.Printf("SvrClient has stopped - NOT IMPLELENTED")
 }
-
-// func readServer(cfg *SvrConfig, ch chan SvrData) {
-
-// 	sd := SvrData{}
-// 	count := 0
-
-// 	for {
-// 		time.Sleep(time.Second)
-// 		count++
-// 		str := fmt.Sprintf("SUCCESS # %v", count)
-// 		sd.Status = str
-// 		ch <- sd
-// 	}
-
-// }
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func new_readServer(cfg *SvrConfig, ch chan SvrData) {
@@ -61,7 +49,12 @@ func new_readServer(cfg *SvrConfig, ch chan SvrData) {
 	fmt.Printf(">%v<\n", url)
 	con, err := net.Dial("tcp", url) // "0.0.0.0:9999")
 	if err != nil {
-		log.Fatalln(err)
+		// log.Fatalln(err)
+		logger.Warn.Printf("Failed to connect to: %v:%v", cfg.Url, cfg.Port)
+		sd := SvrData{}
+		sd.Status = "Not connected"
+		ch <- sd
+		return
 	}
 	defer con.Close()
 
@@ -70,6 +63,11 @@ func new_readServer(cfg *SvrConfig, ch chan SvrData) {
 
 	sd := SvrData{}
 	for {
+		// TODO: better to use a ticker
+		// t := time.NewTicker(2 * time.Second)
+		// <-t.C
+		// send request
+
 		time.Sleep(time.Second)
 
 		for {
