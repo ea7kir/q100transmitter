@@ -9,7 +9,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"q100transmitter/logger"
 	"time"
@@ -29,8 +28,7 @@ type (
 
 // API
 func Initialize(cfg *SvrConfig, ch chan SvrData) {
-	// go readServer(cfg, ch)
-	go new_readServer(cfg, ch)
+	go readServer(cfg, ch)
 	// TODO: create the connection in loop to retry
 	// defer
 	// if ok the start a tickker and go client
@@ -38,19 +36,18 @@ func Initialize(cfg *SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	logger.Warn.Printf("SvrClient will stop... - NOT IMPLELENTED")
+	logger.Warn("SvrClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
-	logger.Info.Printf("SvrClient has stopped - NOT IMPLELENTED")
+	logger.Info("SvrClient has stopped - NOT IMPLELENTED")
 }
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
-func new_readServer(cfg *SvrConfig, ch chan SvrData) {
+func readServer(cfg *SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	fmt.Printf(">%v<\n", url)
-	con, err := net.Dial("tcp", url) // "0.0.0.0:9999")
+	logger.Info(">%v<\n", url)
+	con, err := net.Dial("tcp", url)
 	if err != nil {
-		// log.Fatalln(err)
-		logger.Warn.Printf("Failed to connect to: %v:%v", cfg.Url, cfg.Port)
+		logger.Error("Failed to connect to: %v", url)
 		sd := SvrData{}
 		sd.Status = "Not connected"
 		ch <- sd
@@ -79,13 +76,13 @@ func new_readServer(cfg *SvrConfig, ch chan SvrData) {
 			case nil:
 				clientRequest := ""
 				if _, err = con.Write([]byte(clientRequest + "\n")); err != nil {
-					log.Printf("failed to send the client request: %v\n", err)
+					logger.Error("failed to send the client request: %v\n", err)
 				}
 			case io.EOF:
-				log.Println("client closed the connection")
+				logger.Info("client closed the connection")
 				return
 			default:
-				log.Printf("client error: %v\n", err)
+				logger.Error("client error: %v\n", err)
 				return
 			}
 
@@ -97,10 +94,10 @@ func new_readServer(cfg *SvrConfig, ch chan SvrData) {
 				sd.Status = serverResponse
 				ch <- sd
 			case io.EOF:
-				log.Println("server closed the connection")
+				logger.Warn("server closed the connection")
 				return
 			default:
-				log.Printf("server error: %v\n", err)
+				logger.Warn("server error: %v\n", err)
 				return
 			}
 		}

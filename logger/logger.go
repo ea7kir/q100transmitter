@@ -1,5 +1,5 @@
 /*
- *  Q-100 Transmitter
+ *  Q-100 PA Server
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
@@ -10,44 +10,33 @@ import (
 	"os"
 )
 
-// API
 var (
-	Info  *log.Logger
-	Warn  *log.Logger
-	Error *log.Logger
-	Fatal *log.Logger
+	infoLevel  *log.Logger
+	warnLevel  *log.Logger
+	errorLevel *log.Logger
+	fatalLevel *log.Logger
 )
 
-// type aggregatedLogger struct {
-// 	infoLogger  *log.Logger
-// 	warnLogger  *log.Logger
-// 	errorLogger *log.Logger
-// }
-
 func init() {
-	// log.SetFlags(log.LstdFlags | log.Lshortfile)
-	// flags := log.LstdFlags | log.Lshortfile
 	flags := log.Ltime | log.Llongfile
-	Info = log.New(os.Stderr, "INFO: ", flags)
-	Warn = log.New(os.Stderr, "WARN: ", flags)
-	Error = log.New(os.Stderr, "ERROR: ", flags)
-	Fatal = log.New(os.Stderr, "FATAL: ", flags)
-
-	// 	al := aggregatedLogger{
-	// 		infoLogger:  log.New(os.Stderr, prefix:"INFO:", log.LstdFlags|log.Lshortfile),
-	// 		warnLogger:  log.New(os.Stderr, "WARNING:", log.LstdFlags|log.Lshortfile),
-	// 		errorLogger: log.New(os.Stderr, "ERROR:", log.LstdFlags|log.Lshortfile),
-	// 	}
+	infoLevel = log.New(os.Stderr, "INFO: ", flags)
+	warnLevel = log.New(os.Stderr, "WARN: ", flags)
+	errorLevel = log.New(os.Stderr, "ERROR: ", flags)
+	fatalLevel = log.New(os.Stderr, "FATAL: ", flags)
 }
 
-// func (l *aggregatedLogger) Info(v ...interface{}) {
-// 	l.infoLogger.Printf(v...)
-// }
+func Info(format string, v ...interface{}) {
+	infoLevel.Printf(format, v...)
+}
 
-// func (l *aggregatedLogger) Warn(v ...interface{}) {
-// 	l.warnLogger.Printf(v...)
-// }
+func Warn(format string, v ...interface{}) {
+	warnLevel.Printf(format, v...)
+}
 
-//	func (l *aggregatedLogger) Error(v ...interface{}) {
-//		l.errorLogger.Printf(v...)
-// }
+func Error(format string, v ...interface{}) {
+	errorLevel.Printf(format, v...)
+}
+
+func Fatal(format string, v ...interface{}) {
+	fatalLevel.Fatalf(format, v...)
+}

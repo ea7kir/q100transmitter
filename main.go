@@ -128,7 +128,7 @@ func main() {
 		w := app.NewWindow(app.Fullscreen.Option())
 		app.Size(800, 480) // I don't know if this is help in any way
 		if err := loop(w); err != nil {
-			logger.Fatal.Fatal(err)
+			logger.Fatal(": %", err)
 			// log.Fatal(err)
 		}
 
@@ -160,7 +160,7 @@ func loop(w *app.Window) error {
 			// prevent it from firing over and over.
 			done = nil
 			// Log something to make it obvious this happened.
-			// logger.Info.Printf("context cancelled")
+			// logger.Info("context cancelled")
 			// Initiate window shutdown.
 			txControl.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
@@ -461,7 +461,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 					Height:  float32(250), //float32(hieght), //float32(500),
 					Context: gtx,
 				}
-				// fmt.Printf("  Canvas: %#v\n", canvas.Context.Constraints)
+				// logger.Info("  Canvas: %#v\n", canvas.Context.Constraints)
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker

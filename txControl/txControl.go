@@ -316,9 +316,9 @@ func Initialize(cfg *TuConfig) {
 
 // API
 func Stop() {
-	logger.Info.Printf("Tuner will stop...")
+	logger.Info("Tuner will stop...")
 	IsPtt = pttSwitch.SetPtt(false)
-	logger.Info.Printf("Tuner has stopped")
+	logger.Info("Tuner has stopped")
 }
 
 // API
@@ -356,7 +356,7 @@ func Tune() {
 		// }
 		IsTuned = false
 	}
-	// logger.Info.Printf("IsTuned is %v", IsTuned)
+	// logger.Info("IsTuned is %v", IsTuned)
 }
 
 // API

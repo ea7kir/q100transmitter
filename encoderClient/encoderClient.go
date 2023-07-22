@@ -193,7 +193,7 @@ func sendToEncoder(cmdStr string) {
 		result string
 	)
 
-	logger.Info.Printf("sending to HEV-10 Encoder:\n\t%v\n\n", cmdStr)
+	logger.Info("sending to HEV-10 Encoder:\n\t%v\n\n", cmdStr)
 
 	// result =
 	switch result {
