@@ -81,17 +81,17 @@ func writePluto() {
 		arg.H265box,
 		arg.Remux)
 
-	logger.Info("1: save to settings.txt to a local folder: \n%v\n", settings)
+	logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
 
 	// f = open("/home/pi/settings.txt", "w")
 	// f.write(settings)
 	// f.close()
 
 	argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
-	logger.Info("2: argAry to run: \n\t%v\n\n", argAry)
+	logger.Info.Printf("2: argAry to run: \n\t%v\n\n", argAry)
 	// or
 	cmdStr := "/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1"
-	logger.Info("2: cmdStr to run: \n\t%v\n\n", cmdStr)
+	logger.Info.Printf("2: cmdStr to run: \n\t%v\n\n", cmdStr)
 	// check result for error
 
 	// # args = ['/usr/bin/sshpass', '-panalog', '/usr/bin/scp', '/home/pi/settings.txt', 'root@pluto.local:/www/']

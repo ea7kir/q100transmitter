@@ -59,10 +59,10 @@ func SetPtt(tx bool) bool {
 	switch tx {
 	case true:
 		hvc349Control.SetValue(LOW)
-		logger.Info("PTT is %v", "Enabled")
+		logger.Info.Printf("PTT is %v", "Enabled")
 	case false:
 		hvc349Control.SetValue(HIGH)
-		logger.Info("PTT is %v", "Disabled")
+		logger.Info.Printf("PTT is %v", "Disabled")
 	}
 	return tx
 }

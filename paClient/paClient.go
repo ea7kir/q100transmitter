@@ -36,18 +36,18 @@ func Initialize(cfg *SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	logger.Warn("SvrClient will stop... - NOT IMPLELENTED")
+	logger.Warn.Printf("SvrClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
-	logger.Info("SvrClient has stopped - NOT IMPLELENTED")
+	logger.Info.Printf("SvrClient has stopped - NOT IMPLELENTED")
 }
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func readServer(cfg *SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	logger.Info(">%v<\n", url)
+	logger.Info.Printf(">%v<\n", url)
 	con, err := net.Dial("tcp", url)
 	if err != nil {
-		logger.Error("Failed to connect to: %v", url)
+		logger.Error.Printf("Failed to connect to: %v", url)
 		sd := SvrData{}
 		sd.Status = "Not connected"
 		ch <- sd
@@ -76,13 +76,13 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 			case nil:
 				clientRequest := ""
 				if _, err = con.Write([]byte(clientRequest + "\n")); err != nil {
-					logger.Error("failed to send the client request: %v\n", err)
+					logger.Error.Printf("failed to send the client request: %v\n", err)
 				}
 			case io.EOF:
-				logger.Info("client closed the connection")
+				logger.Info.Printf("client closed the connection")
 				return
 			default:
-				logger.Error("client error: %v\n", err)
+				logger.Error.Printf("client error: %v\n", err)
 				return
 			}
 
@@ -94,10 +94,10 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 				sd.Status = serverResponse
 				ch <- sd
 			case io.EOF:
-				logger.Warn("server closed the connection")
+				logger.Warn.Printf("server closed the connection")
 				return
 			default:
-				logger.Warn("server error: %v\n", err)
+				logger.Warn.Printf("server error: %v\n", err)
 				return
 			}
 		}
