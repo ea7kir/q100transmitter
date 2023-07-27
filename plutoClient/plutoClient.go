@@ -13,7 +13,45 @@ import (
 	"strings"
 )
 
-// API
+/*
+In the Pluto the file /www/settings.txt contains 14 feilds:
+
+callsign EA7KIR
+freq 2409.75
+mode DVBS2
+mod QPSK
+sr 333
+fec 34
+pilots Off
+frame LongFrame
+power -2
+rolloff 0.25
+pcrpts 800
+patperiod 200
+h265box undefined
+remux 1
+
+So, we will create a local file and copy it to the pluto.
+It will be neccessary to avoid login and passwprd, so install the following...
+
+See: https://wiki.analog.com/university/tools/pluto/drivers/linux
+sudo apt install libiio-utils
+iio_info -n 192.168.2.1 | grep device
+io_readdev -n 192.168.2.1 -s 64 cf-ad9361-lpc | hexdump -x
+
+AND FOR PASSWORDS:
+
+wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
+sudo apt install sshpass
+
+Now I can ssh and scp like this...
+
+sshpass -panalog ssh root@pluto.local
+sshpass -panalog ssh root@192.168.2.1 # not working
+sshpass -panalog scp /home/pi/settings.txt root@pluto.local:/www/
+sshpass -panalog scp /home/pi/settings.txt root@192.168.2.1:/www/  # not working
+*/
+
 type (
 	PlConfig struct {
 		Frequency       string // "2409.75"
@@ -32,31 +70,31 @@ type (
 		Remux           string // "1"
 		Provider        string // "EA7KIR"
 		Service         string // "Michael"
-		Url             string // "192.168.2.1",
+		Url             string // "pluto.local" or "192.168.2.1",
 	}
 )
 
 var (
-	arg = PlConfig{}
+	arg *PlConfig
 )
 
 func Initialize(cfg *PlConfig) {
-	// settings not used by the GUI
-	arg.Provider = cfg.Provider
-	arg.CalibrationMode = cfg.CalibrationMode
-	arg.Pcr_pts = cfg.Pcr_pts
-	arg.Pat_period = cfg.Pat_period
-	arg.Roll_off = cfg.Roll_off
-	arg.Pilots = cfg.Pilots
-	arg.Frame = cfg.Frame
-	arg.H265box = cfg.H265box
-	arg.Remux = cfg.Remux
+	arg = cfg
+	// // settings not used by the GUI
+	// arg.Provider = cfg.Provider
+	// arg.CalibrationMode = cfg.CalibrationMode
+	// arg.Pcr_pts = cfg.Pcr_pts
+	// arg.Pat_period = cfg.Pat_period
+	// arg.Roll_off = cfg.Roll_off
+	// arg.Pilots = cfg.Pilots
+	// arg.Frame = cfg.Frame
+	// arg.H265box = cfg.H265box
+	// arg.Remux = cfg.Remux
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.
 func SetParams(cfg *PlConfig) {
-	// settings used by the GUI
-	arg.Provider = cfg.Provider
+	// overide settings provided by the GUI
 	arg.Frequency = strings.Fields(cfg.Frequency)[0] // remove " / 27" etc
 	arg.Mode = strings.Replace(cfg.Mode, "-", "", 1) // remove "-""
 	arg.Constellation = cfg.Constellation
@@ -85,7 +123,7 @@ func writePluto() {
 
 	// logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
 
-	settingsFileName := "/home/pi/settings.txt"
+	settingsFileName := "/home/pi/Q100/settings.txt"
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		logger.Fatal.Fatalf("%s", err)
@@ -96,7 +134,7 @@ func writePluto() {
 	if err != nil {
 		logger.Fatal.Fatalf("%s", err)
 	}
-	logger.Info.Printf("Pluto settings saved to local file: %s", settingsFileName)
+	// logger.Info.Printf("Pluto settings saved to local file: %s", settingsFileName)
 
 	// Sending to Pluto on the smd line
 	// /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
@@ -104,11 +142,11 @@ func writePluto() {
 	// ************* BEGIN dummy send using script
 	const cp2plutoScript = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
 	// args :=
-	cmd := exec.Command(cp2plutoScript,
+	cmd := exec.Command(cp2plutoScript, // TODO: args here are currently ignored by the script
 		"/usr/bin/sshpass",
 		"-panalog",
 		"/usr/bin/scp",
-		"/home/pi/settings.txt",
+		"/home/pi/Q100/settings.txt",
 		"root@pluto.local:/www/",
 	)
 	_, err = cmd.Output()
@@ -119,25 +157,13 @@ func writePluto() {
 	// now delete the local  settings file
 	// ************* END dummy send using script
 
-	// argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
-	// logger.Info.Printf("2: argAry to run: \n\t%v\n\n", argAry)
-	// or
-	cmdStr := "/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1"
-	logger.Info.Printf("2: cmdStr to run: \n\t%v\n\n", cmdStr)
-	// check result for error
+	// TODO: do it without using a script
 
-	// # args = ['/usr/bin/sshpass', '-panalog', '/usr/bin/scp', '/home/pi/settings.txt', 'root@pluto.local:/www/']
-	// # result = subprocess.run(args)
-
-	// cmd_str = '/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1'
-	// result = subprocess.run(cmd_str, shell=True)
-
-	// if result.returncode != 0:
-	//     print('ERROR updating pluto settings.txt', flush=True)
-	// #else:
-	// #    print('pluto configured ok', flush=True)
-	// # start_pluto()
-
+	// can't do this until file is closed.
+	// err = os.Remove(settingsFileName)
+	// if err != nil {
+	// 	logger.Warn.Printf("Failed to delete settings.txt: %s", err)
+	// }
 }
 
 /*

@@ -3,6 +3,13 @@
 # $2 = 
 # $3 = 
 # $4 = 
-echo "$1 $2 $3 $4 $5" > cmdtopluto.txt
+# echo "$1 $2 $3 $4 $5" > cmdtopluto.txt
 
-#"$1" "$2" "$3" "$4" "$5" > /dev/null 2>&1 &
+# "$1" "$2" "$3" "$4" "$5" > /dev/null 2>&1 &
+
+# /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
+# possible error is: Host key verification failed.  Need to login to Pluto at least once after installing
+
+/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/Q100/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
+
+#/usr/bin/sshpass -panalog /usr/bin/scp "$4" root@pluto.local:/www/ > /dev/null 2>&1

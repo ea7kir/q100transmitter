@@ -51,12 +51,14 @@ var (
 		IP_Address: "192.168.3.1",
 	}
 	plConfig = plutoClient.PlConfig{
+		// configure setting not provided by the GUI
 		Provider: "EA7KIR",
 		Service:  "Michael", // NOTE: current Pluto firmware doesn't provide a way to set this
 		// alter the following with caution
 		CalibrationMode: "nocalib",
 		Pcr_pts:         "800",
 		Pat_period:      "200",
+		Roll_off:        "0.35",
 		Pilots:          "off",
 		Frame:           "LongFrame",
 		H265box:         "undefined",
@@ -110,7 +112,7 @@ var (
 )
 
 func main() {
-	logger.Open("/home/pi/q100transmitter.log")
+	logger.Open("/home/pi/Q100/transmitter.log")
 	defer logger.Close()
 
 	os.Setenv("DISPLAY", ":0") // required for X11
@@ -292,7 +294,7 @@ var q100color = struct {
 	gfxBgd:       color.NRGBA(colornames.Black),
 	gfxGreen:     color.NRGBA(colornames.Green),
 	gfxBeacon:    color.NRGBA(colornames.Red),
-	gfxMarker:    color.NRGBA{R: 10, G: 10, B: 10, A: 255},
+	gfxMarker:    color.NRGBA{R: 20, G: 20, B: 20, A: 255},
 	gfxGraticule: color.NRGBA(colornames.Darkgray),
 	gfxLabel:     color.NRGBA{R: 32, G: 32, B: 32, A: 255}, // DarkGrey is too light
 }

@@ -71,3 +71,8 @@ chmod +x install_*
 This will fire off a sequnce of events incloving more than one reboot, so please allow it to complete
 
 ## More to follow goes here
+
+NOTE: it will be neccessary to login in to the Pluto at least once (password is `analog`) in order to establish a local certificate, otherwise Tune will not work correctly.
+```
+ssh root@pluto.local
+```

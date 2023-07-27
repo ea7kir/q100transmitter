@@ -112,7 +112,9 @@ wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scrip
 sudo cp 53-adi-plutosdr-usb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 rm 53-adi-plutosdr-usb.rules /etc/udev/rules.d
-
+#
+# plus sudo apt install libiio-utils etc - see comments in plutoclient.go
+#
 echo
 echo "-------------------------------"
 echo "-- Done"
