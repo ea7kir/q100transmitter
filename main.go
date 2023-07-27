@@ -110,6 +110,9 @@ var (
 )
 
 func main() {
+	logger.Open("/home/pi/q100transmitter.log")
+	defer logger.Close()
+
 	os.Setenv("DISPLAY", ":0") // required for X11
 
 	spectrumClient.Intitialize(&spConfig, spChannel)

@@ -10,22 +10,27 @@
 #
 # sudo systemctl stop q100transmitter
 # sudo systemctl disable q100transmitter
-#
+
 [Unit]
-Description=Q-100 Transmitter for the Es'Hail-2 satellite
-After=multi-user.target
+Description=q100paserver to control and monitor DATV equipment
+After=mult-user.target
 
 [Service]
 User=pi
 
 #WorkingDirectory=/home/pi/Q100/q100transmitter
 
-ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
+Type=simple
 
-#SuccessExitStatus=143
-#TimeoutStopSec=10
+Restart=always
 #Restart=on-failure
 #RestartSec=5
+
+#SuccessExitStatus=143
+
+#TimeoutStopSec=10
+
+ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
 
 [Install]
 WantedBy=multi-user.target

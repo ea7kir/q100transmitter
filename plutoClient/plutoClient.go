@@ -7,6 +7,7 @@ package plutoClient
 
 import (
 	"fmt"
+	"os"
 	"q100transmitter/logger"
 	"strings"
 )
@@ -81,14 +82,23 @@ func writePluto() {
 		arg.H265box,
 		arg.Remux)
 
-	logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
+	// logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
 
-	// f = open("/home/pi/settings.txt", "w")
-	// f.write(settings)
-	// f.close()
+	settingsFileName := "/home/pi/settings.txt"
+	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		logger.Fatal.Fatalf("%s", err)
+	}
+	defer f.Close()
 
-	argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
-	logger.Info.Printf("2: argAry to run: \n\t%v\n\n", argAry)
+	_, err = f.WriteString(settings)
+	if err != nil {
+		logger.Fatal.Fatalf("%s", err)
+	}
+	logger.Info.Printf("Pluto settings saved to local file: %s", settingsFileName)
+
+	// argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
+	// logger.Info.Printf("2: argAry to run: \n\t%v\n\n", argAry)
 	// or
 	cmdStr := "/usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1"
 	logger.Info.Printf("2: cmdStr to run: \n\t%v\n\n", cmdStr)
