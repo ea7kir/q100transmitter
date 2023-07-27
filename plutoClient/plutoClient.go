@@ -8,6 +8,7 @@ package plutoClient
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"q100transmitter/logger"
 	"strings"
 )
@@ -96,6 +97,27 @@ func writePluto() {
 		logger.Fatal.Fatalf("%s", err)
 	}
 	logger.Info.Printf("Pluto settings saved to local file: %s", settingsFileName)
+
+	// Sending to Pluto on the smd line
+	// /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
+
+	// ************* BEGIN dummy send using script
+	const cp2plutoScript = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
+	// args :=
+	cmd := exec.Command(cp2plutoScript,
+		"/usr/bin/sshpass",
+		"-panalog",
+		"/usr/bin/scp",
+		"/home/pi/settings.txt",
+		"root@pluto.local:/www/",
+	)
+	_, err = cmd.Output()
+	if err != nil {
+		logger.Fatal.Fatalf("unable to send to pluto: %v", err)
+		return //false
+	}
+	// now delete the local  settings file
+	// ************* END dummy send using script
 
 	// argAry := []string{"/usr/bin/sshpass", "-panalog", "/usr/bin/scp", "/home/pi/settings.txt", "root@pluto.local:/www/"}
 	// logger.Info.Printf("2: argAry to run: \n\t%v\n\n", argAry)
