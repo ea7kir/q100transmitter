@@ -111,9 +111,25 @@ echo
 wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules
 sudo cp 53-adi-plutosdr-usb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
-rm 53-adi-plutosdr-usb.rules /etc/udev/rules.d
-#
-# plus sudo apt install libiio-utils etc - see comments in plutoclient.go
+#rm 53-adi-plutosdr-usb.rules /etc/udev/rules.d # how did yhis line get here? why delete it?
+
+# echo
+# echo "-------------------------------"
+# echo "-- Install ssh/config"
+# echo "-------------------------------"
+# echo
+# # https://wiki.analog.com/university/tools/pluto/drivers/linux
+# wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
+
+echo
+echo "-------------------------------"
+echo "-- Install IIO devices"
+echo "-------------------------------"
+echo
+
+# etc - see comments in plutoclient.go
+# https://wiki.analog.com/university/tools/pluto/drivers/linux
+sudo apt install libiio-utils etc - see comments in plutoclient.go
 #
 echo
 echo "-------------------------------"

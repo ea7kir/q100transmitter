@@ -18,5 +18,10 @@ Reload rules:
 
 `sudo udevadm control --reload-rules`
 
+## Updte
+
+It also appears neccessary to install a config file in $HOME/.ssh
+
+`https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config`
 
 

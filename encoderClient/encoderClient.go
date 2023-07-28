@@ -185,7 +185,8 @@ func sendToEncoder(cmdStr string) {
 	// Command execution success: #8001,23,06,OK!
 	// Command execution fails: #8001,23,06,ERR!
 	const (
-		PORT    = 55555
+		IP      = "192.168.3.10"
+		PORT    = "55555"
 		SUCCESS = "#8001,23,06,OK!"
 		FAIL    = "#8001,23,06,ERR!"
 	)
@@ -193,13 +194,16 @@ func sendToEncoder(cmdStr string) {
 		result string
 	)
 
-	logger.Info.Printf("sending to HEV-10 Encoder:\n\t%v\n\n", cmdStr)
+	logger.Info.Printf("will send %s to HEV-10 at %s:%s", cmdStr, IP, PORT)
 
-	// result =
+	result = FAIL
+
+	// TODO: implement TCP client
+
 	switch result {
 	case FAIL:
-
+		logger.Warn.Printf("HEV-10 control NOT IMPLEMTED")
 	case SUCCESS:
-
+		logger.Info.Printf("HEV-10 has been configured")
 	}
 }

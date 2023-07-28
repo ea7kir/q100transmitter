@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: ask for call sign
+
 echo
 echo "-------------------------------"
 echo "-- Updateing the OS"
