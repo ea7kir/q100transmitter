@@ -44,7 +44,7 @@ func Stop() {
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func readServer(cfg *SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	logger.Info.Printf(">%v<\n", url)
+	logger.Info.Printf("Client %v connected", url)
 	con, err := net.Dial("tcp", url)
 	if err != nil {
 		logger.Error.Printf("Failed to connect to: %v", url)

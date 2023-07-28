@@ -123,7 +123,10 @@ func writePluto() {
 
 	// logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
 
-	settingsFileName := "/home/pi/Q100/settings.txt"
+	const cp2plutoScript = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
+	const settingsFileName = "/home/pi/Q100/settings.txt"
+	const plutoDestination = "root@pluto.local:/www/"
+
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		logger.Fatal.Fatalf("%s", err)
@@ -140,18 +143,18 @@ func writePluto() {
 	// /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
 
 	// ************* BEGIN dummy send using script
-	const cp2plutoScript = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
+
 	// args :=
 	cmd := exec.Command(cp2plutoScript, // TODO: args here are currently ignored by the script
-		"/usr/bin/sshpass",
-		"-panalog",
-		"/usr/bin/scp",
-		"/home/pi/Q100/settings.txt",
-		"root@pluto.local:/www/",
+		// "/usr/bin/sshpass",
+		// "-panalog",
+		// "/usr/bin/scp",
+		settingsFileName,
+		plutoDestination,
 	)
 	_, err = cmd.Output()
 	if err != nil {
-		logger.Fatal.Fatalf("unable to send to pluto: %v", err)
+		logger.Fatal.Fatalf("Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
 		return //false
 	}
 	// now delete the local  settings file
