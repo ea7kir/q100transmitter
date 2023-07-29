@@ -7,6 +7,7 @@ package encoderClient
 
 import (
 	"fmt"
+	"net"
 	"q100transmitter/logger"
 	"strings"
 )
@@ -85,25 +86,27 @@ func Initialize(cfg *HeConfig) {
 
 // API
 //
-// setarams is called from tuner. The function will write the params to a folder on the Pluto.
+// setarams is called from tuner. The function will send the params to the HEV-10 encoder.
 func SetParams(cfg *HeConfig) {
 	// audio settings used by the GUI
 	arg.audio_codec = strings.Fields(cfg.Codecs)[1]
 	arg.audio_bitrate = cfg.AudioBitRate
+
+	var hevAudioCmdStr string
+	var hevVideoCmdStr string
+
 	switch arg.audio_codec {
 	case "ACC":
 		// Command format: @0001,23,06,00,01,44100,16,bps!
-		cmdStr := fmt.Sprintf("@0001,23,06,00,01,%v,%v,%v!",
+		hevAudioCmdStr = fmt.Sprintf("@0001,23,06,00,01,%v,%v,%v!",
 			arg.audio_sample_rate,
 			arg.audio_bits_per_sample,
 			arg.audio_bitrate)
-		sendToEncoder(cmdStr)
 	case "G711u":
 		// Command format: @0001,23,06,00,00,8000,16,0!
-		cmdStr := fmt.Sprintf("@0001,23,06,00,00,%v,%v,0!",
+		hevAudioCmdStr = fmt.Sprintf("@0001,23,06,00,00,%v,%v,0!",
 			arg.audio_sample_rate,
 			arg.audio_bits_per_sample)
-		sendToEncoder(cmdStr)
 	}
 
 	// video settings used by the GUI
@@ -126,7 +129,7 @@ func SetParams(cfg *HeConfig) {
 		arg._type = "1"
 	}
 	// Command format: @0001,22,06,chn,bps,fps,res_w,res_h,type,gop,pro<ile,rc_mode,qp1,qp2,qp3!
-	cmdStr := fmt.Sprintf("@0001,22,06,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v!",
+	hevVideoCmdStr = fmt.Sprintf("@0001,22,06,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v!",
 		arg.chn,
 		arg.bps,
 		arg.fps,
@@ -139,7 +142,8 @@ func SetParams(cfg *HeConfig) {
 		arg.qp1,
 		arg.qp2,
 		arg.qp3)
-	sendToEncoder(cmdStr)
+
+	sendToEncoder(hevAudioCmdStr, hevVideoCmdStr)
 
 	// gop: The range is [1-600]
 
@@ -175,7 +179,7 @@ SRT: Disabled
 
 */
 
-func sendToEncoder(cmdStr string) {
+func sendToEncoder(audioCmd, videoCmd string) {
 	// Windows Serial Port Utility...
 	// Port: TCP/UDP
 	// Mode: TCP Client
@@ -185,7 +189,7 @@ func sendToEncoder(cmdStr string) {
 	// Command execution success: #8001,23,06,OK!
 	// Command execution fails: #8001,23,06,ERR!
 	const (
-		IP      = "192.168.3.10"
+		IP      = "192.168.3.1"
 		PORT    = "55555"
 		SUCCESS = "#8001,23,06,OK!"
 		FAIL    = "#8001,23,06,ERR!"
@@ -194,16 +198,44 @@ func sendToEncoder(cmdStr string) {
 		result string
 	)
 
-	logger.Info.Printf("will send %s to HEV-10 at %s:%s", cmdStr, IP, PORT)
+	url := fmt.Sprintf("%s:%s", IP, PORT)
+	logger.Info.Printf("Connecting to: %s", url)
+	con, err := net.Dial("tcp", url)
+	if err != nil {
+		logger.Error.Printf("Failed to connect to: %s", url)
+		return
+	}
+	logger.Info.Printf("Connected to: %v", url)
+	defer con.Close()
+
+	logger.Info.Printf("will send audio cmd %s to HEV-10", audioCmd)
+
+	// TODO: send
+
+	//  TODO receive
 
 	result = FAIL
 
-	// TODO: implement TCP client
+	switch result {
+	case FAIL:
+		logger.Warn.Printf("Failed to send audioCmd")
+	case SUCCESS:
+		logger.Info.Printf("HEV-10 audio been configured")
+	}
+
+	logger.Info.Printf("will send video cmd %s to HEV-10", videoCmd)
+
+	// TODO: send
+
+	//  TODO receive
+
+	result = FAIL
 
 	switch result {
 	case FAIL:
-		logger.Warn.Printf("HEV-10 control NOT IMPLEMTED")
+		logger.Warn.Printf("Failed to send video Cmd")
 	case SUCCESS:
-		logger.Info.Printf("HEV-10 has been configured")
+		logger.Info.Printf("HEV-10 video been configured")
 	}
+
 }
