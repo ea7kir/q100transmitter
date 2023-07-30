@@ -235,23 +235,23 @@ func sendToEncoder(audioCmd, videoCmd string) {
 	}
 
 	// DO NOT CHANGE VIDEO UNTIL I UNDERSTAND MORE
-	return
+
 	// DO NOT CHANGE VIDEO UNTIL I UNDERSTAND MORE
 
-	logger.Info.Printf("will send video cmd %s to HEV-10", videoCmd)
+	// logger.Info.Printf("will send video cmd %s to HEV-10", videoCmd)
 
-	// TODO: send
+	// // TODO: send
 
-	//  TODO receive
+	// //  TODO receive
 
-	switch result {
-	case FAIL:
-		logger.Error.Printf("Failed to send videoCmd")
-		return
-	case SUCCESS:
-		logger.Info.Printf("HEV-10 video configured ok")
-	default:
-		logger.Error.Printf("Undefine result: %v", result)
-		return
-	}
+	// switch result {
+	// case FAIL:
+	// 	logger.Error.Printf("Failed to send videoCmd")
+	// 	return
+	// case SUCCESS:
+	// 	logger.Info.Printf("HEV-10 video configured ok")
+	// default:
+	// 	logger.Error.Printf("Undefine result: %v", result)
+	// 	return
+	// }
 }
