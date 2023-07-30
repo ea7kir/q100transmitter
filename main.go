@@ -46,24 +46,28 @@ var (
 		Port: 9999, //8765,
 	}
 	heConfig = encoderClient.HeConfig{
-		// alter the following with caution
-		StreamUrl: "udp://192.168.3.10:8282",
-		ConfigIP:  "192.168.3.1",
+		// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
+		// AudioBitRate: "64000",     // 32000 | 64000
+		// VideoBitRate: "350",       // 32...16384
+		// // alter the following with caution
+		StreamIP:   "192.168.3.10",
+		StreamPort: "8282",
+		ConfigIP:   "192.168.3.1",
 	}
 	plConfig = plutoClient.PlConfig{
 		// configure setting not provided by the GUI
 		Provider: "EA7KIR",
 		Service:  "Michael", // NOTE: current Pluto firmware doesn't provide a way to set this
 		// alter the following with caution
-		CalibrationMode: "nocalib",
-		Pcr_pts:         "800",
-		Pat_period:      "200",
-		Roll_off:        "0.35",
-		Pilots:          "off",
-		Frame:           "LongFrame",
-		H265box:         "undefined",
-		Remux:           "1",
-		Url:             "pluto.local", // or maybe "192.168.2.1"
+		// CalibrationMode: "nocalib",
+		// Pcr_pts:         "800",
+		// Pat_period:      "200",
+		// Roll_off:        "0.35",
+		// Pilots:          "off",
+		// Frame:           "LongFrame",
+		// H265box:         "undefined",
+		// Remux:           "1",
+		Url: "pluto.local", // or maybe "192.168.2.1"
 	}
 	tuConfig = txControl.TuConfig{
 		Band:                    "Narrow",
@@ -76,7 +80,7 @@ var (
 		WideMode:                "DVB-S2",
 		NarrowMode:              "DVB-S2",
 		VeryNarrowMode:          "DVB-S2",
-		WideCodecs:              "H265 ACC",
+		WideCodecs:              "H265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
 		NarrowCdecs:             "H265 ACC",
 		VeryNarrowCodecs:        "H265 ACC",
 		WideConstellation:       "QPSK",
@@ -85,10 +89,10 @@ var (
 		WideFec:                 "3/4",
 		NarrowFec:               "3/4",
 		VeryNarrowFec:           "3/4",
-		WideVideoBitRate:        "350",
+		WideVideoBitRate:        "350", // 32...16384
 		NarrowVideoBitRate:      "350",
 		VeryNarrowVideoBitRate:  "350",
-		WideAudioBitRate:        "64000",
+		WideAudioBitRate:        "64000", // 32000 | 64000
 		NarrowAudioBitRate:      "64000",
 		VeryNarrowAudioBitRate:  "64000",
 		WideSpare1:              "sp1-a",

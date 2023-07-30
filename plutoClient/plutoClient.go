@@ -60,14 +60,14 @@ type (
 		SymbolRate      string // "333"
 		Fec             string // "23"
 		Gain            string // "-10"
-		CalibrationMode string // "nocalib"
-		Pcr_pts         string // "800"
-		Pat_period      string // "200"
-		Roll_off        string // "0.35"
-		Pilots          string // "off"
-		Frame           string // "LongFrame"
-		H265box         string // "undefined"
-		Remux           string // "1"
+		calibrationMode string // "nocalib"
+		pcr_pts         string // "800"
+		pat_period      string // "200"
+		roll_off        string // "0.35"
+		pilots          string // "off"
+		frame           string // "LongFrame"
+		h265box         string // "undefined"
+		remux           string // "1"
 		Provider        string // "EA7KIR"
 		Service         string // "Michael"
 		Url             string // "pluto.local" or "192.168.2.1",
@@ -80,16 +80,14 @@ var (
 
 func Initialize(cfg *PlConfig) {
 	arg = cfg
-	// // settings not used by the GUI
-	// arg.Provider = cfg.Provider
-	// arg.CalibrationMode = cfg.CalibrationMode
-	// arg.Pcr_pts = cfg.Pcr_pts
-	// arg.Pat_period = cfg.Pat_period
-	// arg.Roll_off = cfg.Roll_off
-	// arg.Pilots = cfg.Pilots
-	// arg.Frame = cfg.Frame
-	// arg.H265box = cfg.H265box
-	// arg.Remux = cfg.Remux
+	arg.calibrationMode = "nocalib"
+	arg.pcr_pts = "800"
+	arg.pat_period = "200"
+	arg.roll_off = "0.35"
+	arg.pilots = "off"
+	arg.frame = "LongFrame"
+	arg.h265box = "undefined"
+	arg.remux = "1"
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.
@@ -112,20 +110,25 @@ func writePluto() {
 		arg.Constellation,
 		arg.SymbolRate,
 		arg.Fec,
-		arg.Pilots,
-		arg.Frame,
+		arg.pilots,
+		arg.frame,
 		arg.Gain,
-		arg.Roll_off,
-		arg.Pcr_pts,
-		arg.Pat_period,
-		arg.H265box,
-		arg.Remux)
+		arg.roll_off,
+		arg.pcr_pts,
+		arg.pat_period,
+		arg.h265box,
+		arg.remux)
 
 	// logger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
 
-	const cp2plutoScript = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
-	const settingsFileName = "/home/pi/Q100/settings.txt"
-	const plutoDestination = "root@pluto.local:/www/"
+	const (
+		cp2plutoScript   = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
+		settingsFileName = "/home/pi/Q100/settings.txt"
+	)
+
+	var (
+		plutoDestination = "root@" + arg.Url + ":/www/"
+	)
 
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {

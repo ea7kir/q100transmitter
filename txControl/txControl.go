@@ -161,7 +161,7 @@ var (
 		"H264 ACC", "H265 ACC",
 	}
 	const_NARROW_CODECS_LIST = []string{
-		"H264 ACC", "H265 ACC",
+		"H264 G711u", "H264 ACC", "H265 G711u", "H265 ACC",
 	}
 	const_VERY_NARROW_CODECS_LIST = []string{
 		"H264 ACC", "H265 ACC",
@@ -338,13 +338,6 @@ func Tune() {
 			Codecs:       Codecs.Value,
 			AudioBitRate: AudioBitRate.Value,
 			VideoBitRate: VideoBitRate.Value,
-			Spare1:       Spare1.Value,
-			Spare2:       Spare2.Value,
-			// Audio_codec:   strings.Fields(Codecs.Value)[1],
-			// Audio_bitrate: AudioBitRate.Value,
-			// Video_codec:   strings.Fields(Codecs.Value)[0],
-			// Video_size:    "1x1",
-			// Video_bitrate: VideoBitRate.Value,
 		}
 		encoderClient.SetParams(&encoderArgs)
 

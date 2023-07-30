@@ -14,6 +14,25 @@ import (
 	"time"
 )
 
+/*
+My working encoder settings as they appear in s Safari
+
+iMac has 2nd IP 192.168.3.3
+
+HEV-10 IP address is 192.168.3.1 and sending UDP stream to 192.168.3.10
+
+Secondary Stream
+Audio Encoding Type: AAC
+Audio Bitrate(bps): 64000
+Video Encoding Type: H.265
+Video Encoding Size: 1280*720
+Video Bitrate(Kbps): 330
+RTSP URL1: Disabled
+RTSP URL2(TS): Disabled
+Misc Stream/Secondary Stream UDP(unicast/multicast) URL: udp://192.168.3.10:8282
+SRT: Disabled
+*/
+
 type (
 	// API
 	HeConfig struct {
@@ -22,19 +41,21 @@ type (
 		VideoBitRate string
 		Spare1       string
 		Spare2       string
+		StreamIP     string // "udp://192.168.3.10:8282"
+		StreamPort   string
+		ConfigIP     string // 192.168.3.1"
 
 		// settings not used by the GUI
-		audio_codec           string // "ACC"
+		// audio_codec           string // "ACC"
 		audio_bitrate         string // "64000" or "32000"
 		audio_sample_rate     string // "44100" or "48000"
 		audio_bits_per_sample string // "16"
+
 		// video_codec           string // "H.265"
 		// video_size            string // "1280x720"
 		// video_bitrate         string // "330"
 		// spare_1               string
 		// spare_2               string
-		StreamUrl string // "udp://192.168.3.10:8282"
-		ConfigIP  string // 192.168.3.1"
 
 		// exclusive to HEV-10 commands
 		chn           string // The main stream is 0, and the sub stream is 1.
@@ -55,11 +76,12 @@ type (
 )
 
 var (
-	arg = HeConfig{}
+	arg *HeConfig
 )
 
 // API
 func Initialize(cfg *HeConfig) {
+	arg = cfg
 	// settings not used by the GUI
 	arg.audio_sample_rate = "44100" // or "48000"
 	arg.audio_bits_per_sample = "16"
@@ -80,16 +102,13 @@ func Initialize(cfg *HeConfig) {
 	// qp1: iqp, the value range is [0, 50]
 	// qp2: pqp, the value range is [0, 50]
 	// qp3: bqp
-
-	arg.StreamUrl = cfg.StreamUrl
-	arg.ConfigIP = cfg.ConfigIP
-
 }
 
 // API
+/*
 //
 // setarams is called from tuner. The function will send the params to the HEV-10 encoder.
-func SetParams(cfg *HeConfig) {
+func OLD_SetParams(cfg *HeConfig) {
 	// audio settings used by the GUI
 	arg.audio_codec = strings.Fields(cfg.Codecs)[1]
 	arg.audio_bitrate = cfg.AudioBitRate
@@ -145,7 +164,8 @@ func SetParams(cfg *HeConfig) {
 		arg.qp2,
 		arg.qp3)
 
-	sendToEncoder(hevAudioCmdStr, hevVideoCmdStr)
+
+	OLD_sendToEncoder(hevAudioCmdStr, hevVideoCmdStr)
 
 	// gop: The range is [1-600]
 
@@ -160,28 +180,150 @@ func SetParams(cfg *HeConfig) {
 	// qp2: pqp, the value range is [0, 50]
 	// qp3: bqp
 }
-
-/*
-My Working Encoder Settings
-
-iMac has 2nd IP 192.168.3.3
-
-HEV-10 IP address is 192.168.3.1 and sending UDP stream to 192.168.3.10
-
-Secondary Stream
-Audio Encoding Type: AAC
-Audio Bitrate(bps): 64000
-Video Encoding Type: H.265
-Video Encoding Size: 1280*720
-Video Bitrate(Kbps): 330
-RTSP URL1: Disabled
-RTSP URL2(TS): Disabled
-Misc Stream/Secondary Stream UDP(unicast/multicast) URL: udp://192.168.3.10:8282
-SRT: Disabled
-
 */
 
-func sendToEncoder(audioCmd, videoCmd string) {
+func SetParams(cfg *HeConfig) error {
+	// Windows Serial Port Utility...
+	// Port: TCP/UDP
+	// Mode: TCP Client
+	// Host: 192.168.1.251
+	// Port: 55555
+	// using either arg.Url or arg.IP_Address
+	// Command execution success: #8001,23,06,OK!
+	// Command execution fails: #8001,23,06,ERR!
+	const (
+		PORT    = "55555"
+		SUCCESS = "#8001,23,06,OK!"
+		FAIL    = "#8001,23,06,ERR!"
+	)
+	var (
+		cmdStr string
+		codec  string
+	)
+
+	// NETWORK
+
+	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
+
+	logger.Info.Printf("Connecting to: %s", url)
+	conn, err := net.Dial("tcp", url)
+	if err != nil {
+		logger.Error.Printf("Failed to connect to: %s", url)
+		return err
+	}
+	logger.Info.Printf("Connected to: %v", url)
+	defer conn.Close()
+
+	if err := conn.SetDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
+		logger.Error.Printf("Failed to set timeout: %s", err)
+		return err
+	}
+
+	// AUDIO
+
+	codec = strings.Fields(cfg.Codecs)[1] // extract audio codec from eg "H.265 AAA"
+	switch codec {
+	case "ACC":
+		// update from txControl
+		arg.audio_bitrate = cfg.AudioBitRate
+		// Command format: @0001,23,06,00,01,44100,16,bps!
+		cmdStr = fmt.Sprintf("@0001,23,06,00,01,%v,%v,%v!",
+			arg.audio_sample_rate,
+			arg.audio_bits_per_sample,
+			arg.audio_bitrate)
+	case "G711u":
+		// Command format: @0001,23,06,00,00,8000,16,0!
+		cmdStr = fmt.Sprintf("@0001,23,06,00,00,%v,%v,0!",
+			arg.audio_sample_rate,
+			arg.audio_bits_per_sample)
+	}
+
+	if err := sendToEncoder(conn, cmdStr, "AUDIO"); err != nil {
+		logger.Error.Printf("Failed to write AUDIO: %s", err)
+		return err
+	}
+
+	// VIDEO
+
+	// update from txControl
+	codec = strings.Fields(cfg.Codecs)[0] // extract video codec from eg "H.265 AAA"
+	switch codec {
+	case "H264":
+		arg._type = "0"
+	case "H265":
+		arg._type = "1"
+	}
+	arg.bps = cfg.VideoBitRate
+	// Command format: @0001,22,06,chn,bps,fps,res_w,res_h,type,gop,pro<ile,rc_mode,qp1,qp2,qp3!
+	cmdStr = fmt.Sprintf("@0001,22,06,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v!",
+		arg.chn,
+		arg.bps,
+		arg.fps,
+		arg.res_w,
+		arg.res_h,
+		arg._type,
+		arg.gop,
+		arg.profile,
+		arg.rc_mode,
+		arg.qp1,
+		arg.qp2,
+		arg.qp3)
+
+	if err := sendToEncoder(conn, cmdStr, "VIDEO"); err != nil {
+		logger.Error.Printf("Failed to write VIDEO: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
+	const SUCCESS_A = "#8001,23,06,OK!"
+	const SUCCESS_V = "#8001,22,06,OK!"
+	const FAIL = "#8001,23,06,ERR!"
+	var err error
+	logger.Info.Printf("-------------- cmdStr is : %s", cmdStr)
+	// send
+	_, err = conn.Write([]byte(cmdStr))
+	if err != nil {
+		println("Write failed:", err.Error())
+		logger.Error.Printf("Failed to write %s: %s", what, err)
+		return err
+	}
+	// receive
+	buf := bufio.NewReader(conn)
+	result, err := buf.ReadString('!')
+	if err != nil {
+		logger.Error.Printf("Failed to read %s result", what)
+		return err
+	}
+	switch result {
+	case FAIL:
+		logger.Error.Printf("Failed to send %s to encoder >%v<", what, result)
+		return err
+	case SUCCESS_A, SUCCESS_V:
+		logger.Info.Printf("HEV-10 %s configured ok >%v<", what, result)
+	default:
+		logger.Error.Printf("Undefine %s result: >%v<", what, result)
+		return err
+	}
+	/*
+		#8001,23,06,OK!
+		#8001,22,06,OK!
+		      #  8  0  0  0  ,  2  3  ,  0  6  ,  O  K  !
+			>[35 56 48 48 49 44 50 51 44 48 54 44 79 75 33]<
+			  #  8  0  0  0  ,  2  2  ,  0  6  ,  O  K  !
+			>[35 56 48 48 49 44 50 50 44 48 54 44 79 75 33]<
+	*/
+
+	return nil
+}
+
+/*
+
+// ***** OLD *************************************
+
+func OLD_sendToEncoder(audioCmd, videoCmd string) {
 	// Windows Serial Port Utility...
 	// Port: TCP/UDP
 	// Mode: TCP Client
@@ -268,4 +410,6 @@ func sendToEncoder(audioCmd, videoCmd string) {
 		logger.Error.Printf("Undefine result: >%v<", videoResult)
 		return
 	}
+
 }
+*/
