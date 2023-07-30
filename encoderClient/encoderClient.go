@@ -6,6 +6,7 @@
 package encoderClient
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"q100transmitter/logger"
@@ -194,9 +195,6 @@ func sendToEncoder(audioCmd, videoCmd string) {
 		SUCCESS = "#8001,23,06,OK!"
 		FAIL    = "#8001,23,06,ERR!"
 	)
-	var (
-		result string
-	)
 
 	url := fmt.Sprintf("%s:%s", IP, PORT)
 	logger.Info.Printf("Connecting to: %s", url)
@@ -208,20 +206,37 @@ func sendToEncoder(audioCmd, videoCmd string) {
 	logger.Info.Printf("Connected to: %v", url)
 	defer con.Close()
 
+	buffer := bufio.NewReader(con)
+
 	logger.Info.Printf("will send audio cmd %s to HEV-10", audioCmd)
 
-	// TODO: send
-
-	//  TODO receive
-
-	result = FAIL
-
+	// send
+	_, err = con.Write([]byte(audioCmd))
+	if err != nil {
+		println("Write failed:", err.Error())
+		logger.Error.Printf("Failed to write: %s", err)
+		return
+	}
+	// receive
+	result, err := buffer.ReadString('!')
+	if err != nil {
+		logger.Error.Printf("Failed to read result")
+		return
+	}
 	switch result {
 	case FAIL:
-		logger.Warn.Printf("Failed to send audioCmd")
+		logger.Error.Printf("Failed to send audioCmd")
+		return
 	case SUCCESS:
-		logger.Info.Printf("HEV-10 audio been configured")
+		logger.Info.Printf("HEV-10 audio configured ok")
+	default:
+		logger.Error.Printf("Undefine result: %v", result)
+		return
 	}
+
+	// DO NOT CHANGE VIDEO UNTIL I UNDERSTAND MORE
+	return
+	// DO NOT CHANGE VIDEO UNTIL I UNDERSTAND MORE
 
 	logger.Info.Printf("will send video cmd %s to HEV-10", videoCmd)
 
@@ -229,13 +244,14 @@ func sendToEncoder(audioCmd, videoCmd string) {
 
 	//  TODO receive
 
-	result = FAIL
-
-	switch result {
+	switch string(result) {
 	case FAIL:
-		logger.Warn.Printf("Failed to send video Cmd")
+		logger.Error.Printf("Failed to send videoCmd")
+		return
 	case SUCCESS:
-		logger.Info.Printf("HEV-10 video been configured")
+		logger.Info.Printf("HEV-10 video configured ok")
+	default:
+		logger.Error.Printf("Undefine result: %v", string(result))
+		return
 	}
-
 }
