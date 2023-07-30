@@ -11,6 +11,7 @@ import (
 	"net"
 	"q100transmitter/logger"
 	"strings"
+	"time"
 )
 
 type (
@@ -32,8 +33,8 @@ type (
 		// video_bitrate         string // "330"
 		// spare_1               string
 		// spare_2               string
-		Url        string // "udp://192.168.3.10:8282"
-		IP_Address string // 192.168.3.1"
+		StreamUrl string // "udp://192.168.3.10:8282"
+		ConfigIP  string // 192.168.3.1"
 
 		// exclusive to HEV-10 commands
 		chn           string // The main stream is 0, and the sub stream is 1.
@@ -80,8 +81,8 @@ func Initialize(cfg *HeConfig) {
 	// qp2: pqp, the value range is [0, 50]
 	// qp3: bqp
 
-	arg.Url = cfg.Url
-	arg.IP_Address = cfg.IP_Address
+	arg.StreamUrl = cfg.StreamUrl
+	arg.ConfigIP = cfg.ConfigIP
 
 }
 
@@ -190,28 +191,32 @@ func sendToEncoder(audioCmd, videoCmd string) {
 	// Command execution success: #8001,23,06,OK!
 	// Command execution fails: #8001,23,06,ERR!
 	const (
-		IP      = "192.168.3.1"
 		PORT    = "55555"
 		SUCCESS = "#8001,23,06,OK!"
 		FAIL    = "#8001,23,06,ERR!"
 	)
 
-	url := fmt.Sprintf("%s:%s", IP, PORT)
+	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
 	logger.Info.Printf("Connecting to: %s", url)
-	con, err := net.Dial("tcp", url)
+	conn, err := net.Dial("tcp", url)
 	if err != nil {
 		logger.Error.Printf("Failed to connect to: %s", url)
 		return
 	}
 	logger.Info.Printf("Connected to: %v", url)
-	defer con.Close()
+	defer conn.Close()
 
-	buffer := bufio.NewReader(con)
+	if err := conn.SetDeadline(time.Now().Add(50 * time.Millisecond)); err != nil {
+		logger.Error.Printf("Failed to set timeout: %s", err)
+		return
+	}
+
+	buffer := bufio.NewReader(conn)
 
 	logger.Info.Printf("will send audio cmd %s to HEV-10", audioCmd)
 
 	// send
-	_, err = con.Write([]byte(audioCmd))
+	_, err = conn.Write([]byte(audioCmd))
 	if err != nil {
 		println("Write failed:", err.Error())
 		logger.Error.Printf("Failed to write: %s", err)

@@ -47,8 +47,8 @@ var (
 	}
 	heConfig = encoderClient.HeConfig{
 		// alter the following with caution
-		Url:        "udp://192.168.3.10:8282",
-		IP_Address: "192.168.3.1",
+		StreamUrl: "udp://192.168.3.10:8282",
+		ConfigIP:  "192.168.3.1",
 	}
 	plConfig = plutoClient.PlConfig{
 		// configure setting not provided by the GUI
