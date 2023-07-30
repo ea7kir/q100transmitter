@@ -211,7 +211,7 @@ func sendToEncoder(audioCmd, videoCmd string) {
 		return
 	}
 
-	buffer := bufio.NewReader(conn)
+	// AUDIO
 
 	logger.Info.Printf("will send audio cmd %s to HEV-10", audioCmd)
 
@@ -223,40 +223,49 @@ func sendToEncoder(audioCmd, videoCmd string) {
 		return
 	}
 	// receive
-	result, err := buffer.ReadString('!')
+	audioBuffer := bufio.NewReader(conn)
+	audioResult, err := audioBuffer.ReadString('!')
 	if err != nil {
 		logger.Error.Printf("Failed to read result")
 		return
 	}
-	switch result {
+	switch audioResult {
 	case FAIL:
 		logger.Error.Printf("Failed to send audioCmd")
 		return
 	case SUCCESS:
 		logger.Info.Printf("HEV-10 audio configured ok")
 	default:
-		logger.Error.Printf("Undefine result: %v", result)
+		logger.Error.Printf("Undefine result: %v", audioResult)
 		return
 	}
 
-	// DO NOT CHANGE VIDEO UNTIL I UNDERSTAND MORE
+	// VIDEO
 
-	// DO NOT CHANGE VIDEO UNTIL I UNDERSTAND MORE
+	logger.Info.Printf("will send video cmd %s to HEV-10", videoCmd)
 
-	// logger.Info.Printf("will send video cmd %s to HEV-10", videoCmd)
-
-	// // TODO: send
-
-	// //  TODO receive
-
-	// switch result {
-	// case FAIL:
-	// 	logger.Error.Printf("Failed to send videoCmd")
-	// 	return
-	// case SUCCESS:
-	// 	logger.Info.Printf("HEV-10 video configured ok")
-	// default:
-	// 	logger.Error.Printf("Undefine result: %v", result)
-	// 	return
-	// }
+	// send
+	_, err = conn.Write([]byte(videoCmd))
+	if err != nil {
+		println("Write failed:", err.Error())
+		logger.Error.Printf("Failed to write: %s", err)
+		return
+	}
+	// receive
+	videoBuffer := bufio.NewReader(conn)
+	videoResult, err := videoBuffer.ReadString('!')
+	if err != nil {
+		logger.Error.Printf("Failed to read result")
+		return
+	}
+	switch videoResult {
+	case FAIL:
+		logger.Error.Printf("Failed to send videoCmd")
+		return
+	case SUCCESS:
+		logger.Info.Printf("HEV-10 video configured ok")
+	default:
+		logger.Error.Printf("Undefine result: >%v<", videoResult)
+		return
+	}
 }
