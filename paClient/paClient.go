@@ -45,7 +45,7 @@ func Stop() {
 func readServer(cfg *SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
 	logger.Info.Printf("Client %v connected", url)
-	con, err := net.Dial("tcp", url)
+	conn, err := net.Dial("tcp", url)
 	if err != nil {
 		logger.Error.Printf("Failed to connect to: %v", url)
 		sd := SvrData{}
@@ -53,10 +53,10 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 		ch <- sd
 		return
 	}
-	defer con.Close()
+	defer conn.Close()
 
 	// clientReader := bufio.NewReader(os.Stdin)
-	serverReader := bufio.NewReader(con)
+	serverReader := bufio.NewReader(conn)
 
 	sd := SvrData{}
 	for {
@@ -75,7 +75,7 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 			switch err {
 			case nil:
 				clientRequest := ""
-				if _, err = con.Write([]byte(clientRequest + "\n")); err != nil {
+				if _, err = conn.Write([]byte(clientRequest + "\n")); err != nil {
 					logger.Error.Printf("failed to send the client request: %v\n", err)
 				}
 			case io.EOF:
