@@ -244,14 +244,14 @@ func sendToEncoder(audioCmd, videoCmd string) {
 
 	//  TODO receive
 
-	switch string(result) {
+	switch result {
 	case FAIL:
 		logger.Error.Printf("Failed to send videoCmd")
 		return
 	case SUCCESS:
 		logger.Info.Printf("HEV-10 video configured ok")
 	default:
-		logger.Error.Printf("Undefine result: %v", string(result))
+		logger.Error.Printf("Undefine result: %v", result)
 		return
 	}
 }
