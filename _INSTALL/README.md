@@ -1,6 +1,18 @@
 ## Hardware Connections
 
-TODO: list pin connections and refer to drawings
+**IMPORTANT:** The following peripherals MUST be configured, connected and powered before installing.
+
+- Raspberry Pi 4B with 4GB RAM (minimum)
+- Raspberry Pi Official 7" Touch Screen
+- Analog Devices PlutoSDR Revision D
+- Analog Devices HMC349 RF Switch 
+- Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
+- DDMALL HEV-10 HDMI Video Encoder
+
+In addtion, a hefty 5v PSU will be required, or, for example...
+
+- 12v PSU
+- 5v Buck Converter
 
 ## Installing Pi OS
 
@@ -59,20 +71,27 @@ cd Q100
 git clone https://github.com/ea7kir/q100transmitter.git
 ```
 
-Execute the install scripts
+Execute the install scripts in order
 
 ```
 cd
-cp /home/pi/_INSTALL/install_* .
+cp /home/pi/Q100/q100/q100transmitter/_INSTALL/install_* .
 chmod +x install_*
 ./install_1.sh
 ```
 
-This will fire off a sequnce of events incloving more than one reboot, so please allow it to complete
+This will fire off a sequence of events invoving more than one reboot, so please allow all scripts to complete
 
-## More to follow goes here
+## What next?
 
-NOTE: it will be neccessary to login in to the Pluto at least once (password is `analog`) in order to establish a local certificate, otherwise Tune will not work correctly.
+Remove the install scripts from the home directory
+
+```
+cd
+rm install_*
+```
+
+It will be neccessary to login in to the Pluto at least once (password is `analog`) in order to establish a local certificate, otherwise Tune will not work correctly.
 ```
 ssh root@pluto.local
 ```

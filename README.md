@@ -4,12 +4,12 @@ Control and monitor a DATV transmiter with a touch screen.
 
 ## Hardware
 
-- Raspberry Pi 4B with 8GB RAM
+- Raspberry Pi 4B with 4GB RAM (minimum)
 - Raspberry Pi Official 7" Touch Screen
-- ADALM Pluto SRD Revision: C/D
-- ADALM 20db Amplifier
-- ADALM RF Switch Model: 
-- DDMAL HDMI Video Encoder Model: HEV-10
+- Analog Devices PlutoSDR Revision D
+- Analog Devices HMC349 RF Switch 
+- Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
+- DDMALL HEV-10 HDMI Video Encoder
 
 **A keyboard and mouse are not required for normal use.**
 

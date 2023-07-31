@@ -133,16 +133,20 @@ sudo apt install libiio-utils etc - see comments in plutoclient.go
 #
 echo
 echo "-------------------------------"
-echo "-- Done"
+echo "-- Remove install scripts"
 echo "-------------------------------"
 echo
 
-echo "Clone q100transmitter from within VSCODE"
-echo "using: https://github.com/ea7kir/q100transmitter.git"
+cd
+rm install_*
+
 echo
-echo "To run q100transmitter, type: ./q100transmitter"
+echo "-------------------------------"
+echo "-- Done"
+echo "--"
+echo "-- Will reboot in 5 seconds"
+echo "-------------------------------"
+echo
 
 sleep 5
-
 sudo reboot
-
