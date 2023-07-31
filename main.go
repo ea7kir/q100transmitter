@@ -38,8 +38,7 @@ import (
 // configuration data
 var (
 	spConfig = spectrumClient.SpConfig{
-		Url:  "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller",
-		Port: 443,
+		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 	}
 	svrConfig = paClient.SvrConfig{
 		Url:  "txserver.local",

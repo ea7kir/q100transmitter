@@ -7,20 +7,18 @@ package spectrumClient
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"q100transmitter/logger"
+
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
-// API
 type (
 	SpConfig struct {
-		Url  string
-		Port int
+		Url string
 	}
 	SpData struct {
 		Yp                        []float32
@@ -29,12 +27,10 @@ type (
 	}
 )
 
-// API
 var (
 	Xp = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
 )
 
-// API
 func Intitialize(cfg *SpConfig, ch chan SpData) {
 	spChannel = ch
 	Xp[0] = 0
@@ -42,11 +38,10 @@ func Intitialize(cfg *SpConfig, ch chan SpData) {
 		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
 	}
 	Xp[numPoints-1] = 100
-	url := fmt.Sprintf("%v:%v/", cfg.Url, cfg.Port)
-	go readAndDecode(url, spChannel)
+
+	go readAndDecode(cfg.Url, spChannel)
 }
 
-// API
 func Stop() {
 	logger.Warn.Printf("Spectrum will stop... - NOT IMPLELENTED")
 	//
@@ -57,6 +52,8 @@ func Stop() {
 func SetMarker(frequency, symbolRate string) {
 	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
 }
+
+// END API *******************************************************
 
 // room for 916 datapoints + start and end zero points to close the polygon
 const numPoints = 918
@@ -96,7 +93,6 @@ func readAndDecode(url string, ch chan SpData) {
 	c, _, err := dialer.DialContext(ctx, url, nil)
 	if err != nil {
 		logger.Fatal.Fatalf("Dial failed: %#v with %v\n", err, url)
-		// log.Panic()
 	}
 	defer c.Close()
 	// logger.Info.Printf("negotiated protocol: %q\n", c.Subprotocol())
