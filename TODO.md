@@ -1,7 +1,13 @@
 ## TODO:
 
-- ffplay doesn't always stop before the next signal arrives
-- send settings to the HVEC Encoder - first solve the routing problem
+- stop using scripts
 - add wiring schematic
 - automate the install process
-
+- remove unused files and folders
+- revisit logger
+- revise what data to monitor
+- revise what parameters to use
+- tidy the user interface
+- rename spectrumClient
+- rename encoderClient
+- implement calibrater.go and marker widths
