@@ -28,6 +28,7 @@ echo "-- Setting .profile"
 echo "-------------------------------"
 echo
 
+#bash -c "echo -e '\nexport PATH=\$PATH:/usr/local/go/bin\n' >> .profile"
 echo -e '\n\nexport PATH=$PATH:/usr/local/go/bin\n\n' >> /home/pi/.profile
 
 echo
