@@ -513,7 +513,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 // returns a column of 3 rows of [label__  label__]
 func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]string) D {
 	const btnWidth = 0
-	const lblWidth = 65
+	const lblWidth = 65 //123 //65
 
 	return layout.Flex{
 		Axis: layout.Vertical,
@@ -593,6 +593,9 @@ func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 		layout.Rigid(func(gtx C) D {
 			return ui.q100_Column3Rows(gtx, dec3, inc3, val3)
 		}),
+		// layout.Rigid(func(gtx C) D {
+		// 	return ui.q100_Column3Rows(gtx, dec3, inc3, val3) // TODO: add 3 more buttons here & split off H265 ACC to 2 buttons
+		// }),
 		layout.Rigid(func(gtx C) D {
 			return ui.q100_Column2Buttons(gtx)
 		}),
