@@ -11,3 +11,4 @@
 - rename spectrumClient
 - rename encoderClient
 - implement calibrater.go and marker widths
+- add 3 more buttons and split [H265 ACC] into separate buttons
