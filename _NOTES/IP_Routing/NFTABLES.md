@@ -137,6 +137,23 @@ I.e. access as: `http://txtouch.local:8082`
 
 `sudo nft list ruleset`
 
+```
+table ip nat {
+	chain postrouting {
+		type nat hook postrouting priority srcnat; policy accept;
+		masquerade
+	}
+
+	chain prerouting {
+		type nat hook prerouting priority dstnat; policy accept;
+		iif "eth1" udp dport 7272 dnat to 192.168.2.1
+		iif "eth1" udp dport 8282 dnat to 192.168.2.1
+		iif "eth0" tcp dport 8083 dnat to 192.168.3.1:80
+		iif "eth0" tcp dport 8082 dnat to 192.168.2.1:80
+	}
+}
+```
+
 ## Make the rules persist
 
 `sudo cp /etc/nftables.conf /etc/nftables.backup`
