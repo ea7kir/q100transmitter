@@ -15,7 +15,9 @@ Control and monitor a DATV transmiter with a touch screen.
 
 ## Installing
 
-TODO
+TODO: see comments in pttSwitch.go
+
+TODO: see photos for USB connections etc.
 
 ## License
 

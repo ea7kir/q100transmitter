@@ -14,11 +14,16 @@ import (
 
 const (
 	// Analog Devices HVC349 RF Switch
-	// using RFC as the input, RF2 as the output
-	CTRL_PIN = rpi.J8p18 // pin 18 GPIO_24
-	EN_PIN   = rpi.J8p16 // pin 16 GPIO_23 (GND pin 14, pin 17 3.3v)
-	LOW      = 0
-	HIGH     = 1
+	// using RFC as the input, RF2 as the output, RF1 with 50ohm dummy load
+
+	// GND_PIN to RPi pin 14 Ground            - Brown
+	// VCC_PIN to RPi pin 17 3V3               - Red
+
+	CTRL_PIN = rpi.J8p18 // RPi pin 18 GPIO_24 - Yellow
+	EN_PIN   = rpi.J8p16 // RPi pin 16 GPIO_23 - not used (requires cutting a pcb track)
+
+	LOW  = 0
+	HIGH = 1
 )
 
 var (
