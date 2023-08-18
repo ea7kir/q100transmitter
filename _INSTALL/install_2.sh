@@ -15,8 +15,6 @@ git config --global init.defaultBranch main
 echo
 echo "-------------------------------"
 echo "-- Installing Go"
-echo
-echo "-- this will take some time..."
 echo "-------------------------------"
 echo
 
@@ -25,6 +23,7 @@ cd /usr/local
 sudo wget https://go.dev/dl/$GOVERSION
 # sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf $GOVERSION
+cd
 
 echo
 echo "-------------------------------"
