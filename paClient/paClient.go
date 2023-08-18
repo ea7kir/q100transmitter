@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"q100transmitter/logger"
+	"q100transmitter/mylogger"
 	"time"
 )
 
@@ -36,18 +36,18 @@ func Initialize(cfg *SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	logger.Warn.Printf("SvrClient will stop... - NOT IMPLELENTED")
+	mylogger.Warn.Printf("SvrClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
-	logger.Info.Printf("SvrClient has stopped - NOT IMPLELENTED")
+	mylogger.Info.Printf("SvrClient has stopped - NOT IMPLELENTED")
 }
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func readServer(cfg *SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	logger.Info.Printf("Client %v connected", url)
+	mylogger.Info.Printf("Client %v connected", url)
 	conn, err := net.Dial("tcp", url)
 	if err != nil {
-		logger.Error.Printf("Failed to connect to: %v", url)
+		mylogger.Error.Printf("Failed to connect to: %v", url)
 		sd := SvrData{}
 		sd.Status = "Not connected"
 		ch <- sd
@@ -76,13 +76,13 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 			case nil:
 				clientRequest := ""
 				if _, err = conn.Write([]byte(clientRequest + "\n")); err != nil {
-					logger.Error.Printf("failed to send the client request: %v\n", err)
+					mylogger.Error.Printf("failed to send the client request: %v\n", err)
 				}
 			case io.EOF:
-				logger.Info.Printf("client closed the connection")
+				mylogger.Info.Printf("client closed the connection")
 				return
 			default:
-				logger.Error.Printf("client error: %v\n", err)
+				mylogger.Error.Printf("client error: %v\n", err)
 				return
 			}
 
@@ -94,10 +94,10 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 				sd.Status = serverResponse
 				ch <- sd
 			case io.EOF:
-				logger.Warn.Printf("server closed the connection")
+				mylogger.Warn.Printf("server closed the connection")
 				return
 			default:
-				logger.Warn.Printf("server error: %v\n", err)
+				mylogger.Warn.Printf("server error: %v\n", err)
 				return
 			}
 		}

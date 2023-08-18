@@ -7,7 +7,7 @@ package txControl
 
 import (
 	"q100transmitter/encoderClient"
-	"q100transmitter/logger"
+	"q100transmitter/mylogger"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
@@ -316,9 +316,9 @@ func Initialize(cfg *TuConfig) {
 
 // API
 func Stop() {
-	logger.Info.Printf("Tuner will stop...")
+	mylogger.Info.Printf("Tuner will stop...")
 	IsPtt = pttSwitch.SetPtt(false)
-	logger.Info.Printf("Tuner has stopped")
+	mylogger.Info.Printf("Tuner has stopped")
 }
 
 // API
@@ -349,7 +349,7 @@ func Tune() {
 		// }
 		IsTuned = false
 	}
-	// logger.Info.Printf("IsTuned is %v", IsTuned)
+	// mylogger.Info.Printf("IsTuned is %v", IsTuned)
 }
 
 // API

@@ -6,7 +6,7 @@
 package pttSwitch
 
 import (
-	"q100transmitter/logger"
+	"q100transmitter/mylogger"
 
 	"github.com/warthog618/gpiod"
 	"github.com/warthog618/gpiod/device/rpi"
@@ -64,10 +64,10 @@ func SetPtt(tx bool) bool {
 	switch tx {
 	case true:
 		hvc349Control.SetValue(LOW)
-		logger.Info.Printf("PTT is %v", "Enabled")
+		mylogger.Info.Printf("PTT is %v", "Enabled")
 	case false:
 		hvc349Control.SetValue(HIGH)
-		logger.Info.Printf("PTT is %v", "Disabled")
+		mylogger.Info.Printf("PTT is %v", "Disabled")
 	}
 	return tx
 }

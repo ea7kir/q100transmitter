@@ -12,7 +12,7 @@ import (
 	"os"
 	"os/signal"
 	"q100transmitter/encoderClient"
-	"q100transmitter/logger"
+	"q100transmitter/mylogger"
 	"q100transmitter/paClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
@@ -20,7 +20,6 @@ import (
 	"q100transmitter/txControl"
 
 	"gioui.org/app"
-	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -115,10 +114,10 @@ var (
 )
 
 func main() {
-	logger.Open("/home/pi/Q100/transmitter.log")
-	defer logger.Close()
+	mylogger.Open("/home/pi/Q100/transmitter.log")
+	defer mylogger.Close()
 
-	logger.Info.Printf("----- q100transmitter Opened -----")
+	mylogger.Info.Printf("----- q100transmitter Opened -----")
 
 	os.Setenv("DISPLAY", ":0") // required for X11
 
@@ -138,15 +137,14 @@ func main() {
 		w := app.NewWindow(app.Fullscreen.Option())
 		app.Size(800, 480) // I don't know if this is help in any way
 		if err := loop(w); err != nil {
-			logger.Fatal.Fatalf(": %", err)
-			// log.Fatal(err)
+			mylogger.Fatal.Fatalf("failed to start loop: %v", err)
 		}
 
 		txControl.Stop()
 		paClient.Stop()
 		spectrumClient.Stop()
 
-		logger.Info.Printf("----- q100transmitter Closed -----")
+		mylogger.Info.Printf("----- q100transmitter Closed -----")
 		os.Exit(0)
 	}()
 
@@ -157,7 +155,8 @@ func loop(w *app.Window) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 	ui := UI{
-		th: material.NewTheme(gofont.Collection()),
+		//th: material.NewTheme(gofont.Collection()),
+		th: material.NewTheme(),
 	}
 	var ops op.Ops
 	// Capture the context done channel in a variable so that we can nil it
@@ -171,7 +170,7 @@ func loop(w *app.Window) error {
 			// prevent it from firing over and over.
 			done = nil
 			// Log something to make it obvious this happened.
-			// logger.Info("context cancelled")
+			// mylogger.Info("context cancelled")
 			// Initiate window shutdown.
 			txControl.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
@@ -472,7 +471,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 					Height:  float32(250), //float32(hieght), //float32(500),
 					Context: gtx,
 				}
-				// logger.Info("  Canvas: %#v\n", canvas.Context.Constraints)
+				// mylogger.Info("  Canvas: %#v\n", canvas.Context.Constraints)
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker

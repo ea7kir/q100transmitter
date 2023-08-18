@@ -20,13 +20,12 @@ echo "-- this will take some time..."
 echo "-------------------------------"
 echo
 
-GOVERSION=go1.20.6.linux-arm64.tar.gz
+GOVERSION=go1.21.0.linux-arm64.tar.gz
 cd /usr/local
 sudo wget https://go.dev/dl/$GOVERSION
-sudo rm -rf /usr/local/go && tar -C /usr/local -xzf $GOVERSION
+# sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf $GOVERSION
 
-sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.6.linux-arm64.tar.gz
- 
 echo
 echo "-------------------------------"
 echo "-- Install gioui dependencies"

@@ -9,7 +9,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"q100transmitter/logger"
+	"q100transmitter/mylogger"
 	"strings"
 	"time"
 )
@@ -108,17 +108,17 @@ func SetParams(cfg *HeConfig) error {
 
 	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
 
-	logger.Info.Printf("Connecting to: %s", url)
+	mylogger.Info.Printf("Connecting to: %s", url)
 	conn, err := net.Dial("tcp", url)
 	if err != nil {
-		logger.Error.Printf("Failed to connect to: %s", url)
+		mylogger.Error.Printf("Failed to connect to: %s", url)
 		return err
 	}
-	logger.Info.Printf("Connected to: %v", url)
+	mylogger.Info.Printf("Connected to: %v", url)
 	defer conn.Close()
 
 	if err := conn.SetDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
-		logger.Error.Printf("Failed to set timeout: %s", err)
+		mylogger.Error.Printf("Failed to set timeout: %s", err)
 		return err
 	}
 
@@ -142,7 +142,7 @@ func SetParams(cfg *HeConfig) error {
 	}
 
 	if err := sendToEncoder(conn, cmdStr, "AUDIO"); err != nil {
-		logger.Error.Printf("Failed to write AUDIO: %s", err)
+		mylogger.Error.Printf("Failed to write AUDIO: %s", err)
 		return err
 	}
 
@@ -173,7 +173,7 @@ func SetParams(cfg *HeConfig) error {
 		arg.qp3)
 
 	if err := sendToEncoder(conn, cmdStr, "VIDEO"); err != nil {
-		logger.Error.Printf("Failed to write VIDEO: %s", err)
+		mylogger.Error.Printf("Failed to write VIDEO: %s", err)
 		return err
 	}
 
@@ -185,29 +185,29 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	const SUCCESS_V = "#8001,22,06,OK!"
 	const FAIL = "#8001,23,06,ERR!"
 	var err error
-	logger.Info.Printf("-------------- cmdStr is : %s", cmdStr)
+	mylogger.Info.Printf("-------------- cmdStr is : %s", cmdStr)
 	// send
 	_, err = conn.Write([]byte(cmdStr))
 	if err != nil {
 		println("Write failed:", err.Error())
-		logger.Error.Printf("Failed to write %s: %s", what, err)
+		mylogger.Error.Printf("Failed to write %s: %s", what, err)
 		return err
 	}
 	// receive
 	buf := bufio.NewReader(conn)
 	result, err := buf.ReadString('!')
 	if err != nil {
-		logger.Error.Printf("Failed to read %s result", what)
+		mylogger.Error.Printf("Failed to read %s result", what)
 		return err
 	}
 	switch result {
 	case FAIL:
-		logger.Error.Printf("Failed to send %s to encoder >%v<", what, result)
+		mylogger.Error.Printf("Failed to send %s to encoder >%v<", what, result)
 		return err
 	case SUCCESS_A, SUCCESS_V:
-		logger.Info.Printf("HEV-10 %s configured ok >%v<", what, result)
+		mylogger.Info.Printf("HEV-10 %s configured ok >%v<", what, result)
 	default:
-		logger.Error.Printf("Undefine %s result: >%v<", what, result)
+		mylogger.Error.Printf("Undefine %s result: >%v<", what, result)
 		return err
 	}
 	/*

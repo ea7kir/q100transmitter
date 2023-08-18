@@ -9,7 +9,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"q100transmitter/logger"
+	"q100transmitter/mylogger"
 
 	"time"
 
@@ -43,9 +43,9 @@ func Intitialize(cfg *SpConfig, ch chan SpData) {
 }
 
 func Stop() {
-	logger.Warn.Printf("Spectrum will stop... - NOT IMPLELENTED")
+	mylogger.Warn.Printf("Spectrum will stop... - NOT IMPLELENTED")
 	//
-	logger.Info.Printf("Spectrum has stopped - NOT IMPLELENTED")
+	mylogger.Info.Printf("Spectrum has stopped - NOT IMPLELENTED")
 }
 
 // Sets the spData Marker values
@@ -69,7 +69,7 @@ var (
 )
 
 // func readCalibrationData(ch chan SpData) {
-// 	logger.Info.Printf("Spectrun calibration running...")
+// 	mylogger.Info.Printf("Spectrun calibration running...")
 // 	for {
 // 		spData.Yp[0] = 0
 // 		for i := 1; i < numPoints-2; i++ {
@@ -92,10 +92,10 @@ func readAndDecode(url string, ch chan SpData) {
 	}
 	c, _, err := dialer.DialContext(ctx, url, nil)
 	if err != nil {
-		logger.Fatal.Fatalf("Dial failed: %#v with %v\n", err, url)
+		mylogger.Fatal.Fatalf("Dial failed: %#v with %v\n", err, url)
 	}
 	defer c.Close()
-	// logger.Info.Printf("negotiated protocol: %q\n", c.Subprotocol())
+	// mylogger.Info.Printf("negotiated protocol: %q\n", c.Subprotocol())
 
 	done := make(chan struct{})
 
@@ -107,22 +107,22 @@ func readAndDecode(url string, ch chan SpData) {
 			_, bytes, err := c.ReadMessage()
 			if err != nil {
 				// TODO: this can happed on Control-C
-				logger.Warn.Printf("reading batc bytes: %#v\n", err)
+				mylogger.Warn.Printf("reading batc bytes: %#v\n", err)
 				return
 			}
 			// message is of Type: []unit8
 			if len(bytes) != 1844 {
-				logger.Warn.Printf("reading : bytes != 1844\n")
+				mylogger.Warn.Printf("reading : bytes != 1844\n")
 				continue
 			}
-			// logger.Info.Printf("received length: %v, Type: %T, %d == %d", len(message), message, message[0], i)
+			// mylogger.Info.Printf("received length: %v, Type: %T, %d == %d", len(message), message, message[0], i)
 
 			// begin processing the bytes
 			// count = 0
 			for i := 0; i < 1836; {
 				word := uint16(bytes[i]) + uint16(bytes[i+1])<<8
 				// count++
-				// logger.Info.Printf("count = %v\n", count)
+				// mylogger.Info.Printf("count = %v\n", count)
 				if word < 8192 {
 					word = 8192
 				}
@@ -131,7 +131,7 @@ func readAndDecode(url string, ch chan SpData) {
 				// spData.Yp[i/2] = 50.0
 				i += 2
 			}
-			// logger.Info.Printf("count = %v\n", count)
+			// mylogger.Info.Printf("count = %v\n", count)
 			spData.Yp[0] = 0
 			spData.Yp[numPoints-1] = 0
 
@@ -140,7 +140,7 @@ func readAndDecode(url string, ch chan SpData) {
 				spData.BeaconLevel += spData.Yp[i]
 			}
 			spData.BeaconLevel = spData.BeaconLevel / 103
-			// logger.Info.Printf("beacon level %v : Yp[i] %v", spData.BeaconLevel, spData.Yp[103])
+			// mylogger.Info.Printf("beacon level %v : Yp[i] %v", spData.BeaconLevel, spData.Yp[103])
 
 			ch <- spData
 		}
@@ -155,17 +155,17 @@ func readAndDecode(url string, ch chan SpData) {
 		select {
 		case t := <-ticker.C:
 			if err := c.WriteMessage(websocket.TextMessage, []byte(t.String())); err != nil {
-				logger.Warn.Printf("writing: %#v\n", err)
+				mylogger.Warn.Printf("writing: %#v\n", err)
 				return
 			}
 		case <-interrupt:
-			logger.Info.Printf("interrupting")
+			mylogger.Info.Printf("interrupting")
 			if err := c.WriteMessage(
 				websocket.CloseMessage,
 				websocket.FormatCloseMessage(
 					websocket.CloseNormalClosure, "",
 				)); err != nil {
-				logger.Warn.Printf("error closing: %#v", err)
+				mylogger.Warn.Printf("error closing: %#v", err)
 			}
 			select {
 			case <-done:
