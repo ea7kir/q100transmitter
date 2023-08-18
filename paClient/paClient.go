@@ -11,6 +11,7 @@ import (
 	"io"
 	"net"
 	"q100transmitter/mylogger"
+	"strings"
 	"time"
 )
 
@@ -91,7 +92,8 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 
 			switch err {
 			case nil:
-				sd.Status = serverResponse
+				// sd.Status = serverResponse
+				sd.Status = strings.TrimSpace(serverResponse)
 				ch <- sd
 			case io.EOF:
 				mylogger.Warn.Printf("server closed the connection")

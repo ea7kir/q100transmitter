@@ -20,10 +20,12 @@ import (
 	"q100transmitter/txControl"
 
 	"gioui.org/app"
+	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -158,6 +160,15 @@ func loop(w *app.Window) error {
 		//th: material.NewTheme(gofont.Collection()),
 		th: material.NewTheme(),
 	}
+	// fails to pickup the system font
+	// $ fc-list
+	//
+	// ui.th.Face = "Times New Roman" // ok
+	// ui.th.Face = "NimbusRoman Italic" // no
+
+	// Cris keep using the original font
+	ui.th.Shaper = text.NewShaper(text.NoSystemFonts(), text.WithCollection(gofont.Collection()))
+
 	var ops op.Ops
 	// Capture the context done channel in a variable so that we can nil it
 	// out after it closes and prevent its select case from firing again.
@@ -170,7 +181,7 @@ func loop(w *app.Window) error {
 			// prevent it from firing over and over.
 			done = nil
 			// Log something to make it obvious this happened.
-			// mylogger.Info("context cancelled")
+			// mylogger.Info.Printf("context cancelled")
 			// Initiate window shutdown.
 			txControl.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
@@ -410,7 +421,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 	return layout.Flex{
 		Axis: layout.Horizontal,
 		// Spacing: layout.SpaceBetween,
-		// Alignment: layout.Middle,
+		Alignment: layout.Middle, // Chris
 		// WeightSum: 0.3,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
@@ -471,7 +482,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 					Height:  float32(250), //float32(hieght), //float32(500),
 					Context: gtx,
 				}
-				// mylogger.Info("  Canvas: %#v\n", canvas.Context.Constraints)
+				// mylogger.Info.Printf("  Canvas: %#v\n", canvas.Context.Constraints)
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker

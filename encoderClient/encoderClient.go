@@ -189,7 +189,7 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	// send
 	_, err = conn.Write([]byte(cmdStr))
 	if err != nil {
-		println("Write failed:", err.Error())
+		// println("Write failed:", err.Error())
 		mylogger.Error.Printf("Failed to write %s: %s", what, err)
 		return err
 	}
