@@ -39,7 +39,8 @@ import (
 // configuration data
 var (
 	spConfig = spectrumClient.SpConfig{
-		Url: "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
+		Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
+		Origin: "http://eshail.batc.org.uk/wb",
 	}
 	svrConfig = paClient.SvrConfig{
 		Url:  "txserver.local",
@@ -166,7 +167,7 @@ func loop(w *app.Window) error {
 	// ui.th.Face = "Times New Roman" // ok
 	// ui.th.Face = "NimbusRoman Italic" // no
 
-	// Cris keep using the original font
+	// Cris says keep using the original font
 	ui.th.Shaper = text.NewShaper(text.NoSystemFonts(), text.WithCollection(gofont.Collection()))
 
 	var ops op.Ops

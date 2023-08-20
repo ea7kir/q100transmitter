@@ -5,12 +5,8 @@
 
 package spectrumClient
 
-/****************************************************************
-	MARKER FUNCTIONS
-****************************************************************/
-
 const (
-	divisor = float32(9.18) // TODO: temp until I provide a mathematical soloution
+	divisor = float32(9.18) // TODO: calculatee a mathematical value
 )
 
 var (
@@ -44,7 +40,7 @@ var (
 		"2409.75 / 27": 894 / divisor,
 	}
 
-	symbolRateWidth = map[string]float32{
+	symbolRateWidth = map[string]float32{ // TODO: calculatee a mathematical values
 		"2000": 20,
 		"1500": 15,
 		"1000": 10,
@@ -78,5 +74,21 @@ func CalibratetionPoints() {
 		logger.Info.Printf("CalibratetionPoints %v  %v", i, v)
 	}
 
+}
+*/
+
+/*
+func readCalibrationData(ch chan SpData) {
+	mylogger.Info.Printf("Spectrun calibration running...")
+	for {
+		spData.Yp[0] = 0
+		for i := 1; i < numPoints-2; i++ {
+			spData.Yp[i] = rand.Float32() * 50.0
+		}
+		spData.Yp[numPoints-1] = 0
+		spData.BeaconLevel = rand.Float32() * 100
+		ch <- spData
+		time.Sleep(3 * time.Millisecond)
+	}
 }
 */

@@ -2,6 +2,8 @@
 
 Control and monitor a DATV transmiter with a touch screen.
 
+<code style="color : red">THIS PROJECT IS IN EARLY DEVELOPMENT AND MAY BE UNSTABLE</code>
+
 ## Hardware
 
 - Raspberry Pi 4B with 4GB RAM (minimum)
@@ -11,7 +13,11 @@ Control and monitor a DATV transmiter with a touch screen.
 - Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
 - DDMALL HEV-10 HDMI Video Encoder
 
-**A keyboard and mouse are not required for normal use.**
+**A keyboard and mouse are not required.**
+
+## Coonections
+
+TODO: add schematic
 
 ## Installing
 

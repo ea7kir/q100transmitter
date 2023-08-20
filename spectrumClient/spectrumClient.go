@@ -6,24 +6,21 @@
 package spectrumClient
 
 import (
-	"context"
-	"os"
-	"os/signal"
 	"q100transmitter/mylogger"
 
-	"time"
-
-	"github.com/gorilla/websocket"
+	"golang.org/x/net/websocket"
 )
 
 type (
 	SpConfig struct {
-		Url string
+		Url    string
+		Origin string
 	}
 	SpData struct {
-		Yp                        []float32
-		BeaconLevel               float32
-		MarkerCentre, MarkerWidth float32
+		Yp           []float32
+		BeaconLevel  float32
+		MarkerCentre float32
+		MarkerWidth  float32
 	}
 )
 
@@ -39,18 +36,20 @@ func Intitialize(cfg *SpConfig, ch chan SpData) {
 	}
 	Xp[numPoints-1] = 100
 
-	go readAndDecode(cfg.Url, spChannel)
+	go readAndDecode(cfg, spChannel)
 }
 
 func Stop() {
 	mylogger.Warn.Printf("Spectrum will stop... - NOT IMPLELENTED")
-	//
-	mylogger.Info.Printf("Spectrum has stopped - NOT IMPLELENTED")
 }
 
 // Sets the spData Marker values
+//
+//	called from rxControl
 func SetMarker(frequency, symbolRate string) {
 	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
+	// spData.MarkerCentre = frequencyCentre[frequency]
+	// spData.MarkerWidth = symbolRateWidth[symbolRate]
 }
 
 // END API *******************************************************
@@ -68,111 +67,52 @@ var (
 	spChannel chan SpData
 )
 
-// func readCalibrationData(ch chan SpData) {
-// 	mylogger.Info.Printf("Spectrun calibration running...")
-// 	for {
-// 		spData.Yp[0] = 0
-// 		for i := 1; i < numPoints-2; i++ {
-// 			spData.Yp[i] = rand.Float32() * 50.0
-// 		}
-// 		spData.Yp[numPoints-1] = 0
-// 		spData.BeaconLevel = rand.Float32() * 100
-// 		ch <- spData
-// 		time.Sleep(3 * time.Millisecond)
-// 	}
-// }
-
-func readAndDecode(url string, ch chan SpData) {
-	ctx := context.Background()
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-
-	dialer := websocket.Dialer{
-		//Subprotocols: []string{"json"},
-	}
-	c, _, err := dialer.DialContext(ctx, url, nil)
+func readAndDecode(cfg *SpConfig, ch chan SpData) {
+	ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
 	if err != nil {
-		mylogger.Fatal.Fatalf("Dial failed: %#v with %v\n", err, url)
+		mylogger.Fatal.Fatalf("Dial failed: %v", err)
 	}
-	defer c.Close()
-	// mylogger.Info.Printf("negotiated protocol: %q\n", c.Subprotocol())
+	defer ws.Close()
 
-	done := make(chan struct{})
-
-	go func() {
-		defer c.Close()
-		defer close(done)
-		// count := 0
-		for {
-			_, bytes, err := c.ReadMessage()
-			if err != nil {
-				// TODO: this can happed on Control-C
-				mylogger.Warn.Printf("reading batc bytes: %#v\n", err)
-				return
-			}
-			// message is of Type: []unit8
-			if len(bytes) != 1844 {
-				mylogger.Warn.Printf("reading : bytes != 1844\n")
-				continue
-			}
-			// mylogger.Info.Printf("received length: %v, Type: %T, %d == %d", len(message), message, message[0], i)
-
-			// begin processing the bytes
-			// count = 0
-			for i := 0; i < 1836; {
-				word := uint16(bytes[i]) + uint16(bytes[i+1])<<8
-				// count++
-				// mylogger.Info.Printf("count = %v\n", count)
-				if word < 8192 {
-					word = 8192
-				}
-				// spData.Yp[i/2] = float32(word-uint16(8192)) / float32(52000)
-				spData.Yp[i/2] = float32(word-uint16(8192)) / float32(520) // normalize to 0 to 100
-				// spData.Yp[i/2] = 50.0
-				i += 2
-			}
-			// mylogger.Info.Printf("count = %v\n", count)
-			spData.Yp[0] = 0
-			spData.Yp[numPoints-1] = 0
-
-			spData.BeaconLevel = 0
-			for i := 32; i <= 133; i++ { // beacon center is 103
-				spData.BeaconLevel += spData.Yp[i]
-			}
-			spData.BeaconLevel = spData.BeaconLevel / 103
-			// mylogger.Info.Printf("beacon level %v : Yp[i] %v", spData.BeaconLevel, spData.Yp[103])
-
-			ch <- spData
-		}
-	}()
-
-	//I don't know why the following is needed - yet
-
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
+	var bytes = make([]byte, 2048) // larger than 1844
+	var n int
 
 	for {
-		select {
-		case t := <-ticker.C:
-			if err := c.WriteMessage(websocket.TextMessage, []byte(t.String())); err != nil {
-				mylogger.Warn.Printf("writing: %#v\n", err)
-				return
-			}
-		case <-interrupt:
-			mylogger.Info.Printf("interrupting")
-			if err := c.WriteMessage(
-				websocket.CloseMessage,
-				websocket.FormatCloseMessage(
-					websocket.CloseNormalClosure, "",
-				)); err != nil {
-				mylogger.Warn.Printf("error closing: %#v", err)
-			}
-			select {
-			case <-done:
-			case <-time.After(time.Second):
-			}
-			c.Close()
-			return
+		if n, err = ws.Read(bytes); err != nil {
+			mylogger.Warn.Printf("Read failed: %v", err)
+			continue
 		}
+		if n != 1844 {
+			mylogger.Warn.Printf("reading : bytes != 1844\n")
+			continue
+		}
+
+		// begin processing the bytes
+		// count = 0
+		for i := 0; i < 1836; {
+			word := uint16(bytes[i]) + uint16(bytes[i+1])<<8
+			// count++
+			// mylogger.Info.Printf("count = %v\n", count)
+			if word < 8192 {
+				word = 8192
+			}
+			// spData.Yp[i/2] = float32(word-uint16(8192)) / float32(52000)
+			spData.Yp[i/2] = float32(word-uint16(8192)) / float32(520) // normalize to 0 to 100
+			// spData.Yp[i/2] = 50.0
+			i += 2
+		}
+		// mylogger.Info.Printf("count = %v\n", count)
+		spData.Yp[0] = 0
+		spData.Yp[numPoints-1] = 0
+
+		spData.BeaconLevel = 0
+		for i := 32; i <= 133; i++ { // beacon center is 103
+			spData.BeaconLevel += spData.Yp[i]
+		}
+		spData.BeaconLevel = spData.BeaconLevel / 103
+		// mylogger.Info.Printf("beacon level %v : Yp[i] %v", spData.BeaconLevel, spData.Yp[103])
+
+		ch <- spData
 	}
+
 }
