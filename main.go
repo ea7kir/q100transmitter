@@ -88,13 +88,13 @@ var (
 		NarrowConstellation:     "QPSK",
 		VeryNarrorConstellation: "QPSK",
 		WideFec:                 "3/4",
-		NarrowFec:               "3/4",
+		NarrowFec:               "2/3", //"3/4",
 		VeryNarrowFec:           "3/4",
 		WideVideoBitRate:        "350", // 32...16384
-		NarrowVideoBitRate:      "350",
+		NarrowVideoBitRate:      "310", //"350",
 		VeryNarrowVideoBitRate:  "350",
 		WideAudioBitRate:        "64000", // 32000 | 64000
-		NarrowAudioBitRate:      "64000",
+		NarrowAudioBitRate:      "32000", //"64000",
 		VeryNarrowAudioBitRate:  "64000",
 		WideSpare1:              "sp1-a",
 		NarrowSpare1:            "sp1-a",
