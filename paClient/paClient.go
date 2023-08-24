@@ -37,9 +37,8 @@ func Initialize(cfg *SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	mylogger.Warn.Printf("SvrClient will stop... - NOT IMPLELENTED")
+	mylogger.Warn.Printf("paClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
-	mylogger.Info.Printf("SvrClient has stopped - NOT IMPLELENTED")
 }
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
