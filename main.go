@@ -91,7 +91,7 @@ var (
 		NarrowFec:               "2/3", //"3/4",
 		VeryNarrowFec:           "3/4",
 		WideVideoBitRate:        "350", // 32...16384
-		NarrowVideoBitRate:      "310", //"350",
+		NarrowVideoBitRate:      "320", //"350",
 		VeryNarrowVideoBitRate:  "350",
 		WideAudioBitRate:        "64000", // 32000 | 64000
 		NarrowAudioBitRate:      "32000", //"64000",
