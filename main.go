@@ -88,13 +88,13 @@ var (
 		NarrowConstellation:     "QPSK",
 		VeryNarrorConstellation: "QPSK",
 		WideFec:                 "3/4",
-		NarrowFec:               "2/3", //"3/4",
+		NarrowFec:               "3/4",
 		VeryNarrowFec:           "3/4",
-		WideVideoBitRate:        "350", // 32...16384
-		NarrowVideoBitRate:      "320", //"350",
-		VeryNarrowVideoBitRate:  "350",
+		WideVideoBitRate:        "340", // 32...16384
+		NarrowVideoBitRate:      "340",
+		VeryNarrowVideoBitRate:  "340",
 		WideAudioBitRate:        "64000", // 32000 | 64000
-		NarrowAudioBitRate:      "32000", //"64000",
+		NarrowAudioBitRate:      "64000",
 		VeryNarrowAudioBitRate:  "64000",
 		WideSpare1:              "sp1-a",
 		NarrowSpare1:            "sp1-a",
@@ -102,9 +102,9 @@ var (
 		WideSpare2:              "sp2-a",
 		NarrowSpare2:            "sp2-a",
 		VeryNarrowSpare2:        "sp2-a",
-		WideGain:                "-16",
-		NarrowGain:              "-16",
-		VeryNarrowGain:          "-16",
+		WideGain:                "-15",
+		NarrowGain:              "-15",
+		VeryNarrowGain:          "-15",
 	}
 )
 
