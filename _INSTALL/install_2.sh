@@ -8,10 +8,6 @@ echo
 
 sudo apt install git -y
 
-git config --global user.name "ea7kir"
-git config --global user.email "mikenaylorspain@icloud.com"
-git config --global init.defaultBranch main
-
 echo
 echo "-------------------------------"
 echo "-- Installing Go"
