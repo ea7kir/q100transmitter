@@ -9,6 +9,8 @@ import (
 	"context"
 	"image"
 	"image/color"
+
+	// _ "net/http/pprof"
 	"os"
 	"os/signal"
 	"q100transmitter/encoderClient"
@@ -111,12 +113,19 @@ var (
 // local data
 var (
 	spData     spectrumClient.SpData
-	spChannel  = make(chan spectrumClient.SpData, 5)
+	spChannel  = make(chan spectrumClient.SpData) //, 5)
 	svrData    paClient.SvrData
-	svrChannel = make(chan paClient.SvrData, 5)
+	svrChannel = make(chan paClient.SvrData) //, 5)
 )
 
+// profile from the Mac
+// go tool pprof http://txtouch.local:6060/debug/pprof/profile
+// go tool pprof -http=":" pprof.q100transmitter.samples.cpu.001.pb.gz
+
 func main() {
+	// go func() {
+	// 	log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
+	// }()
 	mylogger.Open("/home/pi/Q100/transmitter.log")
 	defer mylogger.Close()
 
