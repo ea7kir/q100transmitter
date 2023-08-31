@@ -142,7 +142,6 @@ func SetParams(cfg *HeConfig) error {
 	}
 
 	if err := sendToEncoder(conn, cmdStr, "AUDIO"); err != nil {
-		mylogger.Error.Printf("Failed to write AUDIO: %s", err)
 		return err
 	}
 
@@ -173,7 +172,6 @@ func SetParams(cfg *HeConfig) error {
 		arg.qp3)
 
 	if err := sendToEncoder(conn, cmdStr, "VIDEO"); err != nil {
-		mylogger.Error.Printf("Failed to write VIDEO: %s", err)
 		return err
 	}
 
@@ -185,30 +183,25 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	const SUCCESS_V = "#8001,22,06,OK!"
 	const FAIL = "#8001,23,06,ERR!"
 	var err error
-	mylogger.Info.Printf("-------------- cmdStr is : %s", cmdStr)
+	mylogger.Info.Printf("cmdStr is: %s", cmdStr)
 	// send
 	_, err = conn.Write([]byte(cmdStr))
 	if err != nil {
-		// println("Write failed:", err.Error())
-		mylogger.Error.Printf("Failed to write %s: %s", what, err)
-		return err
+		return fmt.Errorf("failed to write %s: %s", what, err)
 	}
 	// receive
 	buf := bufio.NewReader(conn)
 	result, err := buf.ReadString('!')
 	if err != nil {
-		mylogger.Error.Printf("Failed to read %s result", what)
-		return err
+		return fmt.Errorf("failed to read %s result: %s", what, err)
 	}
 	switch result {
 	case FAIL:
-		mylogger.Error.Printf("Failed to send %s to encoder >%v<", what, result)
-		return err
+		return fmt.Errorf("failed to send %s to encoder >%v<", what, result)
 	case SUCCESS_A, SUCCESS_V:
 		mylogger.Info.Printf("HEV-10 %s configured ok >%v<", what, result)
 	default:
-		mylogger.Error.Printf("Undefine %s result: >%v<", what, result)
-		return err
+		return fmt.Errorf("undefine %s result: >%v<", what, result)
 	}
 	/*
 		#8001,23,06,OK!

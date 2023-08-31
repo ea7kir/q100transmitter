@@ -194,13 +194,13 @@ var (
 		"290", "300", "310", "320", "330", "340", "350", "360",
 	}
 	const_WIDE_AUDIO_BITRATE_LIST = []string{
-		"32000", "64000",
+		"32000", "48000", "64000",
 	}
 	const_NARROW_AUDIO_BITRATE_LIST = []string{
-		"32000", "64000",
+		"32000", "48000", "64000",
 	}
 	const_VERY_NARROW_AUDIO_BITRATE_LIST = []string{
-		"32000", "64000",
+		"32000", "48000", "64000",
 	}
 	const_WIDE_SPARE1_LIST = []string{
 		"sp1-a", "sp1-b",
@@ -339,7 +339,9 @@ func Tune() {
 			AudioBitRate: AudioBitRate.Value,
 			VideoBitRate: VideoBitRate.Value,
 		}
-		encoderClient.SetParams(&encoderArgs)
+		if err := encoderClient.SetParams(&encoderArgs); err != nil {
+			mylogger.Error.Printf("TUNE: %s", err)
+		}
 
 		IsTuned = true
 	} else {
