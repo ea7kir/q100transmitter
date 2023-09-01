@@ -1,11 +1,9 @@
 # Q-100 Transmitter
-
 Control and monitor a DATV transmiter with a touch screen.
 
-<code style="color : red">THIS PROJECT IS IN EARLY DEVELOPMENT AND MAY BE UNSTABLE</code>
+$${\color{red}THIS\space PROJECT\space IS\space IN\space EARLY\space DEVELOPMENT\space AND\space MAY\space BE\space UNSTABLE}$$
 
 ## Hardware
-
 - Raspberry Pi 4B with 4GB RAM (minimum)
 - Raspberry Pi Official 7" Touch Screen
 - Analog Devices PlutoSDR Revision D
@@ -13,20 +11,12 @@ Control and monitor a DATV transmiter with a touch screen.
 - Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
 - DDMALL HEV-10 HDMI Video Encoder
 
-**A keyboard and mouse are not required.**
-
-## Coonections
-
-TODO: add schematic
-
+**A keyboard and mouse are not required at any time**
+## Connections
+TODO: add schenatics
 ## Installing
-
-TODO: see comments in pttSwitch.go
-
-TODO: see photos for USB connections etc.
-
+TODO: install script is incomplete## License
 ## License
-
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
