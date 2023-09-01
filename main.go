@@ -488,6 +488,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 		layout.Rigid(
 			func(gtx layout.Context) layout.Dimensions {
 				canvas := giocanvas.Canvas{
+					Theme:   ui.th,
 					Width:   float32(788), //gtx.Constraints.Max.X), //float32(width),  //float32(gtx.Constraints.Max.X),
 					Height:  float32(250), //float32(hieght), //float32(500),
 					Context: gtx,

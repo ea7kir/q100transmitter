@@ -15,23 +15,6 @@ sudo apt clean
 
 echo
 echo "-------------------------------"
-echo "-- Updating eeprom firmware"
-echo "-------------------------------"
-echo
-
-sudo rpi-eeprom-update -a
-
-echo
-echo "-------------------------------"
-echo "-- Updating eeprom firmware"
-echo "-------------------------------"
-echo
-
-# NOTE: only if advised to do so
-# sudo rpi-update
-
-echo
-echo "-------------------------------"
 echo "-- running rfkill"
 echo "-------------------------------"
 echo
