@@ -9,9 +9,10 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"q100transmitter/mylogger"
 	"strings"
 	"time"
+
+	"github.com/ea7kir/qLog"
 )
 
 /*
@@ -108,17 +109,17 @@ func SetParams(cfg *HeConfig) error {
 
 	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
 
-	mylogger.Info.Printf("Connecting to: %s", url)
+	qLog.Info("Connecting to: %s", url)
 	conn, err := net.Dial("tcp", url)
 	if err != nil {
-		mylogger.Error.Printf("Failed to connect to: %s", url)
+		qLog.Error("Failed to connect to: %s", url)
 		return err
 	}
-	mylogger.Info.Printf("Connected to: %v", url)
+	qLog.Info("Connected to: %v", url)
 	defer conn.Close()
 
 	if err := conn.SetDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
-		mylogger.Error.Printf("Failed to set timeout: %s", err)
+		qLog.Error("Failed to set timeout: %s", err)
 		return err
 	}
 
@@ -183,7 +184,7 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	const SUCCESS_V = "#8001,22,06,OK!"
 	const FAIL = "#8001,23,06,ERR!"
 	var err error
-	mylogger.Info.Printf("cmdStr is: %s", cmdStr)
+	qLog.Info("cmdStr is: %s", cmdStr)
 	// send
 	_, err = conn.Write([]byte(cmdStr))
 	if err != nil {
@@ -199,7 +200,7 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	case FAIL:
 		return fmt.Errorf("failed to send %s to encoder >%v<", what, result)
 	case SUCCESS_A, SUCCESS_V:
-		mylogger.Info.Printf("HEV-10 %s configured ok >%v<", what, result)
+		qLog.Info("HEV-10 %s configured ok >%v<", what, result)
 	default:
 		return fmt.Errorf("undefine %s result: >%v<", what, result)
 	}

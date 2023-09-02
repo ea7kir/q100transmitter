@@ -9,8 +9,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"q100transmitter/mylogger"
 	"strings"
+
+	"github.com/ea7kir/qLog"
 )
 
 /*
@@ -119,7 +120,7 @@ func writePluto() {
 		arg.h265box,
 		arg.remux)
 
-	// mylogger.Info.Printf("1: save to settings.txt to a local folder: \n%v\n", settings)
+	// qLog.Info("1: save to settings.txt to a local folder: \n%v\n", settings)
 
 	const (
 		cp2plutoScript   = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
@@ -132,15 +133,17 @@ func writePluto() {
 
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		mylogger.Fatal.Fatalf("%s", err)
+		qLog.Fatal("%s", err)
+		os.Exit(1)
 	}
 	defer f.Close()
 
 	_, err = f.WriteString(settings)
 	if err != nil {
-		mylogger.Fatal.Fatalf("%s", err)
+		qLog.Fatal("%s", err)
+		os.Exit(1)
 	}
-	// mylogger.Info.Printf("Pluto settings saved to local file: %s", settingsFileName)
+	// qLog.Info("Pluto settings saved to local file: %s", settingsFileName)
 
 	// Sending to Pluto on the smd line
 	// /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
@@ -157,8 +160,8 @@ func writePluto() {
 	)
 	_, err = cmd.Output()
 	if err != nil {
-		mylogger.Fatal.Fatalf("Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
-		return //false
+		qLog.Fatal("Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
+		os.Exit(1)
 	}
 	// now delete the local  settings file
 	// ************* END dummy send using script
@@ -168,7 +171,7 @@ func writePluto() {
 	// can't do this until file is closed.
 	// err = os.Remove(settingsFileName)
 	// if err != nil {
-	// 	mylogger.Warn.Printf("Failed to delete settings.txt: %s", err)
+	// 	qLog.Warn("Failed to delete settings.txt: %s", err)
 	// }
 }
 

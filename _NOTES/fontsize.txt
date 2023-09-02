@@ -1,0 +1,5 @@
+func (c *Canvas) Text(x, y, size float32, s string, fillcolor color.NRGBA) {
+	x, y = dimen(x, y, c.Width, c.Height)
+	size = pct(size, c.Width)
+	c.textops(x, y, size, text.Start, s, fillcolor)
+}

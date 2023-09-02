@@ -10,9 +10,10 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"q100transmitter/mylogger"
 	"strings"
 	"time"
+
+	"github.com/ea7kir/qLog"
 )
 
 type (
@@ -37,17 +38,19 @@ func Initialize(cfg *SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	mylogger.Warn.Printf("paClient will stop... - NOT IMPLELENTED")
+	qLog.Warn("paClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
 }
+
+// TODO: need to add a timeout
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func readServer(cfg *SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	mylogger.Info.Printf("Client %v connected", url)
+	qLog.Info("Client %v connected", url)
 	conn, err := net.Dial("tcp", url)
 	if err != nil {
-		mylogger.Error.Printf("Failed to connect to: %v", url)
+		qLog.Error("Failed to connect to: %v", url)
 		sd := SvrData{}
 		sd.Status = "Not connected"
 		ch <- sd
@@ -76,13 +79,13 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 			case nil:
 				clientRequest := ""
 				if _, err = conn.Write([]byte(clientRequest + "\n")); err != nil {
-					mylogger.Error.Printf("failed to send the client request: %v\n", err)
+					qLog.Error("failed to send the client request: %v\n", err)
 				}
 			case io.EOF:
-				mylogger.Info.Printf("client closed the connection")
+				qLog.Info("client closed the connection")
 				return
 			default:
-				mylogger.Error.Printf("client error: %v\n", err)
+				qLog.Error("client error: %v\n", err)
 				return
 			}
 
@@ -95,10 +98,10 @@ func readServer(cfg *SvrConfig, ch chan SvrData) {
 				sd.Status = strings.TrimSpace(serverResponse)
 				ch <- sd
 			case io.EOF:
-				mylogger.Warn.Printf("server closed the connection")
+				qLog.Warn("server closed the connection")
 				return
 			default:
-				mylogger.Warn.Printf("server error: %v\n", err)
+				qLog.Warn("server error: %v\n", err)
 				return
 			}
 		}

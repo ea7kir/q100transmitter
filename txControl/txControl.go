@@ -7,10 +7,11 @@ package txControl
 
 import (
 	"q100transmitter/encoderClient"
-	"q100transmitter/mylogger"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
+
+	"github.com/ea7kir/qLog"
 )
 
 // API
@@ -316,9 +317,9 @@ func Initialize(cfg *TuConfig) {
 
 // API
 func Stop() {
-	mylogger.Info.Printf("Tuner will stop...")
+	qLog.Info("Tuner will stop...")
 	IsPtt = pttSwitch.SetPtt(false)
-	mylogger.Info.Printf("Tuner has stopped")
+	qLog.Info("Tuner has stopped")
 }
 
 // API
@@ -340,7 +341,7 @@ func Tune() {
 			VideoBitRate: VideoBitRate.Value,
 		}
 		if err := encoderClient.SetParams(&encoderArgs); err != nil {
-			mylogger.Error.Printf("TUNE: %s", err)
+			qLog.Error("TUNE: %s", err)
 		}
 
 		IsTuned = true
@@ -351,7 +352,7 @@ func Tune() {
 		// }
 		IsTuned = false
 	}
-	// mylogger.Info.Printf("IsTuned is %v", IsTuned)
+	// qLog.Info("IsTuned is %v", IsTuned)
 }
 
 // API

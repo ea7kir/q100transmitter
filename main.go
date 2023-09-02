@@ -7,19 +7,22 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"image"
 	"image/color"
+	"time"
 
 	// _ "net/http/pprof"
 	"os"
 	"os/signal"
 	"q100transmitter/encoderClient"
-	"q100transmitter/mylogger"
 	"q100transmitter/paClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spectrumClient"
 	"q100transmitter/txControl"
+
+	"github.com/ea7kir/qLog"
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
@@ -126,12 +129,23 @@ func main() {
 	// go func() {
 	// 	log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
 	// }()
-	mylogger.Open("/home/pi/Q100/transmitter.log")
-	defer mylogger.Close()
 
-	mylogger.Info.Printf("----- q100transmitter Opened -----")
+	// qLog.Open("mylog.txt")
+	logFile, err := os.OpenFile("/home/pi/Q100/transmitter.log", os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println("failed to open log file:", err)
+		os.Exit(1)
+	}
+
+	// log.SetOutput(os.Stderr)
+	qLog.SetOutput(logFile)
+	defer qLog.Close()
+
+	qLog.Info("----- q100transmitter Opened -----")
 
 	os.Setenv("DISPLAY", ":0") // required for X11
+
+	time.Sleep(2 * time.Second) // test for network to start
 
 	spectrumClient.Intitialize(&spConfig, spChannel)
 
@@ -149,14 +163,15 @@ func main() {
 		w := app.NewWindow(app.Fullscreen.Option())
 		app.Size(800, 480) // I don't know if this is help in any way
 		if err := loop(w); err != nil {
-			mylogger.Fatal.Fatalf("failed to start loop: %v", err)
+			qLog.Fatal("failed to start loop: %v", err)
+			os.Exit(1)
 		}
 
 		txControl.Stop()
 		paClient.Stop()
 		spectrumClient.Stop()
 
-		mylogger.Info.Printf("----- q100transmitter Closed -----")
+		qLog.Info("----- q100transmitter Closed -----")
 		os.Exit(0)
 	}()
 
@@ -191,7 +206,7 @@ func loop(w *app.Window) error {
 			// prevent it from firing over and over.
 			done = nil
 			// Log something to make it obvious this happened.
-			// mylogger.Info.Printf("context cancelled")
+			// qLog.Info("context cancelled")
 			// Initiate window shutdown.
 			txControl.Stop() // TODO: does nothing yet
 			// lmReader.Stop() // TODO: does nothing yet
@@ -493,7 +508,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 					Height:  float32(250), //float32(hieght), //float32(500),
 					Context: gtx,
 				}
-				// mylogger.Info.Printf("  Canvas: %#v\n", canvas.Context.Constraints)
+				// qLog.Info("  Canvas: %#v\n", canvas.Context.Constraints)
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
