@@ -5,7 +5,7 @@ go 1.21.0
 require (
 	gioui.org v0.3.0
 	github.com/ajstarks/giocanvas v0.0.0-20230901134218-c1d42b21165f
-	github.com/ea7kir/qLog v0.0.0-20230902183800-144c2afa4d5c
+	github.com/ea7kir/qLog v1.0.0
 	github.com/warthog618/gpiod v0.8.2
 	golang.org/x/image v0.11.0
 	golang.org/x/net v0.14.0
