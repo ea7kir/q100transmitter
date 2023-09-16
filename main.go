@@ -48,7 +48,7 @@ var (
 		Origin: "http://eshail.batc.org.uk/wb",
 	}
 	svrConfig = paClient.SvrConfig{
-		Url:  "txserver.local",
+		Url:  "paserver.local",
 		Port: 9999, //8765,
 	}
 	heConfig = encoderClient.HeConfig{
@@ -147,7 +147,7 @@ func main() {
 
 	time.Sleep(2 * time.Second) // test for network to start
 
-	spectrumClient.Intitialize(&spConfig, spChannel)
+	spectrumClient.Intitialize(spConfig, spChannel)
 
 	paClient.Initialize(&svrConfig, svrChannel)
 
@@ -201,21 +201,21 @@ func loop(w *app.Window) error {
 
 	for {
 		select {
-		case <-done:
-			// When the context cancels, assign the done channel to nil to
-			// prevent it from firing over and over.
-			done = nil
-			// Log something to make it obvious this happened.
-			// qLog.Info("context cancelled")
-			// Initiate window shutdown.
-			txControl.Stop() // TODO: does nothing yet
-			// lmReader.Stop() // TODO: does nothing yet
-			spectrumClient.Stop() // TODO: does nothing yet - bombs with Control=C
-			w.Perform(system.ActionClose)
-		case svrData = <-svrChannel:
-			w.Invalidate()
-		case spData = <-spChannel:
-			w.Invalidate()
+		// case <-done:
+		// 	// When the context cancels, assign the done channel to nil to
+		// 	// prevent it from firing over and over.
+		// 	done = nil
+		// 	// Log something to make it obvious this happened.
+		// 	// qLog.Info("context cancelled")
+		// 	// Initiate window shutdown.
+		// 	txControl.Stop() // TODO: does nothing yet
+		// 	// lmReader.Stop() // TODO: does nothing yet
+		// 	spectrumClient.Stop() // TODO: does nothing yet - bombs with Control=C
+		// 	w.Perform(system.ActionClose)
+		// case svrData = <-svrChannel:
+		// 	w.Invalidate()
+		// case spData = <-spChannel:
+		// 	w.Invalidate()
 		case event := <-w.Events():
 			switch event := event.(type) {
 			case system.DestroyEvent:
@@ -312,6 +312,22 @@ func loop(w *app.Window) error {
 				ui.layoutFlexes(gtx)
 				event.Frame(gtx.Ops)
 			}
+		case <-done:
+			// When the context cancels, assign the done channel to nil to
+			// prevent it from firing over and over.
+			done = nil
+			// Log something to make it obvious this happened.
+			// qLog.Info("context cancelled")
+			// Initiate window shutdown.
+			txControl.Stop() // TODO: does nothing yet
+			// lmReader.Stop() // TODO: does nothing yet
+			spectrumClient.Stop() // TODO: does nothing yet - bombs with Control=C
+			w.Perform(system.ActionClose)
+		case svrData = <-svrChannel:
+			w.Invalidate()
+		case spData = <-spChannel:
+			w.Invalidate()
+
 		}
 	}
 }
