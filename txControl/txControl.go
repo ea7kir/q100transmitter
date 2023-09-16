@@ -196,15 +196,15 @@ var (
 	}
 	const_WIDE_AUDIO_BITRATE_LIST = []string{
 		"32000", "64000",
-		// "32000", "48000", "64000",
+		// "32000", "48000", "64000", // 48000 unsupported
 	}
 	const_NARROW_AUDIO_BITRATE_LIST = []string{
 		"32000", "64000",
-		// "32000", "48000", "64000",
+		// "32000", "48000", "64000", // 48000 unsupported
 	}
 	const_VERY_NARROW_AUDIO_BITRATE_LIST = []string{
 		"32000", "64000",
-		// "32000", "48000", "64000",
+		// "32000", "48000", "64000", // 48000 unsupported
 	}
 	const_WIDE_SPARE1_LIST = []string{
 		"sp1-a", "sp1-b",
