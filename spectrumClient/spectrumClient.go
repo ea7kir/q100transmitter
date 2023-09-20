@@ -70,6 +70,7 @@ var (
 // TODO: needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
 //	which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 
+// forever go routine called from Intitialize
 func readAndDecode(cfg SpConfig, ch chan SpData) {
 	ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
 	if err != nil {
@@ -121,7 +122,7 @@ func readAndDecode(cfg SpConfig, ch chan SpData) {
 
 }
 
-// TODO: move to TuControl.go
+// TODO: move to txControl.go
 /*****************************************************************
 * SPECTRUM & CALIBRARTION MARKERS
 *****************************************************************/
@@ -129,6 +130,7 @@ func readAndDecode(cfg SpConfig, ch chan SpData) {
 var (
 	// TODO: calculatee a mathematical values
 	const_frequencyCentre = map[string]float32{
+		// "10491.50 / 00": 103,
 		"2403.25 / 01": 230,
 		"2403.50 / 02": 256,
 		"2403.75 / 03": 281,
