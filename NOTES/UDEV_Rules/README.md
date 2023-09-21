@@ -18,7 +18,7 @@ Reload rules:
 
 `sudo udevadm control --reload-rules`
 
-## Updte
+## Update
 
 It also appears neccessary to install a config file in $HOME/.ssh
 

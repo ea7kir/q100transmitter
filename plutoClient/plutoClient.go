@@ -123,7 +123,7 @@ func writePluto() {
 	// qLog.Info("1: save to settings.txt to a local folder: \n%v\n", settings)
 
 	const (
-		cp2plutoScript   = "/home/pi/Q100/q100transmitter/_scripts/cp2pluto"
+		cp2plutoScript   = "/home/pi/Q100/q100transmitter/etc/cp2pluto"
 		settingsFileName = "/home/pi/Q100/settings.txt"
 	)
 

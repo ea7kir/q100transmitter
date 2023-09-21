@@ -45,6 +45,18 @@ WARNING: the Pi may reboot during the install, so please allow it to complete
 
 ```
 ssh pi@q100transmitter.local
+
+wget https://raw.githubusercontent.com/ea7kir/q100transmitter/main/resources/install.sh
+
+chmod +x install.sh
+
+./install.sh
+```
+
+## OLD NOTES ----------------------------------------------------------
+
+```
+ssh pi@q100transmitter.local
 ```
 
 Enable GPIO and Expand the filesystem - using raspi-config
@@ -75,7 +87,7 @@ Execute the install scripts in order
 
 ```
 cd
-cp /home/pi/Q100/q100/q100transmitter/_INSTALL/install_* .
+cp /home/pi/Q100/q100/q100transmitter/etc/install_* .
 chmod +x install_*
 ./install_1.sh
 ```
