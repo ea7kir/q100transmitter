@@ -270,7 +270,7 @@ var (
 )
 
 // API
-func Initialize(cfg *TuConfig) {
+func Initialize(cfg TuConfig) {
 	Band = newSelector(const_BAND_LIST, cfg.Band)
 	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, cfg.WideSymbolrate)
 	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, cfg.WideFrequency)

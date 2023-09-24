@@ -29,7 +29,7 @@ type (
 )
 
 // API
-func Initialize(cfg *SvrConfig, ch chan SvrData) {
+func Initialize(cfg SvrConfig, ch chan SvrData) {
 	go readServer(cfg, ch)
 	// TODO: create the connection in loop to retry
 	// defer
@@ -45,7 +45,7 @@ func Stop() {
 // TODO: need to add a timeout
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
-func readServer(cfg *SvrConfig, ch chan SvrData) {
+func readServer(cfg SvrConfig, ch chan SvrData) {
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
 	qLog.Info("Client %v connected", url)
 	conn, err := net.Dial("tcp", url)

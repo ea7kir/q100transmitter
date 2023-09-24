@@ -147,7 +147,7 @@ func main() {
 		qLog.Fatal("ünable read callsign: %err", err)
 	}
 	plConfig.Provider = string(bytes)
-	fmt.Println("callsign: ", plConfig.Provider)
+	// fmt.Println("callsign: ", plConfig.Provider)
 	// current Pluto firmware doesn't provide a way to set this
 	plConfig.Service = ""
 
@@ -159,15 +159,15 @@ func main() {
 
 	spectrumClient.Intitialize(spConfig, spChannel)
 
-	paClient.Initialize(&svrConfig, svrChannel)
+	paClient.Initialize(svrConfig, svrChannel)
 
-	encoderClient.Initialize(&heConfig)
+	encoderClient.Initialize(heConfig)
 
-	plutoClient.Initialize(&plConfig)
+	plutoClient.Initialize(plConfig)
 
 	pttSwitch.Initialize()
 
-	txControl.Initialize(&tuConfig)
+	txControl.Initialize(tuConfig)
 
 	go func() {
 		w := app.NewWindow(app.Fullscreen.Option())
@@ -656,7 +656,7 @@ func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 			return ui.q100_Column3Rows(gtx, dec3, inc3, val3)
 		}),
 		// layout.Rigid(func(gtx C) D {
-		// 	return ui.q100_Column3Rows(gtx, dec3, inc3, val3) // TODO: add 3 more buttons here & split off H265 ACC to 2 buttons
+		// 	return ui.q100_Column3Rows(gtx, dec4, inc4, val4) // TODO: add 3 more buttons here
 		// }),
 		layout.Rigid(func(gtx C) D {
 			return ui.q100_Column2Buttons(gtx)

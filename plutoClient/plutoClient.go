@@ -76,10 +76,10 @@ type (
 )
 
 var (
-	arg *PlConfig
+	arg PlConfig
 )
 
-func Initialize(cfg *PlConfig) {
+func Initialize(cfg PlConfig) {
 	arg = cfg
 	arg.calibrationMode = "nocalib"
 	arg.pcr_pts = "800"

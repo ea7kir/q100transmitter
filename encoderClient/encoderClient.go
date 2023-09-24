@@ -66,11 +66,11 @@ type (
 )
 
 var (
-	arg *HeConfig
+	arg HeConfig
 )
 
 // API
-func Initialize(cfg *HeConfig) {
+func Initialize(cfg HeConfig) {
 	arg = cfg
 	// settings not used by the GUI
 	arg.audio_sample_rate = "44100" // or "48000"
