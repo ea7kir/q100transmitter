@@ -142,7 +142,12 @@ func main() {
 	defer qLog.Close()
 
 	// read callsign from /home/pi/Q100/callsign
-	plConfig.Provider = "EA7KIR"
+	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
+	if err != nil {
+		qLog.Fatal("ünable read callsign: %err", err)
+	}
+	plConfig.Provider = string(bytes)
+	fmt.Println("callsign: ", plConfig.Provider)
 	// current Pluto firmware doesn't provide a way to set this
 	plConfig.Service = ""
 
