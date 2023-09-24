@@ -62,8 +62,8 @@ var (
 	}
 	plConfig = plutoClient.PlConfig{
 		// configure setting not provided by the GUI
-		Provider: "EA7KIR",
-		Service:  "Michael", // NOTE: current Pluto firmware doesn't provide a way to set this
+		// Provider: "",
+		// Service:  "",
 		// alter the following with caution
 		// CalibrationMode: "nocalib",
 		// Pcr_pts:         "800",
@@ -140,6 +140,11 @@ func main() {
 	// log.SetOutput(os.Stderr)
 	qLog.SetOutput(logFile)
 	defer qLog.Close()
+
+	// read callsign from /home/pi/Q100/callsign
+	plConfig.Provider = "EA7KIR"
+	// current Pluto firmware doesn't provide a way to set this
+	plConfig.Service = ""
 
 	qLog.Info("----- q100transmitter Opened -----")
 

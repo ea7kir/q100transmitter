@@ -1,2 +1,4 @@
+# ignore executable binary
 q100transmitter
+# ignore tests
 *.test

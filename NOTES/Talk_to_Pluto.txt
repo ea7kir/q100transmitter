@@ -95,4 +95,4 @@ mount | grep -i pluto. (Should appear as /media/analog/PlutoSDR
 ######################################
 
 Also see: https://github.com/m0dts/HDMI-Encoder-Tools/blob/main/encoder.py
-For taking to an encoder
+For talking to an encoder
