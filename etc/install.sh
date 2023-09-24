@@ -28,9 +28,10 @@ while true; do
     esac
 done
 
-#read -p "Enter your callsign in uppercase and press enter " callsign
-#mkdir /home/pi/Q100
-#echo $callsign > /home/pi/Q100/callsign
+mkdir /home/pi/Q100
+
+read -p "Enter your callsign in uppercase and press enter " callsign
+echo $callsign > /home/pi/Q100/callsign
 
 echo Updateing Pi OS
 sudo apt update
@@ -81,14 +82,12 @@ echo Installing gioui dependencies
 sudo apt install gcc pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
 echo Cloning q100transmitter to /home/pi/Q100
-cd
-mkdir Q100
-cd Q100
+cd /home/Q100
 git clone https://github.com/ea7kir/q100transmitter.git
 cd
 
 echo Copying q100transmitter.service
-cd /home/pi/Q100/etc
+cd /home/pi/Q100/q100transmitter/etc
 sudo cp q100transmitter.service /etc/systemd/system/
 sudo chmod 644 /etc/systemd/system/q100transmitter.service
 sudo systemctl daemon-reload
