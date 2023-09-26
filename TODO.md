@@ -12,8 +12,7 @@
 - revise what data to monitor
 - revise what parameters to use
 - tidy the user interface
-- rename spectrumClient
-- rename encoderClient
 - implement calibrater.go
 - improve marker widths
 - fix service file not working on boot - ok after
+- revist shutdown

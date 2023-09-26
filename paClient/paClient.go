@@ -28,6 +28,10 @@ type (
 	}
 )
 
+var (
+	done bool
+)
+
 // API
 func Initialize(cfg SvrConfig, ch chan SvrData) {
 	go readServer(cfg, ch)
@@ -38,72 +42,68 @@ func Initialize(cfg SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	qLog.Warn("paClient will stop... - NOT IMPLELENTED")
+	qLog.Warn("paClient will stop... - NOT IMPLELENTED *************")
 	// is it coonected?  send an EOF
+	done = true
 }
 
 // TODO: need to add a timeout
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 func readServer(cfg SvrConfig, ch chan SvrData) {
+	sd := SvrData{}
+	sd.Status = "Connecting..."
+	ch <- sd
+
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
 	qLog.Info("Client %v connected", url)
 	conn, err := net.Dial("tcp", url)
 	if err != nil {
 		qLog.Error("Failed to connect to: %v", url)
-		sd := SvrData{}
+		// sd := SvrData{}
 		sd.Status = "Not connected"
 		ch <- sd
 		return
 	}
 	defer conn.Close()
 
-	// clientReader := bufio.NewReader(os.Stdin)
 	serverReader := bufio.NewReader(conn)
+	clientRequest := "\n"
 
-	sd := SvrData{}
+	// for {
+
+	// TODO: better to use a ticker
+	// t := time.NewTicker(2 * time.Second)
+	// <-t.C
+	// send request
+
 	for {
-		// TODO: better to use a ticker
-		// t := time.NewTicker(2 * time.Second)
-		// <-t.C
-		// send request
+		if done {
+			qLog.Warn("paClient will stop...")
+			return
+		}
 
-		time.Sleep(time.Second)
+		time.Sleep(2 * time.Second)
 
-		for {
-			// Waiting for the client request
-			// clientRequest, err := clientReader.ReadString('\n')
-			time.Sleep(2 * time.Second)
+		if _, err = conn.Write([]byte(clientRequest)); err != nil {
+			qLog.Error("failed to send the client request: %v\n", err)
+			sd.Status = "Failed to send request"
+			ch <- sd
+		}
 
-			switch err {
-			case nil:
-				clientRequest := ""
-				if _, err = conn.Write([]byte(clientRequest + "\n")); err != nil {
-					qLog.Error("failed to send the client request: %v\n", err)
-				}
-			case io.EOF:
-				qLog.Info("client closed the connection")
-				return
-			default:
-				qLog.Error("client error: %v\n", err)
-				return
-			}
-
-			// Waiting for the server response
-			serverResponse, err := serverReader.ReadString('\n')
-
-			switch err {
-			case nil:
-				// sd.Status = serverResponse
-				sd.Status = strings.TrimSpace(serverResponse)
-				ch <- sd
-			case io.EOF:
-				qLog.Warn("server closed the connection")
-				return
-			default:
-				qLog.Warn("server error: %v\n", err)
-				return
-			}
+		// Waiting for the server response
+		serverResponse, err := serverReader.ReadString('\n')
+		switch err {
+		case nil:
+			sd.Status = strings.TrimSpace(serverResponse)
+			ch <- sd
+		case io.EOF:
+			qLog.Warn("server closed the connection")
+			return
+		default:
+			qLog.Error("server error: %v\n", err)
+			return
 		}
 	}
+	// }
 }

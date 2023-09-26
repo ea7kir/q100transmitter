@@ -272,10 +272,13 @@ var (
 // API
 func Initialize(cfg TuConfig) {
 	Band = newSelector(const_BAND_LIST, cfg.Band)
+
 	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, cfg.WideSymbolrate)
 	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, cfg.WideFrequency)
+
 	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, cfg.NarrowSymbolrate)
 	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, cfg.NarrowFrequency)
+
 	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, cfg.VeryNarrowSymbolRate)
 	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, cfg.VeryNarrowFrequency)
 

@@ -66,7 +66,7 @@ func SetPtt(tx bool) bool {
 		qLog.Info("PTT is %v", "Enabled")
 	case false:
 		hvc349Control.SetValue(HIGH)
-		qLog.Info("PTT is %v", "Disabled")
+		// qLog.Info("PTT is %v", "Disabled") // too much logging, because called on when any button is pressed
 	}
 	return tx
 }
