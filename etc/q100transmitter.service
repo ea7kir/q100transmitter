@@ -1,4 +1,4 @@
-# cd /home/pi/Q100/q100transmitter/_INSTALL
+# cd /home/pi/Q100/q100transmitter/etc
 # sudo cp q100transmitter.service /etc/systemd/system/
 # sudo chmod 644 /etc/systemd/system/q100transmitter.service
 # sudo systemctl daemon-reload
@@ -15,8 +15,6 @@
 Description=Q100 Transmitter for the Es'Hail-2 satellite
 Wants=graphical.target
 After=mult-user.target
-#After=network-online.target
-#Wants=network-online.target
 
 [Service]
 Type=simple

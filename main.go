@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"time"
 
 	// _ "net/http/pprof"
 	"os"
@@ -154,8 +153,6 @@ func main() {
 	qLog.Info("----- q100transmitter Opened -----")
 
 	os.Setenv("DISPLAY", ":0") // required for X11
-
-	time.Sleep(2 * time.Second) // test for network to start
 
 	spectrumClient.Intitialize(spConfig, spChannel)
 
