@@ -94,12 +94,12 @@ var (
 		WideFec:                 "3/4",
 		NarrowFec:               "3/4",
 		VeryNarrowFec:           "3/4",
-		WideVideoBitRate:        "340", // 32...16384
+		WideVideoBitRate:        "440", // 32...16384
 		NarrowVideoBitRate:      "340",
-		VeryNarrowVideoBitRate:  "340",
+		VeryNarrowVideoBitRate:  "310",
 		WideAudioBitRate:        "64000", // 32000 | 64000
 		NarrowAudioBitRate:      "64000",
-		VeryNarrowAudioBitRate:  "64000",
+		VeryNarrowAudioBitRate:  "32000",
 		WideSpare1:              "sp1-a",
 		NarrowSpare1:            "sp1-a",
 		VeryNarrowSpare1:        "sp1-a",
@@ -108,7 +108,7 @@ var (
 		VeryNarrowSpare2:        "sp2-a",
 		WideGain:                "-15",
 		NarrowGain:              "-15",
-		VeryNarrowGain:          "-15",
+		VeryNarrowGain:          "-20",
 	}
 )
 
