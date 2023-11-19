@@ -33,6 +33,8 @@ mkdir /home/pi/Q100
 read -p "Enter your callsign in uppercase and press enter " callsign
 echo $callsign > /home/pi/Q100/callsign
 
+echo "\n###################################################\n"
+
 echo Updateing Pi OS
 sudo apt update
 sudo apt -y full-upgrade
@@ -67,6 +69,8 @@ echo Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/ude
 sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 
+echo "\n###################################################\n"
+
 echo Adding go path to .profile
 echo -e '\n\nexport PATH=$PATH:/usr/local/go/bin\n\n' >> /home/pi/.profile
 
@@ -83,10 +87,7 @@ sudo apt install gcc pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbc
 echo Installing gioui tools
 go install gioui.org/cmd/gogio@latest
 
-#echo Cloning q100transmitter to /home/pi/Q100
-#cd /home/Q100
-#git clone https://github.com/ea7kir/q100transmitter.git
-#cd
+echo "\n###################################################\n"
 
 echo Copying q100transmitter.service
 cd /home/pi/Q100/q100transmitter/etc
@@ -159,5 +160,15 @@ INSTALL HAS COMPLETED
    sudo systemctl enable q100transmitter
    sudo systemctl start q100transmitter
 
-   now type sudo reboot
 "
+
+while true; do
+    read -p "I have read the above, so continue (y/n)? " answer
+    case ${answer:0:1} in
+        y|Y ) break;;
+        n|N ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+sudo reboot
