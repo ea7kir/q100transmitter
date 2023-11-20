@@ -53,9 +53,6 @@ echo -e "\ndtoverlay=disable-wifi" >> /boot/config.txt
 echo Disbaling Bluetooth
 echo -e "\ndtoverlay=disable-bt" >> /boot/config.txt
 
-#echo Installing GIT
-#sudo apt -y install git
-
 echo Installing IIO devices
 sudo apt install libiio-utils
 

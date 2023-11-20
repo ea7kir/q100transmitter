@@ -43,11 +43,14 @@ WARNING: the Pi may reboot during the install, so please allow it to complete
 ```
 ssh pi@txtouch.local
 
-wget https://raw.githubusercontent.com/ea7kir/q100transmitter/main/etc/install.sh
+mkdir Q100
+cd Q100
+git clone https://github.com/ea7kir/q100transmitter.git
+rm q100transmitter.git
 
+cd q100transmitter/etc
 chmod +x install.sh
-
-./install.sh # WARNING: install script has not been tested
+./install
 ```
 ## License
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
