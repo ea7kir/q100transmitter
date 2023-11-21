@@ -159,7 +159,7 @@ echo "
 INSTALL HAS COMPLETED
     after rebooting...
 
-    Connect a mouse or ues your finger to configure some Desktop settings:
+    Ues your finger to configure some Desktop settings:
 
     Appearance Settings
 	    Disable Wastebasket & External Disks
