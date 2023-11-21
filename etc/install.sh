@@ -155,19 +155,24 @@ sudo nft list ruleset | sudo tee /etc/nftables.conf
 
 ###################################################
 
-echo "\n
+echo "
 INSTALL HAS COMPLETED
-   after rebooting, build and auto exec...
+    after rebooting...
 
-   It will be neccessary to log into the Pluto once to get things working...
+    Connect a mouse or ues your finger to configure some Desktop settings:
 
-   ssh TODO:
+    Appearance Settings
+	    Disable Wastebasket & External Disks
+    Raspberry Pi Configuration
+	    System set Network at Boot to ON
 
-   cd Q100/q100transmitter
-   go mod tidy
-   go build .
-   sudo systemctl enable q100transmitter
-   sudo systemctl start q100transmitter
+    Then execute the following commands
+
+    cd Q100/q100transmitter
+    go mod tidy
+    go build .
+    sudo systemctl enable q100transmitter
+    sudo systemctl start q100transmitter
 
 "
 

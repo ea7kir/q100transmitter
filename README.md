@@ -1,7 +1,7 @@
 # Q-100 Transmitter
 Control and monitor a DATV transmiter with a touch screen.
 
-$${\color{red}THIS\space PROJECT\space IS\space IN\space EARLY\space DEVELOPMENT\space AND\space MAY\space BE\space UNSTABLE}$$
+$${\color{red}WARNING:\space ALL\space DEVELOPMENT\space TAKES\space PLACE\space ON\space THE\space MAIN\space BRANCH}$$
 
 ## Hardware
 - Raspberry Pi 4B with 4GB RAM (minimum)
@@ -51,6 +51,9 @@ cd q100transmitter/etc
 chmod +x install.sh
 ./install.sh
 ```
+
+THEN FOLLOW THE INSTRUCTIONS TO CONFIGURE THE DESKTOP
+
 ## License
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
 
