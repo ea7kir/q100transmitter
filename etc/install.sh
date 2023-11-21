@@ -153,6 +153,8 @@ sudo nft list ruleset | sudo tee /etc/nftables.conf
 
 ###################################################
 
+chmod -x /home/pi/Q100/etc/install.sh # to prevent it from being run a second time
+
 echo "
 INSTALL HAS COMPLETED
     after rebooting...
@@ -164,7 +166,11 @@ INSTALL HAS COMPLETED
     Raspberry Pi Configuration
 	    System set Network at Boot to ON
 
-    Then execute the following commands
+    Then login from your PC, Mc, or Linux computer
+
+    ssh pi@txtouch.local
+
+    and execute the following commands
 
     cd Q100/q100transmitter
     go mod tidy
