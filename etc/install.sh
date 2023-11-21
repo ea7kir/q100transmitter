@@ -5,8 +5,6 @@
 
 GOVERSION=1.21.4
 
-echo WARNING: THIS INSTALL SCRIPT HAS NOT BEEN TESTED
-
 whoami | grep -q pi
 if [ $? != 0 ]; then
   echo Install must be performed as user pi
@@ -74,7 +72,7 @@ sudo tar -C /usr/local -xzf $GOFILE
 cd
 
 echo Installing gioui dependencies
-sudo apt install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
+sudo apt -y install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
 echo Installing gioui tools
 go install gioui.org/cmd/gogio@latest
