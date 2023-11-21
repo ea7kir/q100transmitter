@@ -19,6 +19,10 @@ if [ $? != 0 ]; then
   exit
 fi
 
+read -p "Enter your callsign in uppercase and press enter " callsign
+echo $callsign > /home/pi/Q100/callsign
+echo saved to Q100/callsign
+
 while true; do
     read -p "Install q100transmitter using Go version $GOVERSION (y/n)? " answer
     case ${answer:0:1} in
@@ -28,51 +32,39 @@ while true; do
     esac
 done
 
-mkdir /home/pi/Q100
+###################################################
 
-read -p "Enter your callsign in uppercase and press enter " callsign
-echo $callsign > /home/pi/Q100/callsign
-
-echo "\n###################################################\n"
-
-echo Updateing Pi OS
+echo Update Pi OS
 sudo apt update
 sudo apt -y full-upgrade
 sudo apt -y autoremove
 sudo apt clean
 
-echo Running rfkill # not sure if this dupicates config.txt
-rfkill block 0
-rfkill block 1
+###################################################
 
 echo Making changes to config.txt
 
-echo Disbaling Wifi
-echo -e "\ndtoverlay=disable-wifi" >> /boot/config.txt
+sudo sh -c "echo '\n# EA7KIR Additions' >> /boot/config.txt"
 
-echo Disbaling Bluetooth
-echo -e "\ndtoverlay=disable-bt" >> /boot/config.txt
+echo Disable Wifi
+sudo sh -c "echo 'dtoverlay=disable-wifi' >> /boot/config.txt"
+
+echo Disable Bluetooth
+sudo sh -c "echo 'dtoverlay=disable-bt' >> /boot/config.txt"
+
+###################################################
+
+echo Making changes to .profile
+
+sudo sh -c "echo '\n# EA7KIR Additions' >> /home/pi/.profile"
 
 echo Disbale Screen Blanking in .profile
-echo -e '\n\nexport DISPLAY=:0;xset s noblank; xset s off; xset -dpms' >> /home/pi/.profile
-
-echo Installing IIO devices
-sudo apt install libiio-utils
-
-echo Installing sshpass
-sudo apt install sshpass
-
-echo Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
-wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
-
-echo Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
-sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/
-sudo udevadm control --reload-rules
-
-echo "\n###################################################\n"
+echo -e 'export DISPLAY=:0;xset s noblank; xset s off; xset -dpms' >> /home/pi/.profile
 
 echo Adding go path to .profile
-echo -e '\n\nexport PATH=$PATH:/usr/local/go/bin\n\n' >> /home/pi/.profile
+echo -e 'export PATH=$PATH:/usr/local/go/bin' >> /home/pi/.profile
+
+###################################################
 
 echo Installing Go $GOVERSION
 GOFILE=go$GOVERSION.linux-arm64.tar.gz
@@ -82,12 +74,29 @@ sudo tar -C /usr/local -xzf $GOFILE
 cd
 
 echo Installing gioui dependencies
-sudo apt install gcc pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
+sudo apt install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
 echo Installing gioui tools
 go install gioui.org/cmd/gogio@latest
 
-echo "\n###################################################\n"
+###################################################
+
+echo Installing IIO devices
+sudo apt -y install libiio-utils
+
+echo Installing sshpass
+sudo apt -y install sshpass
+
+###################################################
+
+echo Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
+wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
+
+echo Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
+sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+
+###################################################
 
 echo Copying q100transmitter.service
 cd /home/pi/Q100/q100transmitter/etc
@@ -96,7 +105,7 @@ sudo chmod 644 /etc/systemd/system/q100transmitter.service
 sudo systemctl daemon-reload
 cd
 
-###################### begin configure routing ######################
+###################################################
 
 echo Configure routing
 
@@ -144,7 +153,7 @@ echo Making the rules persist
 sudo cp /etc/nftables.conf /etc/nftables.backup
 sudo nft list ruleset | sudo tee /etc/nftables.conf
 
-###################### endof configure routing ######################
+###################################################
 
 echo "\n
 INSTALL HAS COMPLETED

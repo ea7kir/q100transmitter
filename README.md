@@ -29,7 +29,7 @@ CONFIGURE:
 		Username:			pi
 		Password: 			<password>
 	Set locale settings
-		Time zone:			<Europe/Madrid>
+		Time zone:			<Europe/Madrid> # or wherever you are
 		Keyboard layout:	<us>
 	Eject media when finished
 SAVE and WRITE
@@ -46,11 +46,10 @@ ssh pi@txtouch.local
 mkdir Q100
 cd Q100
 git clone https://github.com/ea7kir/q100transmitter.git
-rm q100transmitter.git
 
 cd q100transmitter/etc
 chmod +x install.sh
-./install
+./install.sh
 ```
 ## License
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
