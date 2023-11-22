@@ -88,10 +88,11 @@ sudo apt -y install sshpass
 ###################################################
 
 echo Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
+mkdir /home/pi/.ssh
 wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
 
 echo Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
-sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/
+sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/scripts/53-adi-plutosdr-usb.rules
 sudo udevadm control --reload-rules
 
 ###################################################
