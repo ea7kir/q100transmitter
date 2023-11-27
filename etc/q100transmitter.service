@@ -15,6 +15,7 @@
 Description=Q100 Transmitter for the Es'Hail-2 satellite
 Wants=graphical.target
 After=mult-user.target
+After=network.target
 
 [Service]
 Type=simple
