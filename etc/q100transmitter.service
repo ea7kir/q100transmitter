@@ -13,9 +13,12 @@
 
 [Unit]
 Description=Q100 Transmitter for the Es'Hail-2 satellite
-Wants=graphical.target
+#Wants=graphical.target
 After=mult-user.target
-After=network.target
+#After=network.target
+
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple

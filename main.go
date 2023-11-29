@@ -43,8 +43,10 @@ import (
 // configuration data
 var (
 	spConfig = spectrumClient.SpConfig{
-		Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
-		Origin: "http://eshail.batc.org.uk/wb",
+		// Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
+		// Origin: "http://eshail.batc.org.uk/wb",
+		Origin: "https://eshail.batc.org.uk/",
+		Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/wss",
 	}
 	svrConfig = paClient.SvrConfig{
 		Url:  "paserver.local",
