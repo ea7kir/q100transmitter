@@ -43,13 +43,13 @@ WARNING: the Pi may reboot during the install, so please allow it to complete
 ```
 ssh pi@txtouch.local
 
-mkdir Q100
-cd Q100
+mkdir /home/pi/Q100
+cd /home/pi/Q100
 git clone https://github.com/ea7kir/q100transmitter.git
 
-cd q100transmitter/etc
-chmod +x install.sh
-./install.sh
+chmod +x /home/pi/Q100/q100transmitter/install.sh
+/home/pi/Q100/q100transmitter/etc/install.sh
+chmod -x /home/pi/Q100/q100transmitter/install.sh
 ```
 
 THEN FOLLOW THE INSTRUCTIONS TO CONFIGURE THE DESKTOP
