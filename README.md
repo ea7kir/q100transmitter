@@ -49,7 +49,6 @@ git clone https://github.com/ea7kir/q100transmitter.git
 
 chmod +x /home/pi/Q100/q100transmitter/install.sh
 /home/pi/Q100/q100transmitter/etc/install.sh
-chmod -x /home/pi/Q100/q100transmitter/install.sh
 ```
 
 THEN FOLLOW THE INSTRUCTIONS TO CONFIGURE THE DESKTOP
