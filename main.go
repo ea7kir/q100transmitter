@@ -109,7 +109,7 @@ var (
 		NarrowSpare2:            "sp2-a",
 		VeryNarrowSpare2:        "sp2-a",
 		WideGain:                "-15",
-		NarrowGain:              "-15",
+		NarrowGain:              "-16",
 		VeryNarrowGain:          "-20",
 	}
 )
