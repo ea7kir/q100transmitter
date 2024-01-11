@@ -12,7 +12,6 @@
 # sudo systemctl disable q100transmitter
 
 [Unit]
-Description=Q100 Transmitter for the Es'Hail-2 satellite
 #Wants=graphical.target
 After=mult-user.target
 #After=network.target
@@ -21,11 +20,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-Type=simple
+Type=Simple
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/Q100/q100transmitter
-ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
+ExecStart=/home/pi/Q100/q100receiver/q100transmitter
 
 #SuccessExitStatus=143
 #TimeoutStopSec=10
