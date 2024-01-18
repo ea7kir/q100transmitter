@@ -24,7 +24,7 @@ Type=Simple
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/Q100/q100transmitter
-ExecStart=/home/pi/Q100/q100receiver/q100transmitter
+ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
 
 #SuccessExitStatus=143
 #TimeoutStopSec=10
