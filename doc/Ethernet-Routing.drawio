@@ -1,0 +1,72 @@
+<mxfile host="Electron" modified="2024-03-02T09:25:41.903Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="0VHGTCkN6N6-SItgPUg2" version="23.1.5" type="device">
+  <diagram name="Page-1" id="bC_ky8iLBlM8YEihFI3b">
+    <mxGraphModel dx="1290" dy="985" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="bXPExKX9A2s706Oj8Vg6-1" target="bXPExKX9A2s706Oj8Vg6-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-1" value="PLUTO&lt;br&gt;192.168.2.1" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="103" y="247" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="bXPExKX9A2s706Oj8Vg6-2" target="bXPExKX9A2s706Oj8Vg6-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-2" value="ENCODER&lt;br&gt;192.168.3.1" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="103" y="447" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" parent="1" source="bXPExKX9A2s706Oj8Vg6-5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="783" y="377" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-5" value="RaspberryPi&lt;br&gt;Ethernet Connector&lt;br&gt;eth0&lt;br&gt;192.168.1.38" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="513" y="177" width="120" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="bXPExKX9A2s706Oj8Vg6-10" target="bXPExKX9A2s706Oj8Vg6-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-10" value="OTG ADAPTER" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="303" y="447" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-17" value="USB Connector&lt;br&gt;eth1&lt;br&gt;192.168.2.10" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="518" y="247" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-18" value="USB Connector&lt;br&gt;eth2&lt;br&gt;192.168.3.10" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="518" y="447" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9oHZwXz-Xo2GIDSKeyg3-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="bXPExKX9A2s706Oj8Vg6-24" target="9oHZwXz-Xo2GIDSKeyg3-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bXPExKX9A2s706Oj8Vg6-24" value="LAN&lt;br&gt;192.168.1.0" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="773" y="337" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9oHZwXz-Xo2GIDSKeyg3-1" value="PC or Mac&lt;br&gt;Browser" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="773" y="172" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9oHZwXz-Xo2GIDSKeyg3-4" value="&lt;p style=&quot;font-size: 14px;&quot;&gt;RPi&amp;nbsp; can configure the Pluto over SSH.&lt;br&gt;RPI can configure the Encoder over TCP.&lt;br&gt;RPI can control &amp;amp; monitor the PA Server over TCP.&lt;br&gt;Encoder can stream video to the Pluto over UDP.&lt;br&gt;iMac browser can access the Pluto and Encoder web pages.&lt;/p&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="351" y="600" width="467" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="9oHZwXz-Xo2GIDSKeyg3-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0.963;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" parent="1" source="9oHZwXz-Xo2GIDSKeyg3-5" target="bXPExKX9A2s706Oj8Vg6-24" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9oHZwXz-Xo2GIDSKeyg3-5" value="Internet&lt;br&gt;ROUTER" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="773" y="507" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="K3gNDuVF0Jc7kzBn9XOd-1" value="&lt;p style=&quot;font-size: 14px;&quot;&gt;Only the Pluto and Encoder have fixed IP addresses.&lt;br&gt;&lt;/p&gt;&lt;p&gt;Other IP addresses are allocated by the DNS in the Router.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="70" y="337" width="433" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="K3gNDuVF0Jc7kzBn9XOd-2" value="&lt;p style=&quot;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Ethernet Routing&lt;/font&gt;&lt;/p&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="473" y="82" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="K3gNDuVF0Jc7kzBn9XOd-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" parent="1" source="K3gNDuVF0Jc7kzBn9XOd-3" target="bXPExKX9A2s706Oj8Vg6-24" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="K3gNDuVF0Jc7kzBn9XOd-3" value="PA Server&lt;br&gt;(on the roof)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="963" y="347" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
