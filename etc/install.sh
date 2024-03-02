@@ -3,6 +3,8 @@
 # Install Q100 Transmitter on Raspberry Pi 4
 # Orignal design by Michael, EA7KIR
 
+# updated to GO 1.22 on March 2 2024
+
 GOVERSION=1.22.0
 
 whoami | grep -q pi

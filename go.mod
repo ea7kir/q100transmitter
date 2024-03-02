@@ -1,5 +1,7 @@
 module q100transmitter
 
+// updated to GO 1.22 on March 2 2024
+
 go 1.22.0
 
 require (
