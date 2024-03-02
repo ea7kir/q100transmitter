@@ -3,7 +3,7 @@
 # Install Q100 Transmitter on Raspberry Pi 4
 # Orignal design by Michael, EA7KIR
 
-GOVERSION=1.21.4
+GOVERSION=1.22.0
 
 whoami | grep -q pi
 if [ $? != 0 ]; then
