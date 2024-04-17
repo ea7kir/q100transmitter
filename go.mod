@@ -2,7 +2,7 @@ module q100transmitter
 
 // updated to GO 1.22 on March 2 2024
 
-go 1.22.0
+go 1.22.2
 
 require (
 	gioui.org v0.3.1

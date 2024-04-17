@@ -5,7 +5,7 @@
 
 # updated to GO 1.22 on March 2 2024
 
-GOVERSION=1.22.0
+GOVERSION=1.22.2
 
 whoami | grep -q pi
 if [ $? != 0 ]; then
