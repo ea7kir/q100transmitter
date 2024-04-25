@@ -7,8 +7,8 @@ package pttSwitch
 
 import (
 	"github.com/ea7kir/qLog"
-	"github.com/warthog618/gpiod"
-	"github.com/warthog618/gpiod/device/rpi"
+	"github.com/warthog618/go-gpiocdev"
+	"github.com/warthog618/go-gpiocdev/device/rpi"
 )
 
 const (
@@ -26,19 +26,19 @@ const (
 )
 
 var (
-	hvc349Control *gpiod.Line
-	hvc349Enable  *gpiod.Line
+	hvc349Control *gpiocdev.Line
+	hvc349Enable  *gpiocdev.Line
 )
 
 // API
 func Initialize() {
-	hvc349ControlLine, err := gpiod.RequestLine("gpiochip0", CTRL_PIN, gpiod.AsOutput(0))
+	hvc349ControlLine, err := gpiocdev.RequestLine("gpiochip0", CTRL_PIN, gpiocdev.AsOutput(0))
 	if err != nil {
 		panic(err)
 	}
 	hvc349Control = hvc349ControlLine
 	hvc349ControlLine.SetValue(HIGH)
-	hvc349EnableLine, err := gpiod.RequestLine("gpiochip0", EN_PIN, gpiod.AsOutput(0))
+	hvc349EnableLine, err := gpiocdev.RequestLine("gpiochip0", EN_PIN, gpiocdev.AsOutput(0))
 	if err != nil {
 		panic(err)
 	}
@@ -52,9 +52,9 @@ func Stop() {
 	hvc349Control.SetValue(HIGH)
 	hvc349Enable.SetValue(HIGH)
 
-	hvc349Control.Reconfigure(gpiod.AsInput)
+	hvc349Control.Reconfigure(gpiocdev.AsInput)
 	hvc349Control.Close()
-	hvc349Enable.Reconfigure(gpiod.AsInput)
+	hvc349Enable.Reconfigure(gpiocdev.AsInput)
 	hvc349Enable.Close()
 }
 
