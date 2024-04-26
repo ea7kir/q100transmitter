@@ -9,6 +9,7 @@ $${\color{red}WARNING:\space ALL\space DEVELOPMENT\space TAKES\space PLACE\space
 - Analog Devices PlutoSDR Revision D
 - Analog Devices HMC349 RF Switch 
 - Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
+- EA7KIR TX Remote PCB
 - DDMALL HEV-10 HDMI Video Encoder
 
 **A keyboard and mouse are not required at any time**
