@@ -19,7 +19,13 @@ const (
 	// VCC_PIN to RPi pin 17 3V3               - Red
 
 	CTRL_PIN = rpi.J8p18 // RPi pin 18 GPIO_24 - Yellow
-	EN_PIN   = rpi.J8p16 // RPi pin 16 GPIO_23 - not used (requires cutting a pcb track)
+
+	// Remote mute to the LU Meter project
+	// using the TX-Remote PCB
+
+	// GND_PIN to RPi pin 39 Ground			   - Brown
+
+	MUTE_PIN = rpi.J8p40 // RPi pin 16 GPIO_21 - Orenage
 
 	LOW  = 0
 	HIGH = 1
@@ -27,7 +33,7 @@ const (
 
 var (
 	hvc349Control *gpiocdev.Line
-	hvc349Enable  *gpiocdev.Line
+	muteEnable    *gpiocdev.Line
 )
 
 // API
@@ -38,24 +44,24 @@ func Initialize() {
 	}
 	hvc349Control = hvc349ControlLine
 	hvc349ControlLine.SetValue(HIGH)
-	hvc349EnableLine, err := gpiocdev.RequestLine("gpiochip0", EN_PIN, gpiocdev.AsOutput(0))
+	muteEnableLine, err := gpiocdev.RequestLine("gpiochip0", MUTE_PIN, gpiocdev.AsOutput(0))
 	if err != nil {
 		panic(err)
 	}
-	hvc349Enable = hvc349EnableLine
-	hvc349Enable.SetValue(LOW)
+	muteEnable = muteEnableLine
+	muteEnable.SetValue(LOW)
 }
 
 // API
 func Stop() {
 	SetPtt(false)
 	hvc349Control.SetValue(HIGH)
-	hvc349Enable.SetValue(HIGH)
+	muteEnable.SetValue(LOW)
 
 	hvc349Control.Reconfigure(gpiocdev.AsInput)
 	hvc349Control.Close()
-	hvc349Enable.Reconfigure(gpiocdev.AsInput)
-	hvc349Enable.Close()
+	muteEnable.Reconfigure(gpiocdev.AsInput)
+	muteEnable.Close()
 }
 
 // API
@@ -63,53 +69,12 @@ func SetPtt(tx bool) bool {
 	switch tx {
 	case true:
 		hvc349Control.SetValue(LOW)
+		muteEnable.SetValue(HIGH)
 		qLog.Info("PTT is %v", "Enabled")
 	case false:
 		hvc349Control.SetValue(HIGH)
+		muteEnable.SetValue(LOW)
 		// qLog.Info("PTT is %v", "Disabled") // too much logging, because called on when any button is pressed
 	}
 	return tx
 }
-
-// there is a command app called: raspi-gpio
-
-/* Analog Devices HMC349 RF Switch
-
-# Analog Devices HVC349 RF Switch
-# using RFC as the input, RF2 as the output
-EN_PIN               = 23 # pin 16 GPIO_23 (GND pin 14, pin 17 3.3v)
-CTRL_PIN             = 24 # pin 18 GPIO_24
-HIGH                  = 1
-LOW                   = 0
-
-_rf_pi = None
-
-# HMC349 using RFC as the input, RF2 as the output
-
-def _hvc349_HMC349(gpio, state):
-    _rf_pi.write(gpio, state)
-
-def _config_HMC349(en_gpio, ctrl_gpio):
-    _rf_pi.set_mode(ctrl_gpio, pigpio.OUTPUT)
-    _rf_pi.write(ctrl_gpio, HIGH)
-    _rf_pi.set_mode(en_gpio, pigpio.OUTPUT)
-    _rf_pi.write(en_gpio, LOW)
-
-def configure_rf_hvc349es(pi):
-    global _rf_pi
-    _rf_pi = pi
-    _config_HMC349(EN_PIN, CTRL_PIN)
-
-def shutdown_rf_hvc349es():
-    _hvc349_HMC349(CTRL_PIN, HIGH)
-    _hvc349_HMC349(EN_PIN, HIGH)
-
-def hvc349_rf_hvc349_On():
-    #print("SWITCHING ON RF SWITCH", flush=True)
-    _hvc349_HMC349(CTRL_PIN, LOW)
-
-def hvc349_rf_hvc349_Off():
-    #print("SWITCHING OFF RF SWITCH", flush=True)
-    _hvc349_HMC349(CTRL_PIN, HIGH)
-
-*/
