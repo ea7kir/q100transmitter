@@ -1,6 +1,8 @@
 # Q-100 Transmitter
 Control and monitor a DATV transmiter with a touch screen.
 
+![tx](doc/tx.jpeg)
+
 $${\color{red}WARNING:\space ALL\space DEVELOPMENT\space TAKES\space PLACE\space ON\space THE\space MAIN\space BRANCH}$$
 
 ## Hardware
