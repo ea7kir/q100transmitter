@@ -169,9 +169,12 @@ func main() {
 	txControl.Initialize(tuConfig)
 
 	go func() {
-		w := app.NewWindow(app.Fullscreen.Option())
-		app.Size(800, 480) // I don't know if this is help in any way
-		if err := loop(w); err != nil {
+		// w := app.NewWindow(app.Fullscreen.Option())
+		// app.Size(800, 480) // I don't know if this is help in any way
+		var w app.Window
+		w.Option(app.Fullscreen.Option())
+
+		if err := loop(&w); err != nil {
 			qLog.Fatal("failed to start loop: %v", err)
 			os.Exit(1)
 		}
@@ -226,102 +229,103 @@ func loop(w *app.Window) error {
 			w.Invalidate()
 		case spData = <-spChannel:
 			w.Invalidate()
-		case event := <-w.Events():
-			switch event := event.(type) {
-			case system.DestroyEvent:
-				return event.Err
-			case system.FrameEvent:
-				if ui.about.Clicked() {
-					showAboutBox()
-				}
-				if ui.shutdown.Clicked() {
-					w.Perform(system.ActionClose)
-				}
-				if ui.decBand.Clicked() {
-					txControl.DecBandSelector(&txControl.Band)
-				}
-				if ui.incBand.Clicked() {
-					txControl.IncBandSelector(&txControl.Band)
-				}
-				if ui.decSymbolRate.Clicked() {
-					txControl.DecSelector(&txControl.SymbolRate)
-				}
-				if ui.incSymbolRate.Clicked() {
-					txControl.IncSelector(&txControl.SymbolRate)
-				}
-				if ui.decFrequency.Clicked() {
-					txControl.DecSelector(&txControl.Frequency)
-				}
-				if ui.incFrequency.Clicked() {
-					txControl.IncSelector(&txControl.Frequency)
-				}
-				if ui.decMode.Clicked() {
-					txControl.DecSelector(&txControl.Mode)
-				}
-				if ui.incMode.Clicked() {
-					txControl.IncSelector(&txControl.Mode)
-				}
-				if ui.decCodecs.Clicked() {
-					txControl.DecSelector(&txControl.Codecs)
-				}
-				if ui.incCodecs.Clicked() {
-					txControl.IncSelector(&txControl.Codecs)
-				}
-				if ui.decConstellation.Clicked() {
-					txControl.DecSelector(&txControl.Constellation)
-				}
-				if ui.incConstellation.Clicked() {
-					txControl.IncSelector(&txControl.Constellation)
-				}
-				if ui.decFec.Clicked() {
-					txControl.DecSelector(&txControl.Fec)
-				}
-				if ui.incFec.Clicked() {
-					txControl.IncSelector(&txControl.Fec)
-				}
-				if ui.decVideoBitRate.Clicked() {
-					txControl.DecSelector(&txControl.VideoBitRate)
-				}
-				if ui.incVideoBitRate.Clicked() {
-					txControl.IncSelector(&txControl.VideoBitRate)
-				}
-				if ui.decAudioBitRate.Clicked() {
-					txControl.DecSelector(&txControl.AudioBitRate)
-				}
-				if ui.incAudioBitRate.Clicked() {
-					txControl.IncSelector(&txControl.AudioBitRate)
-				}
-				if ui.decSpare1.Clicked() {
-					txControl.DecSelector(&txControl.Spare1)
-				}
-				if ui.incSpare1.Clicked() {
-					txControl.IncSelector(&txControl.Spare1)
-				}
-				if ui.decSpare2.Clicked() {
-					txControl.DecSelector(&txControl.Spare2)
-				}
-				if ui.incSpare2.Clicked() {
-					txControl.IncSelector(&txControl.Spare2)
-				}
-				if ui.decGain.Clicked() {
-					txControl.DecSelector(&txControl.Gain)
-				}
-				if ui.incGain.Clicked() {
-					txControl.IncSelector(&txControl.Gain)
-				}
-				if ui.tune.Clicked() {
-					txControl.Tune()
-				}
-				if ui.ptt.Clicked() {
-					txControl.Ptt()
-				}
+		}
 
-				gtx := layout.NewContext(&ops, event)
-				// set the screen background to to dark grey
-				paint.Fill(gtx.Ops, q100color.screenGrey)
-				ui.layoutFlexes(gtx)
-				event.Frame(gtx.Ops)
+		switch event := w.Event().(type) {
+		case app.DestroyEvent:
+			return event.Err
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, event)
+			if ui.about.Clicked(gtx) {
+				showAboutBox()
 			}
+			if ui.shutdown.Clicked(gtx) {
+				w.Perform(system.ActionClose)
+			}
+			if ui.decBand.Clicked(gtx) {
+				txControl.DecBandSelector(&txControl.Band)
+			}
+			if ui.incBand.Clicked(gtx) {
+				txControl.IncBandSelector(&txControl.Band)
+			}
+			if ui.decSymbolRate.Clicked(gtx) {
+				txControl.DecSelector(&txControl.SymbolRate)
+			}
+			if ui.incSymbolRate.Clicked(gtx) {
+				txControl.IncSelector(&txControl.SymbolRate)
+			}
+			if ui.decFrequency.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Frequency)
+			}
+			if ui.incFrequency.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Frequency)
+			}
+			if ui.decMode.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Mode)
+			}
+			if ui.incMode.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Mode)
+			}
+			if ui.decCodecs.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Codecs)
+			}
+			if ui.incCodecs.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Codecs)
+			}
+			if ui.decConstellation.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Constellation)
+			}
+			if ui.incConstellation.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Constellation)
+			}
+			if ui.decFec.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Fec)
+			}
+			if ui.incFec.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Fec)
+			}
+			if ui.decVideoBitRate.Clicked(gtx) {
+				txControl.DecSelector(&txControl.VideoBitRate)
+			}
+			if ui.incVideoBitRate.Clicked(gtx) {
+				txControl.IncSelector(&txControl.VideoBitRate)
+			}
+			if ui.decAudioBitRate.Clicked(gtx) {
+				txControl.DecSelector(&txControl.AudioBitRate)
+			}
+			if ui.incAudioBitRate.Clicked(gtx) {
+				txControl.IncSelector(&txControl.AudioBitRate)
+			}
+			if ui.decSpare1.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Spare1)
+			}
+			if ui.incSpare1.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Spare1)
+			}
+			if ui.decSpare2.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Spare2)
+			}
+			if ui.incSpare2.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Spare2)
+			}
+			if ui.decGain.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Gain)
+			}
+			if ui.incGain.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Gain)
+			}
+			if ui.tune.Clicked(gtx) {
+				txControl.Tune()
+			}
+			if ui.ptt.Clicked(gtx) {
+				txControl.Ptt()
+			}
+
+			// gtx := layout.NewContext(&ops, event)
+			// set the screen background to to dark grey
+			paint.Fill(gtx.Ops, q100color.screenGrey)
+			ui.layoutFlexes(gtx)
+			event.Frame(gtx.Ops)
 		}
 	}
 }
@@ -513,10 +517,10 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 		layout.Rigid(
 			func(gtx layout.Context) layout.Dimensions {
 				canvas := giocanvas.Canvas{
-					Theme:   ui.th,
 					Width:   float32(788), //gtx.Constraints.Max.X), //float32(width),  //float32(gtx.Constraints.Max.X),
 					Height:  float32(250), //float32(hieght), //float32(500),
 					Context: gtx,
+					Theme:   ui.th,
 				}
 				// qLog.Info("  Canvas: %#v\n", canvas.Context.Constraints)
 
