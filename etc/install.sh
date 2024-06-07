@@ -59,7 +59,7 @@ echo Making changes to .profile
 sudo sh -c "echo '\n# EA7KIR Additions' >> /home/pi/.profile"
 
 echo Disbale Screen Blanking in .profile
-echo -e 'export DISPLAY=:0;xset s noblank; xset s off; xset -dpms' >> /home/pi/.profile
+echo -e 'export DISPLAY=:0; xset s noblank; xset s off; xset -dpms' >> /home/pi/.profile
 
 echo Adding go path to .profile
 echo -e 'export PATH=$PATH:/usr/local/go/bin' >> /home/pi/.profile
@@ -77,7 +77,8 @@ echo Installing gioui dependencies
 sudo apt -y install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
 echo Installing gioui tools
-go install gioui.org/cmd/gogio@latest
+# currently, allow 'go mod tidy' to instal gioui v0.6.1
+#/usr/local/go/bin/go install gioui.org/cmd/gogio@latest
 
 ###################################################
 

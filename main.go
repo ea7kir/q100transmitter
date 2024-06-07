@@ -10,9 +10,11 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"time"
 
 	// _ "net/http/pprof"
 	"os"
+	"os/exec"
 	"os/signal"
 	"q100transmitter/encoderClient"
 	"q100transmitter/paClient"
@@ -25,7 +27,6 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -184,6 +185,17 @@ func main() {
 		paClient.Stop()
 		spectrumClient.Stop()
 
+		if !true { // change to true for powerdown
+			qLog.Info("----- q100transmitter will poweroff -----")
+			time.Sleep(1 * time.Second)
+			cmd := exec.Command("sudo", "poweroff")
+			if err := cmd.Start(); err != nil {
+				qLog.Error("failed to poweroff: %v", err)
+				os.Exit(1)
+			}
+			cmd.Wait()
+		}
+
 		qLog.Info("----- q100transmitter Closed -----")
 		os.Exit(0)
 	}()
@@ -198,12 +210,6 @@ func loop(w *app.Window) error {
 		//th: material.NewTheme(gofont.Collection()),
 		th: material.NewTheme(),
 	}
-	// fails to pickup the system font
-	// $ fc-list
-	//
-	// ui.th.Face = "Times New Roman" // ok
-	// ui.th.Face = "NimbusRoman Italic" // no
-
 	// Cris says keep using the original font
 	ui.th.Shaper = text.NewShaper(text.NoSystemFonts(), text.WithCollection(gofont.Collection()))
 
@@ -218,13 +224,8 @@ func loop(w *app.Window) error {
 			// When the context cancels, assign the done channel to nil to
 			// prevent it from firing over and over.
 			done = nil
-			// Log something to make it obvious this happened.
-			// qLog.Info("context cancelled")
-			// Initiate window shutdown.
-			// txControl.Stop() // TODO: does nothing yet
-			// paClient.Stop()
-			// spectrumClient.Stop() // TODO: does nothing yet
-			w.Perform(system.ActionClose)
+			return nil
+			// w.Perform(system.ActionClose)
 		case svrData = <-svrChannel:
 			w.Invalidate()
 		case spData = <-spChannel:
@@ -240,7 +241,8 @@ func loop(w *app.Window) error {
 				showAboutBox()
 			}
 			if ui.shutdown.Clicked(gtx) {
-				w.Perform(system.ActionClose)
+				return nil
+				// w.Perform(system.ActionClose)
 			}
 			if ui.decBand.Clicked(gtx) {
 				txControl.DecBandSelector(&txControl.Band)
