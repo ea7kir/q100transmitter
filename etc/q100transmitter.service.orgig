@@ -12,16 +12,25 @@
 # sudo systemctl disable q100transmitter
 
 [Unit]
-Description=Q-100 Transmitter
-Wants=nraphical.target network-online.target
-After=graphical.target network-online.target
+#Wants=graphical.target
+After=mult-user.target
+#After=network.target
+
+After=network-online.target
+Wants=network-online.target
 
 [Service]
+Type=Simple
 User=pi
 Group=pi
-Environment="DISPLAY=:0"
 WorkingDirectory=/home/pi/Q100/q100transmitter
 ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
 
+#SuccessExitStatus=143
+#TimeoutStopSec=10
+#Restart=on-failure
+#Restart=on-abort
+#RestartSec=5
+
 [Install]
-WantedBy=graphical.target  network-online.target
+WantedBy=multi-user.target
