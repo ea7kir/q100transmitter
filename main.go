@@ -155,6 +155,8 @@ func main() {
 
 	qLog.Info("----- q100transmitter Opened -----")
 
+	time.Sleep(8 * time.Second)
+
 	os.Setenv("DISPLAY", ":0") // required for X11
 
 	spectrumClient.Intitialize(spConfig, spChannel)
