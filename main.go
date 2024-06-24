@@ -155,7 +155,7 @@ func main() {
 
 	qLog.Info("----- q100transmitter Opened -----")
 
-	time.Sleep(8 * time.Second)
+	time.Sleep(5 * time.Second) // this is a sledgehammer solution !
 
 	os.Setenv("DISPLAY", ":0") // required for X11
 
