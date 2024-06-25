@@ -7,6 +7,7 @@ package spectrumClient
 
 import (
 	"os"
+	"time"
 
 	"github.com/ea7kir/qLog"
 	"golang.org/x/net/websocket"
@@ -70,13 +71,31 @@ var (
 // TODO: needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
 //	which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 
+func connect(cfg SpConfig) (ws *websocket.Conn, err error) {
+	var i = 0
+	for {
+		i++
+		ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
+		if err == nil {
+			return ws, err
+		}
+		qLog.Warn("Dial attempt %v failed", i)
+		if i == 8 {
+			return ws, err
+		}
+		time.Sleep(time.Second)
+	}
+}
+
 // forever go routine called from Intitialize
 func readAndDecode(cfg SpConfig, ch chan SpData) {
-	ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
+
+	ws, err := connect(cfg)
 	if err != nil {
-		qLog.Fatal("Dial failed: %v", err)
+		qLog.Fatal("Dial Aborted: %v", err)
 		os.Exit(1)
 	}
+
 	defer ws.Close()
 
 	var bytes = make([]byte, 2048) // larger than 1844

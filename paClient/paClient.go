@@ -105,5 +105,4 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 			return
 		}
 	}
-	// }
 }
