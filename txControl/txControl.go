@@ -42,9 +42,9 @@ type (
 		WideAudioBitRate        string
 		NarrowAudioBitRate      string
 		VeryNarrowAudioBitRate  string
-		WideSpare1              string
-		NarrowSpare1            string
-		VeryNarrowSpare1        string
+		WideResolution          string
+		NarrowResolution        string
+		VeryNarrowResolution    string
 		WideSpare2              string
 		NarrowSpare2            string
 		VeryNarrowSpare2        string
@@ -71,7 +71,7 @@ var (
 	Fec           Selector
 	VideoBitRate  Selector
 	AudioBitRate  Selector
-	Spare1        Selector
+	Resolution    Selector
 	Spare2        Selector
 	Gain          Selector
 	IsTuned       bool
@@ -206,14 +206,14 @@ var (
 		"32000", "64000",
 		// "32000", "48000", "64000", // 48000 unsupported
 	}
-	const_WIDE_SPARE1_LIST = []string{
-		"sp1-a", "sp1-b",
+	const_WIDE_RESOLUTION_LIST = []string{
+		"720p", "1080p",
 	}
-	const_NARROW_SPARE1_LIST = []string{
-		"sp1-a", "sp1-b",
+	const_NARROW_RESOLUTION_LIST = []string{
+		"720p", "1080p",
 	}
-	const_VERY_NARROW_SPARE1_LIST = []string{
-		"sp1-a", "sp1-b",
+	const_VERY_NARROW_RESOLUTION_LIST = []string{
+		"720p", "1080p",
 	}
 	const_WIDE_SPARE2_LIST = []string{
 		"sp2-a", "sp2-b",
@@ -258,9 +258,9 @@ var (
 	wideAudioBitRate        Selector
 	narrowAudioBitRate      Selector
 	veryNarrowAudioBitRate  Selector
-	wideSpare1              Selector
-	narrowSpare1            Selector
-	veryNarrowSpare1        Selector
+	wideResolution          Selector
+	narrowResolution        Selector
+	veryNarrowResolution    Selector
 	wideSpare2              Selector
 	narrowSpare2            Selector
 	veryNarrowSpare2        Selector
@@ -306,9 +306,9 @@ func Initialize(cfg TuConfig) {
 	narrowAudioBitRate = newSelector(const_NARROW_AUDIO_BITRATE_LIST, cfg.NarrowAudioBitRate)
 	veryNarrowAudioBitRate = newSelector(const_VERY_NARROW_AUDIO_BITRATE_LIST, cfg.VeryNarrowAudioBitRate)
 
-	wideSpare1 = newSelector(const_WIDE_SPARE1_LIST, cfg.WideSpare1)
-	narrowSpare1 = newSelector(const_NARROW_SPARE1_LIST, cfg.NarrowSpare1)
-	veryNarrowSpare1 = newSelector(const_VERY_NARROW_SPARE1_LIST, cfg.VeryNarrowSpare1)
+	wideResolution = newSelector(const_WIDE_RESOLUTION_LIST, cfg.WideResolution)
+	narrowResolution = newSelector(const_NARROW_RESOLUTION_LIST, cfg.NarrowResolution)
+	veryNarrowResolution = newSelector(const_VERY_NARROW_RESOLUTION_LIST, cfg.VeryNarrowResolution)
 
 	wideSpare2 = newSelector(const_WIDE_SPARE2_LIST, cfg.WideSpare2)
 	narrowSpare2 = newSelector(const_NARROW_SPARE2_LIST, cfg.NarrowSpare2)
@@ -345,6 +345,7 @@ func Tune() {
 			Codecs:       Codecs.Value,
 			AudioBitRate: AudioBitRate.Value,
 			VideoBitRate: VideoBitRate.Value,
+			Resolution:   Resolution.Value,
 		}
 		if err := encoderClient.SetParams(&encoderArgs); err != nil {
 			qLog.Error("TUNE: %s", err)
@@ -444,7 +445,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		Fec = wideFec
 		VideoBitRate = wideVideoBitRate
 		AudioBitRate = wideAudioBitRate
-		Spare1 = wideSpare1
+		Resolution = wideResolution
 		Spare2 = wideSpare2
 		Gain = wideGain
 	case const_BAND_LIST[1]: // narrow
@@ -456,7 +457,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		Fec = narrowFec
 		VideoBitRate = narrowVideoBitRate
 		AudioBitRate = narrowAudioBitRate
-		Spare1 = narrowSpare1
+		Resolution = narrowResolution
 		Spare2 = narrowSpare2
 		Gain = narrowGain
 	case const_BAND_LIST[2]: // very narrow
@@ -468,7 +469,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		Fec = veryNarrowFec
 		VideoBitRate = veryNarrowVideoBitRate
 		AudioBitRate = veryNarrowAudioBitRate
-		Spare1 = veryNarrowSpare1
+		Resolution = veryNarrowResolution
 		Spare2 = veryNarrowSpare2
 		Gain = veryNarrowGain
 	}

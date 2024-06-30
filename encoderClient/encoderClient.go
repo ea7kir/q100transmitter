@@ -40,7 +40,7 @@ type (
 		Codecs                string
 		AudioBitRate          string
 		VideoBitRate          string
-		Spare1                string
+		Resolution            string
 		Spare2                string
 		StreamIP              string // "udp://192.168.3.10:8282"
 		StreamPort            string
@@ -78,9 +78,9 @@ func Initialize(cfg HeConfig) {
 
 	arg.chn = "0" // The main stream is 0, and the sub stream is 1.
 	// arg.bps = ""       // video encoding bit rate, in bps. Range is [32-16384]
-	arg.fps = "25"     // video encoding frame rate.
-	arg.res_w = "1280" // The horizontal resolution of the encoded video.
-	arg.res_h = "720"  // The vertical resolution of the encoded video.
+	arg.fps = "25" // video encoding frame rate.
+	// arg.res_w = "1280" // The horizontal resolution of the encoded video.
+	// arg.res_h = "720"  // The vertical resolution of the encoded video.
 	// arg._type = ""     // video encoding format, H.264 is 0, H.265 is 1
 	arg.gop = "50"    // The range is [1-600]
 	arg.profile = "1" // baseline is 0, main is 1, high is 2
@@ -101,8 +101,9 @@ func SetParams(cfg *HeConfig) error {
 		// FAIL    = "#8001,23,06,ERR!"
 	)
 	var (
-		cmdStr string
-		codec  string
+		cmdStr     string
+		codec      string
+		resolution string
 	)
 
 	// NETWORK
@@ -156,6 +157,18 @@ func SetParams(cfg *HeConfig) error {
 	case "H265":
 		arg._type = "1"
 	}
+
+	// update from txControl
+	resolution = cfg.Resolution //strings.Fields(cfg.Resolution)[0] // extract resolution from eg "720p"
+	switch resolution {
+	case "720p":
+		arg.res_w = "1280"
+		arg.res_h = "720"
+	case "1080p":
+		arg.res_w = "1920"
+		arg.res_h = "1080"
+	}
+
 	arg.bps = cfg.VideoBitRate
 	// Command format: @0001,22,06,chn,bps,fps,res_w,res_h,type,gop,pro<ile,rc_mode,qp1,qp2,qp3!
 	cmdStr = fmt.Sprintf("@0001,22,06,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v,%v!",

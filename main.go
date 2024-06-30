@@ -104,9 +104,9 @@ var (
 		WideAudioBitRate:        "64000", // 32000 | 64000
 		NarrowAudioBitRate:      "64000",
 		VeryNarrowAudioBitRate:  "32000",
-		WideSpare1:              "sp1-a",
-		NarrowSpare1:            "sp1-a",
-		VeryNarrowSpare1:        "sp1-a",
+		WideResolution:          "720p",
+		NarrowResolution:        "720p",
+		VeryNarrowResolution:    "720p",
 		WideSpare2:              "sp2-a",
 		NarrowSpare2:            "sp2-a",
 		VeryNarrowSpare2:        "sp2-a",
@@ -315,11 +315,11 @@ func loop(w *app.Window) error {
 			if ui.incAudioBitRate.Clicked(gtx) {
 				txControl.IncSelector(&txControl.AudioBitRate)
 			}
-			if ui.decSpare1.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Spare1)
+			if ui.decResolution.Clicked(gtx) {
+				txControl.DecSelector(&txControl.Resolution)
 			}
-			if ui.incSpare1.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Spare1)
+			if ui.incResolution.Clicked(gtx) {
+				txControl.IncSelector(&txControl.Resolution)
 			}
 			if ui.decSpare2.Clicked(gtx) {
 				txControl.DecSelector(&txControl.Spare2)
@@ -385,7 +385,7 @@ type UI struct {
 	decFec, incFec                     widget.Clickable
 	decVideoBitRate, incVideoBitRate   widget.Clickable
 	decAudioBitRate, incAudioBitRate   widget.Clickable
-	decSpare1, incSpare1               widget.Clickable
+	decResolution, incResolution       widget.Clickable
 	decSpare2, incSpare2               widget.Clickable
 	decGain, incGain                   widget.Clickable
 	tune, ptt                          widget.Clickable
@@ -645,9 +645,9 @@ func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 	inc2 := [3]*widget.Clickable{&ui.incMode, &ui.incConstellation, &ui.incFec}
 	val2 := [3]string{txControl.Mode.Value, txControl.Constellation.Value, txControl.Fec.Value}
 
-	dec3 := [3]*widget.Clickable{&ui.decSpare1, &ui.decSpare2, &ui.decGain}
-	inc3 := [3]*widget.Clickable{&ui.incSpare1, &ui.incSpare2, &ui.incGain}
-	val3 := [3]string{txControl.Spare1.Value, txControl.Spare2.Value, txControl.Gain.Value}
+	dec3 := [3]*widget.Clickable{&ui.decResolution, &ui.decSpare2, &ui.decGain}
+	inc3 := [3]*widget.Clickable{&ui.incResolution, &ui.incSpare2, &ui.incGain}
+	val3 := [3]string{txControl.Resolution.Value, txControl.Spare2.Value, txControl.Gain.Value}
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
