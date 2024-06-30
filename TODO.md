@@ -11,6 +11,7 @@
 - revise what data to monitor
 - revise what parameters to use
 - tidy the user interface
-- implement calibrater.go
 - improve marker widths
 - revist shutdown
+
+And rewite the entire thing !!
