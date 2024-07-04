@@ -6,7 +6,8 @@
 package spectrumClient
 
 import (
-	"os"
+	"fmt"
+	"time"
 
 	"github.com/ea7kir/qLog"
 	"golang.org/x/net/websocket"
@@ -72,15 +73,36 @@ var (
 
 // forever go routine called from Intitialize
 func readAndDecode(cfg SpConfig, ch chan SpData) {
-	ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
-	if err != nil {
-		qLog.Fatal("Dial Aborted: %v", err)
-		os.Exit(1)
+
+	const MAXTRIES = 10
+	var ws *websocket.Conn
+
+	for i := 1; i <= MAXTRIES; i++ {
+		qLog.Info("Dial attempt %v", i)
+		new_ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
+		if err == nil {
+			ws = new_ws
+			break
+		}
+		if i == MAXTRIES {
+			qLog.Fatal("Dial aborted after %v seconds\n", i)
+		}
+		time.Sleep(time.Second)
 	}
+
+	// ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
+	// if err != nil {
+	// 	qLog.Fatal("Dial Aborted: %v", err)
+	// 	os.Exit(1)
+	// }
+
+	// defer not working here
 	defer ws.Close()
+	defer fmt.Println("END OF readAndDecode()")
 
 	var bytes = make([]byte, 2048) // larger than 1844
 	var n int
+	var err error
 
 	for {
 		if n, err = ws.Read(bytes); err != nil {

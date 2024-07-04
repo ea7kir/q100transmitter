@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"net/http"
 	"time"
 
 	// _ "net/http/pprof"
@@ -128,25 +127,6 @@ var (
 // go tool pprof http://txtouch.local:6060/debug/pprof/profile
 // go tool pprof -http=":" pprof.q100transmitter.samples.cpu.001.pb.gz
 
-func waitForNetwork() {
-	var maxTries = 20
-	for {
-		client := http.Client{}
-		_, err := client.Get("https://google.com")
-		if err == nil {
-			return
-		}
-		qLog.Warn("Waiting for network %v", maxTries)
-		time.Sleep(time.Second)
-		maxTries--
-		if maxTries == 0 {
-			qLog.Fatal("Unable to conect to network")
-			qLog.Close()
-			os.Exit(1)
-		}
-	}
-}
-
 func main() {
 	logFile, err := os.OpenFile("/home/pi/Q100/transmitter.log", os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
@@ -172,8 +152,6 @@ func main() {
 	qLog.Info("----- q100transmitter Opened -----")
 
 	os.Setenv("DISPLAY", ":0") // required for X11
-
-	waitForNetwork()
 
 	spectrumClient.Intitialize(spConfig, spChannel)
 
