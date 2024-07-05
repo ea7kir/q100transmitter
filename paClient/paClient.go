@@ -57,13 +57,26 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
 	qLog.Info("Client %v connected", url)
-	conn, err := net.Dial("tcp", url)
-	if err != nil {
-		qLog.Error("Failed to connect to: %v", url)
-		// sd := SvrData{}
-		sd.Status = "Not connected"
-		ch <- sd
-		return
+
+	const MAXTRIES = 10
+	var conn net.Conn
+
+	for i := 1; i <= MAXTRIES; i++ {
+		qLog.Info("Dial attempt %v", i)
+		new_conn, err := net.Dial("tcp", url)
+		if err == nil {
+			conn = new_conn
+			break
+		}
+		if i == MAXTRIES {
+			// qLog.Fatal("Dial Aborted after %v attemps\n", i)
+			qLog.Error("Dial Aborted after %v attemps\n", i)
+			// sd := SvrData{}
+			sd.Status = "Not connected"
+			ch <- sd
+			return
+		}
+
 	}
 	defer conn.Close()
 
@@ -85,7 +98,7 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 
 		time.Sleep(2 * time.Second)
 
-		if _, err = conn.Write([]byte(clientRequest)); err != nil {
+		if _, err := conn.Write([]byte(clientRequest)); err != nil {
 			qLog.Error("failed to send the client request: %v\n", err)
 			sd.Status = "Failed to send request"
 			ch <- sd

@@ -20,7 +20,7 @@ import (
 	"q100transmitter/paClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
-	"q100transmitter/spectrumClient"
+	"q100transmitter/spClient"
 	"q100transmitter/txControl"
 
 	"github.com/ea7kir/qLog"
@@ -43,7 +43,7 @@ import (
 
 // configuration data
 var (
-	spConfig = spectrumClient.SpConfig{
+	spConfig = spClient.SpConfig{
 		// Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 		// Origin: "http://eshail.batc.org.uk/wb",
 		Origin: "https://eshail.batc.org.uk/",
@@ -117,8 +117,8 @@ var (
 
 // local data
 var (
-	spData     spectrumClient.SpData
-	spChannel  = make(chan spectrumClient.SpData, 3) //, 5)
+	spData     spClient.SpData
+	spChannel  = make(chan spClient.SpData, 3) //, 5)
 	svrData    paClient.SvrData
 	svrChannel = make(chan paClient.SvrData, 3) //, 5)
 )
@@ -134,7 +134,6 @@ func main() {
 		qLog.Close()
 		os.Exit(1)
 	}
-
 	// log.SetOutput(os.Stderr)
 	qLog.SetOutput(logFile)
 	defer qLog.Close()
@@ -153,7 +152,7 @@ func main() {
 
 	os.Setenv("DISPLAY", ":0") // required for X11
 
-	spectrumClient.Intitialize(spConfig, spChannel)
+	spClient.Intitialize(spConfig, spChannel)
 
 	paClient.Initialize(svrConfig, svrChannel)
 
@@ -178,7 +177,7 @@ func main() {
 		// TODO: implement with a d/on channel
 		txControl.Stop()
 		paClient.Stop()
-		spectrumClient.Stop()
+		spClient.Stop()
 
 		if !true { // change to true for powerdown
 			qLog.Info("----- q100transmitter will poweroff -----")
@@ -525,7 +524,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 				// tuning marker
 				canvas.Rect(spData.MarkerCentre, 50, spData.MarkerWidth, 100, q100color.gfxMarker)
 				// polygon
-				canvas.Polygon(spectrumClient.Xp, spData.Yp, q100color.gfxGreen)
+				canvas.Polygon(spClient.Xp, spData.Yp, q100color.gfxGreen)
 				// graticule
 				const fyBase float32 = 3
 				const fyInc float32 = 5.88235

@@ -9,7 +9,7 @@ import (
 	"q100transmitter/encoderClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
-	"q100transmitter/spectrumClient"
+	"q100transmitter/spClient"
 
 	"github.com/ea7kir/qLog"
 )
@@ -480,5 +480,5 @@ func somethingChanged() {
 	pttSwitch.SetPtt(false)
 	IsPtt = false
 	IsTuned = false
-	spectrumClient.SetMarker(Frequency.Value, SymbolRate.Value)
+	spClient.SetMarker(Frequency.Value, SymbolRate.Value)
 }

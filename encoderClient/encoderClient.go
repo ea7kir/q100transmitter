@@ -108,21 +108,31 @@ func SetParams(cfg *HeConfig) error {
 
 	// NETWORK
 
-	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
+	const MAXTRIES = 10
+	var conn net.Conn
 
+	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
 	qLog.Info("Connecting to: %s", url)
-	conn, err := net.Dial("tcp", url)
-	if err != nil {
-		qLog.Error("Failed to connect to: %s", url)
-		return err
+
+	for i := 1; i <= MAXTRIES; i++ {
+		qLog.Info("Dial attempt %v", i)
+		new_conn, err := net.Dial("tcp", url)
+		if err == nil {
+			conn = new_conn
+			break
+		}
+		if i == MAXTRIES {
+			qLog.Fatal("Dial Aborted after %v attemps\n", i)
+		}
+		time.Sleep(time.Millisecond * 500)
 	}
 	qLog.Info("Connected to: %v", url)
 	defer conn.Close()
 
-	if err := conn.SetDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
-		qLog.Error("Failed to set timeout: %s", err)
-		return err
-	}
+	// if err := conn.SetDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
+	// 	qLog.Error("Failed to set timeout: %s", err)
+	// 	return err
+	// }
 
 	// AUDIO
 
