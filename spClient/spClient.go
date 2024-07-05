@@ -6,7 +6,7 @@
 package spClient
 
 import (
-	"fmt"
+	"context"
 	"time"
 
 	"github.com/ea7kir/qLog"
@@ -30,28 +30,14 @@ var (
 	Xp = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
 )
 
-func Intitialize(cfg SpConfig, ch chan SpData) {
-	// spChannel = ch
+func Start(ctx context.Context, cfg SpConfig, ch chan SpData) {
 	Xp[0] = 0
 	for i := 1; i < numPoints-1; i++ {
 		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
 	}
 	Xp[numPoints-1] = 100
 
-	go readAndDecode(cfg, ch)
-}
-
-func Stop() {
-	qLog.Warn("Spectrum will stop... - NOT IMPLELENTED")
-}
-
-// Sets the spData Marker values
-//
-//	called from rxControl or txControl
-func SetMarker(frequency string, symbolRate string) {
-	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
-	// spData.MarkerCentre = const_frequencyCentre[frequency]
-	// spData.MarkerWidth = const_symbolRateWidth[symbolRate]
+	go readAndDecode(ctx, cfg, ch)
 }
 
 // END API *******************************************************
@@ -71,9 +57,8 @@ var (
 // TODO: needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
 //	which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 
-// forever go routine called from Intitialize
-func readAndDecode(cfg SpConfig, ch chan SpData) {
-
+// forever go routine called from Start
+func readAndDecode(ctx context.Context, cfg SpConfig, ch chan SpData) {
 	const MAXTRIES = 10
 	var ws *websocket.Conn
 
@@ -85,26 +70,23 @@ func readAndDecode(cfg SpConfig, ch chan SpData) {
 			break
 		}
 		if i == MAXTRIES {
-			qLog.Fatal("Dial aborted after %v seconds\n", i)
+			qLog.Fatal("Dial Aborted after %v attemps\n", i)
 		}
-		time.Sleep(time.Second)
+		time.Sleep(time.Millisecond * 500)
 	}
-
-	// ws, err := websocket.Dial(cfg.Url, "", cfg.Origin)
-	// if err != nil {
-	// 	qLog.Fatal("Dial Aborted: %v", err)
-	// 	os.Exit(1)
-	// }
-
-	// defer not working here
-	defer ws.Close()
-	defer fmt.Println("END OF readAndDecode()")
 
 	var bytes = make([]byte, 2048) // larger than 1844
 	var n int
 	var err error
 
 	for {
+		if ctx.Err() != nil {
+			qLog.Info("----- 1 Cancelled readAndDecode and ws closed")
+			time.Sleep(time.Duration(time.Second))
+			ws.Close()
+			qLog.Info("----- 2 Cancelled readAndDecode and ws closed")
+			return
+		}
 		if n, err = ws.Read(bytes); err != nil {
 			qLog.Warn("Read failed: %v", err)
 			continue
@@ -115,7 +97,7 @@ func readAndDecode(cfg SpConfig, ch chan SpData) {
 		}
 
 		// begin processing the bytes
-		// count = 0
+		// var count = 0
 		for i := 0; i < 1836; {
 			word := uint16(bytes[i]) + uint16(bytes[i+1])<<8
 			// count++
@@ -123,9 +105,7 @@ func readAndDecode(cfg SpConfig, ch chan SpData) {
 			if word < 8192 {
 				word = 8192
 			}
-			// spData.Yp[i/2] = float32(word-uint16(8192)) / float32(52000)
 			spData.Yp[i/2] = float32(word-uint16(8192)) / float32(520) // normalize to 0 to 100
-			// spData.Yp[i/2] = 50.0
 			i += 2
 		}
 		// qLog.Info("count = %v\n", count)
@@ -144,42 +124,42 @@ func readAndDecode(cfg SpConfig, ch chan SpData) {
 
 }
 
-// TODO: move to txControl.go
+// TODO: move to rxControl.go
 /*****************************************************************
-* SPECTRUM & CALIBRARTION MARKERS
-*****************************************************************/
+ * SPECTRUM & CALIBRARTION MARKERS
+ *****************************************************************/
 
 var (
 	// TODO: calculatee a mathematical values
 	const_frequencyCentre = map[string]float32{
-		// "10491.50 / 00": 103,
-		"2403.25 / 01": 230,
-		"2403.50 / 02": 256,
-		"2403.75 / 03": 281,
-		"2404.00 / 04": 307,
-		"2404.25 / 05": 332,
-		"2404.50 / 06": 358,
-		"2404.75 / 07": 383,
-		"2405.00 / 08": 409,
-		"2405.25 / 09": 434,
-		"2405.50 / 10": 460,
-		"2405.75 / 11": 485,
-		"2406.00 / 12": 511,
-		"2406.25 / 13": 536,
-		"2406.50 / 14": 562,
-		"2406.75 / 15": 588,
-		"2407.00 / 16": 613,
-		"2407.25 / 17": 639,
-		"2407.50 / 18": 664,
-		"2407.75 / 19": 690,
-		"2408.00 / 20": 715,
-		"2408.25 / 21": 741,
-		"2408.50 / 22": 767,
-		"2408.75 / 23": 792,
-		"2409.00 / 24": 818,
-		"2409.25 / 25": 843,
-		"2409.50 / 26": 869,
-		"2409.75 / 27": 894,
+		"10491.50 / 00": 103,
+		"10492.75 / 01": 230,
+		"10493.00 / 02": 256,
+		"10493.25 / 03": 281,
+		"10493.50 / 04": 307,
+		"10493.75 / 05": 332,
+		"10494.00 / 06": 358,
+		"10494.25 / 07": 383,
+		"10494.50 / 08": 409,
+		"10494.75 / 09": 434,
+		"10495.00 / 10": 460,
+		"10495.25 / 11": 485,
+		"10495.50 / 12": 511,
+		"10495.75 / 13": 536,
+		"10496.00 / 14": 562,
+		"10496.25 / 15": 588,
+		"10496.50 / 16": 613,
+		"10496.75 / 17": 639,
+		"10497.00 / 18": 664,
+		"10497.25 / 19": 690,
+		"10497.50 / 20": 715,
+		"10497.75 / 21": 741,
+		"10490.00 / 22": 767,
+		"10498.25 / 23": 792,
+		"10498.50 / 24": 818,
+		"10498.75 / 25": 843,
+		"10499.00 / 26": 869,
+		"10499.25 / 27": 894,
 	}
 
 	// TODO: calculatee a mathematical values
@@ -198,40 +178,12 @@ var (
 
 // Returns frequency and bandWidth Markers as float32
 func getMarkers(frequency, symbolRate string) (float32, float32) {
-	centre := const_frequencyCentre[frequency] / 9.18 // 9.18 is a temporary kludge
+	centre := const_frequencyCentre[frequency] / 9.18 // NOTE: 9.18 is a temporary kludge
 	width := const_symbolRateWidth[symbolRate]
 	return centre, width
 }
 
-// TODO: implement CalibratetionPoints()
-/*
-func CalibratetionPoints() {
-	var yp [918]float32
-
-	for _, v := range CalibrationMarkerWidth {
-		// yp[v] = 100
-		logger.Info.Printf("CalibratetionPoints %v", v)
-	}
-
-	for i, v := range yp {
-		logger.Info.Printf("CalibratetionPoints %v  %v", i, v)
-	}
-
+// Sets the spData Marker values
+func SetMarker(frequency string, symbolRate string) {
+	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
 }
-*/
-
-/*
-func readCalibrationData(ch chan SpData) {
-	qLog.Info("Spectrun calibration running...")
-	for {
-		spData.Yp[0] = 0
-		for i := 1; i < numPoints-2; i++ {
-			spData.Yp[i] = rand.Float32() * 50.0
-		}
-		spData.Yp[numPoints-1] = 0
-		spData.BeaconLevel = rand.Float32() * 100
-		ch <- spData
-		time.Sleep(3 * time.Millisecond)
-	}
-}
-*/

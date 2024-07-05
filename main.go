@@ -10,9 +10,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"time"
-
-	// _ "net/http/pprof"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -22,6 +19,9 @@ import (
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spClient"
 	"q100transmitter/txControl"
+	"time"
+
+	// _ "net/http/pprof"
 
 	"github.com/ea7kir/qLog"
 
@@ -131,12 +131,13 @@ func main() {
 	logFile, err := os.OpenFile("/home/pi/Q100/transmitter.log", os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println("failed to open log file:", err)
-		qLog.Close()
 		os.Exit(1)
 	}
 	// log.SetOutput(os.Stderr)
 	qLog.SetOutput(logFile)
 	defer qLog.Close()
+
+	qLog.Info("----- q100transmitter Opened -----")
 
 	// read callsign from /home/pi/Q100/callsign
 	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
@@ -144,27 +145,23 @@ func main() {
 		qLog.Fatal("ünable read callsign: %err", err)
 	}
 	plConfig.Provider = string(bytes)
-	// fmt.Println("callsign: ", plConfig.Provider)
 	// current Pluto firmware doesn't provide a way to set this
 	plConfig.Service = ""
+	qLog.Info("callsign: %v", plConfig.Provider)
 
-	qLog.Info("----- q100transmitter Opened -----")
+	// spClient.Intitialize(spConfig, spChannel)
+	ctx, cancel := context.WithCancel(context.Background())
+	spClient.Start(ctx, spConfig, spChannel)
 
-	os.Setenv("DISPLAY", ":0") // required for X11
-
-	spClient.Intitialize(spConfig, spChannel)
-
+	// TODO: implement with a done channel or a context.Cancel
 	paClient.Initialize(svrConfig, svrChannel)
-
 	encoderClient.Initialize(heConfig)
-
 	plutoClient.Initialize(plConfig)
-
 	pttSwitch.Initialize()
-
 	txControl.Initialize(tuConfig)
 
 	go func() {
+		os.Setenv("DISPLAY", ":0") // required for X11
 		// app.Size(800, 480) // I don't know if this is help in any way
 		var w app.Window
 		w.Option(app.Fullscreen.Option())
@@ -174,18 +171,24 @@ func main() {
 			os.Exit(1)
 		}
 
-		// TODO: implement with a d/on channel
+		cancel()
+		qLog.Info("cancel() called")
+		// allow time to cancel all functions
+		time.Sleep(time.Second * 2)
+
+		// TODO: implement with a done channel or a context.Cancel
 		txControl.Stop()
-		paClient.Stop()
-		spClient.Stop()
+		pttSwitch.Stop()
+		// plutoClient.Stop() // not implemented
+		// encoderClient.Stop() // not implemented
+		// paClient.Stop() // not implemented
 
 		if !true { // change to true for powerdown
 			qLog.Info("----- q100transmitter will poweroff -----")
 			time.Sleep(1 * time.Second)
 			cmd := exec.Command("sudo", "poweroff")
 			if err := cmd.Start(); err != nil {
-				qLog.Error("failed to poweroff: %v", err)
-				os.Exit(1)
+				qLog.Fatal("failed to poweroff: %v", err)
 			}
 			cmd.Wait()
 		}
