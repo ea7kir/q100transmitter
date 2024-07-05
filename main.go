@@ -53,7 +53,7 @@ var (
 		Url:  "paserver.local",
 		Port: 9999, //8765,
 	}
-	heConfig = encoderClient.HeConfig{
+	encConfig = encoderClient.EncConfig{
 		// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
 		// AudioBitRate: "64000",     // 32000 | 64000
 		// VideoBitRate: "350",       // 32...16384
@@ -103,14 +103,14 @@ var (
 		WideAudioBitRate:        "64000", // 32000 | 64000
 		NarrowAudioBitRate:      "64000",
 		VeryNarrowAudioBitRate:  "32000",
-		WideResolution:          "720p",
-		NarrowResolution:        "720p",
+		WideResolution:          "1080p", // 720p | 1080p
+		NarrowResolution:        "1080p",
 		VeryNarrowResolution:    "720p",
 		WideSpare2:              "sp2-a",
 		NarrowSpare2:            "sp2-a",
 		VeryNarrowSpare2:        "sp2-a",
 		WideGain:                "-15",
-		NarrowGain:              "-16",
+		NarrowGain:              "-14",
 		VeryNarrowGain:          "-20",
 	}
 )
@@ -135,7 +135,6 @@ func main() {
 	}
 	// log.SetOutput(os.Stderr)
 	qLog.SetOutput(logFile)
-	defer qLog.Close()
 
 	qLog.Info("----- q100transmitter Opened -----")
 
@@ -146,8 +145,8 @@ func main() {
 	}
 	plConfig.Provider = string(bytes)
 	// current Pluto firmware doesn't provide a way to set this
-	plConfig.Service = ""
-	qLog.Info("callsign: %v", plConfig.Provider)
+	plConfig.Service = "n/a"
+	qLog.Info("Provider (Callsign): %v Service: %v", plConfig.Provider, plConfig.Service)
 
 	// spClient.Intitialize(spConfig, spChannel)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -155,7 +154,7 @@ func main() {
 
 	// TODO: implement with a done channel or a context.Cancel
 	paClient.Initialize(svrConfig, svrChannel)
-	encoderClient.Initialize(heConfig)
+	encoderClient.Initialize(encConfig)
 	plutoClient.Initialize(plConfig)
 	pttSwitch.Initialize()
 	txControl.Initialize(tuConfig)
@@ -167,34 +166,38 @@ func main() {
 		w.Option(app.Fullscreen.Option())
 
 		if err := loop(&w); err != nil {
-			qLog.Fatal("failed to start loop: %v", err)
+			qLog.Error("failed to start loop: %v", err)
+			qLog.Close()
 			os.Exit(1)
 		}
 
 		cancel()
-		qLog.Info("cancel() called")
+		qLog.Info("----- cancel() called")
 		// allow time to cancel all functions
 		time.Sleep(time.Second * 2)
 
 		// TODO: implement with a done channel or a context.Cancel
 		txControl.Stop()
 		pttSwitch.Stop()
-		// plutoClient.Stop() // not implemented
-		// encoderClient.Stop() // not implemented
-		// paClient.Stop() // not implemented
+		plutoClient.Stop()
+		encoderClient.Stop()
+		paClient.Stop()
 
 		if !true { // change to true for powerdown
 			qLog.Info("----- q100transmitter will poweroff -----")
 			time.Sleep(1 * time.Second)
 			cmd := exec.Command("sudo", "poweroff")
 			if err := cmd.Start(); err != nil {
-				qLog.Fatal("failed to poweroff: %v", err)
+				qLog.Error("failed to poweroff: %v", err)
+				qLog.Close()
+				os.Exit(1)
 			}
 			cmd.Wait()
 		}
 
 		qLog.Info("----- q100transmitter Closed -----")
-		os.Exit(0)
+		qLog.Close()
+		os.Exit(1)
 	}()
 
 	app.Main()

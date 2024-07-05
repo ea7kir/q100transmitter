@@ -42,7 +42,7 @@ func Initialize(cfg SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	qLog.Warn("paClient will stop... - NOT IMPLELENTED *************")
+	qLog.Warn("paClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
 	done = true
 }

@@ -36,7 +36,7 @@ SRT: Disabled
 
 type (
 	// API
-	HeConfig struct {
+	EncConfig struct {
 		Codecs                string
 		AudioBitRate          string
 		VideoBitRate          string
@@ -66,11 +66,11 @@ type (
 )
 
 var (
-	arg HeConfig
+	arg EncConfig
 )
 
 // API
-func Initialize(cfg HeConfig) {
+func Initialize(cfg EncConfig) {
 	arg = cfg
 	// settings not used by the GUI
 	arg.audio_sample_rate = "44100" // or "48000"
@@ -94,7 +94,11 @@ func Initialize(cfg HeConfig) {
 	// qp3: bqp
 }
 
-func SetParams(cfg *HeConfig) error {
+func Stop() {
+	qLog.Info("encoderClient will stop... - NOT IMPLEMENTED")
+}
+
+func SetParams(cfg *EncConfig) error {
 	const (
 		PORT = "55555"
 		// SUCCESS = "#8001,23,06,OK!"

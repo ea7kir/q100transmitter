@@ -323,7 +323,7 @@ func Initialize(cfg TuConfig) {
 
 // API
 func Stop() {
-	qLog.Info("Tuner will stop...")
+	qLog.Info("Tuner will stop... - NOT IMPLEMENTED")
 	IsPtt = pttSwitch.SetPtt(false)
 	qLog.Info("Tuner has stopped")
 }
@@ -341,7 +341,7 @@ func Tune() {
 		}
 		plutoClient.SetParams(&plutoParam)
 
-		encoderArgs := encoderClient.HeConfig{
+		encoderArgs := encoderClient.EncConfig{
 			Codecs:       Codecs.Value,
 			AudioBitRate: AudioBitRate.Value,
 			VideoBitRate: VideoBitRate.Value,

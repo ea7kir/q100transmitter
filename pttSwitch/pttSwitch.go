@@ -54,6 +54,7 @@ func Initialize() {
 
 // API
 func Stop() {
+	qLog.Info("PTTr will stop... - NOT IMPLEMENTED")
 	SetPtt(false)
 	hvc349Control.SetValue(HIGH)
 	muteEnable.SetValue(LOW)
