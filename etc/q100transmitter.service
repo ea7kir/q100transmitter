@@ -19,6 +19,8 @@ After=graphical.target network-online.target
 [Service]
 User=pi
 Group=pi
+StandardOutput=append:/home/pi/Q100/transmitter.log
+StandardError=append:/home/pi/Q100/transmitter.log
 Environment="DISPLAY=:0"
 WorkingDirectory=/home/pi/Q100/q100transmitter
 ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
