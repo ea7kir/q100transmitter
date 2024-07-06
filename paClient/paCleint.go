@@ -9,11 +9,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"strings"
 	"time"
-
-	"github.com/ea7kir/qLog"
 )
 
 type (
@@ -42,7 +41,7 @@ func Initialize(cfg SvrConfig, ch chan SvrData) {
 
 // API
 func Stop() {
-	qLog.Warn("paClient will stop... - NOT IMPLELENTED")
+	log.Printf("WARN  paClient will stop... - NOT IMPLELENTED")
 	// is it coonected?  send an EOF
 	done = true
 }
@@ -56,13 +55,13 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 	ch <- sd
 
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	qLog.Info("Client %v connected", url)
+	log.Printf("INFO Client %v connected", url)
 
 	const MAXTRIES = 10
 	var conn net.Conn
 
 	for i := 1; i <= MAXTRIES; i++ {
-		qLog.Info("Dial attempt %v", i)
+		log.Printf("INFO Dial attempt %v", i)
 		new_conn, err := net.Dial("tcp", url)
 		if err == nil {
 			conn = new_conn
@@ -70,7 +69,7 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 		}
 		if i == MAXTRIES {
 			// qLog.Fatal("Dial Aborted after %v attemps\n", i)
-			qLog.Error("Dial Aborted after %v attemps\n", i)
+			log.Printf("ERROR Dial Aborted after %v attemps\n", i)
 			// sd := SvrData{}
 			sd.Status = "Not connected"
 			ch <- sd
@@ -92,14 +91,14 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 
 	for {
 		if done {
-			qLog.Warn("paClient will stop...")
+			log.Printf("WARN  paClient will stop...")
 			return
 		}
 
 		time.Sleep(2 * time.Second)
 
 		if _, err := conn.Write([]byte(clientRequest)); err != nil {
-			qLog.Error("failed to send the client request: %v\n", err)
+			log.Printf("ERROR failed to send the client request: %v\n", err)
 			sd.Status = "Failed to send request"
 			ch <- sd
 		}
@@ -111,10 +110,10 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 			sd.Status = strings.TrimSpace(serverResponse)
 			ch <- sd
 		case io.EOF:
-			qLog.Warn("server closed the connection")
+			log.Printf("WARN  server closed the connection")
 			return
 		default:
-			qLog.Error("server error: %v\n", err)
+			log.Printf("ERROR server error: %v\n", err)
 			return
 		}
 	}

@@ -7,6 +7,7 @@ package plutoClient
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -92,7 +93,7 @@ func Initialize(cfg PlConfig) {
 }
 
 func Stop() {
-	qLog.Info("plutoClient will stop... - NOT IMPLEMENTED")
+	log.Printf("INFO plutoClient will stop... - NOT IMPLEMENTED")
 	// now delete the local  settings file
 	// ************* END dummy send using script
 
@@ -101,7 +102,7 @@ func Stop() {
 	// can't do this until file is closed.
 	// err = os.Remove(settingsFileName)
 	// if err != nil {
-	// 	qLog.Warn("Failed to delete settings.txt: %s", err)
+	// 	log.Printf("WARN  Failed to delete settings.txt: %s", err)
 	// }
 }
 
@@ -134,7 +135,7 @@ func writePluto() {
 		arg.h265box,
 		arg.remux)
 
-	// qLog.Info("1: save to settings.txt to a local folder: \n%v\n", settings)
+	// log.Printf("INFO 1: save to settings.txt to a local folder: \n%v\n", settings)
 
 	const (
 		cp2plutoScript   = "/home/pi/Q100/q100transmitter/etc/cp2pluto"
@@ -157,7 +158,7 @@ func writePluto() {
 		qLog.Fatal("%s", err)
 		os.Exit(1)
 	}
-	// qLog.Info("Pluto settings saved to local file: %s", settingsFileName)
+	// log.Printf("INFO Pluto settings saved to local file: %s", settingsFileName)
 
 	// Sending to Pluto on the smd line
 	// /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1

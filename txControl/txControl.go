@@ -6,12 +6,11 @@
 package txControl
 
 import (
+	"log"
 	"q100transmitter/encoderClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spClient"
-
-	"github.com/ea7kir/qLog"
 )
 
 // API
@@ -323,9 +322,9 @@ func Initialize(cfg TuConfig) {
 
 // API
 func Stop() {
-	qLog.Info("Tuner will stop... - NOT IMPLEMENTED")
+	log.Printf("INFO Tuner will stop... - NOT IMPLEMENTED")
 	IsPtt = pttSwitch.SetPtt(false)
-	qLog.Info("Tuner has stopped")
+	log.Printf("INFO Tuner has stopped")
 }
 
 // API
@@ -348,7 +347,7 @@ func Tune() {
 			Resolution:   Resolution.Value,
 		}
 		if err := encoderClient.SetParams(&encoderArgs); err != nil {
-			qLog.Error("TUNE: %s", err)
+			log.Printf("ERROR TUNE: %s", err)
 		}
 
 		IsTuned = true
@@ -359,7 +358,7 @@ func Tune() {
 		// }
 		IsTuned = false
 	}
-	// qLog.Info("IsTuned is %v", IsTuned)
+	// log.Printf("INFO IsTuned is %v", IsTuned)
 }
 
 // API

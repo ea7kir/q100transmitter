@@ -8,6 +8,7 @@ package encoderClient
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net"
 	"strings"
 	"time"
@@ -95,7 +96,7 @@ func Initialize(cfg EncConfig) {
 }
 
 func Stop() {
-	qLog.Info("encoderClient will stop... - NOT IMPLEMENTED")
+	log.Printf("INFO encoderClient will stop... - NOT IMPLEMENTED")
 }
 
 func SetParams(cfg *EncConfig) error {
@@ -116,10 +117,10 @@ func SetParams(cfg *EncConfig) error {
 	var conn net.Conn
 
 	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
-	qLog.Info("Connecting to: %s", url)
+	log.Printf("INFO Connecting to: %s", url)
 
 	for i := 1; i <= MAXTRIES; i++ {
-		qLog.Info("Dial attempt %v", i)
+		log.Printf("INFO Dial attempt %v", i)
 		new_conn, err := net.Dial("tcp", url)
 		if err == nil {
 			conn = new_conn
@@ -130,11 +131,11 @@ func SetParams(cfg *EncConfig) error {
 		}
 		time.Sleep(time.Millisecond * 500)
 	}
-	qLog.Info("Connected to: %v", url)
+	log.Printf("INFO Connected to: %v", url)
 	defer conn.Close()
 
 	// if err := conn.SetDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
-	// 	qLog.Error("Failed to set timeout: %s", err)
+	// 	log.Printf("ERROR Failed to set timeout: %s", err)
 	// 	return err
 	// }
 
@@ -211,7 +212,7 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	const SUCCESS_V = "#8001,22,06,OK!"
 	const FAIL = "#8001,23,06,ERR!"
 	var err error
-	qLog.Info("cmdStr is: %s", cmdStr)
+	log.Printf("INFO cmdStr is: %s", cmdStr)
 	// send
 	_, err = conn.Write([]byte(cmdStr))
 	if err != nil {
@@ -227,7 +228,7 @@ func sendToEncoder(conn net.Conn, cmdStr string, what string) error {
 	case FAIL:
 		return fmt.Errorf("failed to send %s to encoder >%v<", what, result)
 	case SUCCESS_A, SUCCESS_V:
-		qLog.Info("HEV-10 %s configured ok >%v<", what, result)
+		log.Printf("INFO HEV-10 %s configured ok >%v<", what, result)
 	default:
 		return fmt.Errorf("undefine %s result: >%v<", what, result)
 	}

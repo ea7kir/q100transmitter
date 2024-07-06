@@ -6,7 +6,8 @@
 package pttSwitch
 
 import (
-	"github.com/ea7kir/qLog"
+	"log"
+
 	"github.com/warthog618/go-gpiocdev"
 	"github.com/warthog618/go-gpiocdev/device/rpi"
 )
@@ -54,7 +55,7 @@ func Initialize() {
 
 // API
 func Stop() {
-	qLog.Info("PTTr will stop... - NOT IMPLEMENTED")
+	log.Printf("INFO PTTr will stop... - NOT IMPLEMENTED")
 	SetPtt(false)
 	hvc349Control.SetValue(HIGH)
 	muteEnable.SetValue(LOW)
@@ -71,11 +72,11 @@ func SetPtt(tx bool) bool {
 	case true:
 		hvc349Control.SetValue(LOW)
 		muteEnable.SetValue(HIGH)
-		qLog.Info("PTT is %v", "Enabled")
+		log.Printf("INFO PTT is %v", "Enabled")
 	case false:
 		hvc349Control.SetValue(HIGH)
 		muteEnable.SetValue(LOW)
-		// qLog.Info("PTT is %v", "Disabled") // too much logging, because called on when any button is pressed
+		// log.Printf("INFO PTT is %v", "Disabled") // too much logging, because called on when any button is pressed
 	}
 	return tx
 }

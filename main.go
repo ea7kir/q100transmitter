@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"log"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -136,7 +137,7 @@ func main() {
 	// log.SetOutput(os.Stderr)
 	qLog.SetOutput(logFile)
 
-	qLog.Info("----- q100transmitter Opened -----")
+	log.Printf("INFO ----- q100transmitter Opened -----")
 
 	// read callsign from /home/pi/Q100/callsign
 	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
@@ -146,7 +147,7 @@ func main() {
 	plConfig.Provider = string(bytes)
 	// current Pluto firmware doesn't provide a way to set this
 	plConfig.Service = "n/a"
-	qLog.Info("Provider (Callsign): %v Service: %v", plConfig.Provider, plConfig.Service)
+	log.Printf("INFO Provider: %v Service: %v", plConfig.Provider, plConfig.Service)
 
 	// spClient.Intitialize(spConfig, spChannel)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -166,13 +167,13 @@ func main() {
 		w.Option(app.Fullscreen.Option())
 
 		if err := loop(&w); err != nil {
-			qLog.Error("failed to start loop: %v", err)
-			qLog.Close()
+			log.Printf("ERROR failed to start loop: %v", err)
+			// log.Close()
 			os.Exit(1)
 		}
 
 		cancel()
-		qLog.Info("----- cancel() called")
+		log.Printf("INFO ----- cancel() called")
 		// allow time to cancel all functions
 		time.Sleep(time.Second * 2)
 
@@ -184,19 +185,19 @@ func main() {
 		paClient.Stop()
 
 		if !true { // change to true for powerdown
-			qLog.Info("----- q100transmitter will poweroff -----")
+			log.Printf("INFO ----- q100transmitter will poweroff -----")
 			time.Sleep(1 * time.Second)
 			cmd := exec.Command("sudo", "poweroff")
 			if err := cmd.Start(); err != nil {
-				qLog.Error("failed to poweroff: %v", err)
-				qLog.Close()
+				log.Printf("ERROR failed to poweroff: %v", err)
+				// log.Close()
 				os.Exit(1)
 			}
 			cmd.Wait()
 		}
 
-		qLog.Info("----- q100transmitter Closed -----")
-		qLog.Close()
+		log.Printf("INFO ----- q100transmitter Closed -----")
+		// log.Close()
 		os.Exit(0)
 	}()
 
@@ -524,7 +525,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 					Context: gtx,
 					Theme:   ui.th,
 				}
-				// qLog.Info("  Canvas: %#v\n", canvas.Context.Constraints)
+				// log.Printf("INFO   Canvas: %#v\n", canvas.Context.Constraints)
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
