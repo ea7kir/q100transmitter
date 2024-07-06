@@ -197,7 +197,7 @@ func main() {
 
 		qLog.Info("----- q100transmitter Closed -----")
 		qLog.Close()
-		os.Exit(1)
+		os.Exit(0)
 	}()
 
 	app.Main()
