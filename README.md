@@ -3,8 +3,6 @@ Control and monitor a DATV transmiter with a touch screen.
 
 ![tx](doc/tx.jpeg)
 
-$${\color{red}WARNING:\space ALL\space DEVELOPMENT\space TAKES\space PLACE\space ON\space THE\space MAIN\space BRANCH}$$
-
 ## Hardware
 - Raspberry Pi 4B with 4GB RAM (minimum)
 - Raspberry Pi Official 7" Touch Screen
@@ -20,7 +18,7 @@ TODO: add schenatics
 ## Installing
 NOTE: CURRENTLY REQUIRES PI OS BULLSEYE 64-BIT (FULL DESKTOP VERSION)
 
-### Using Raspberry Pi Imager:
+### Using Raspberry Pi Imager v1.8.5:
 ```
 CHOOSE OS: Raspberry Pi OS (other) -> Raspberry Pi OS (64-bit)
 
