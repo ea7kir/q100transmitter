@@ -11,8 +11,6 @@ github.com/ajstarks/giocanvas v0.0.0-20240419121651-13ba52cb0eb3 h1:F1xtJSauMoHb
 github.com/ajstarks/giocanvas v0.0.0-20240419121651-13ba52cb0eb3/go.mod h1:+sdZOgPFmJbBB/kTCZu3Bxq2T5wTVIxc5sUP9j+B7gA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/ea7kir/qLog v1.0.1 h1:Yn2cbeK1up+8ynMC3uDaotpGZGDb2kfzGeGBU4iAD3o=
-github.com/ea7kir/qLog v1.0.1/go.mod h1:Io6KIIMhZFYJchcRPvpvCy997jf1tnWYhPc5swn2Cgg=
 github.com/go-text/typesetting v0.1.1 h1:bGAesCuo85nXnEN5LmFMVGAGpGkCPtHrZLi//qD7EJo=
 github.com/go-text/typesetting v0.1.1/go.mod h1:d22AnmeKq/on0HNv73UFriMKc4Ez6EqZAofLhAzpSzI=
 github.com/go-text/typesetting-utils v0.0.0-20231211103740-d9332ae51f04 h1:zBx+p/W2aQYtNuyZNcTfinWvXBQwYtDfme051PR/lAY=

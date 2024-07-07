@@ -9,7 +9,6 @@ go 1.22.5
 require (
 	gioui.org v0.6.1-0.20240415082141-61b603d521a5
 	github.com/ajstarks/giocanvas v0.0.0-20240419121651-13ba52cb0eb3
-	github.com/ea7kir/qLog v1.0.1
 	github.com/warthog618/go-gpiocdev v0.9.0
 	golang.org/x/image v0.14.0
 	golang.org/x/net v0.27.0
