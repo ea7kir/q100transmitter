@@ -10,7 +10,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/ea7kir/qLog"
 	"golang.org/x/net/websocket"
 )
 
@@ -71,7 +70,7 @@ func readAndDecode(ctx context.Context, cfg SpConfig, ch chan SpData) {
 			break
 		}
 		if i == MAXTRIES {
-			qLog.Fatal("Dial Aborted after %v attemps\n", i)
+			log.Fatalf("FATAL   Dial Aborted after %v attemps\n", i)
 		}
 		time.Sleep(time.Millisecond * 500)
 	}

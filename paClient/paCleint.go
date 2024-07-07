@@ -68,7 +68,7 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 			break
 		}
 		if i == MAXTRIES {
-			// qLog.Fatal("Dial Aborted after %v attemps\n", i)
+			// log.Fatalf("FATAL   Dial Aborted after %v attemps\n", i)
 			log.Printf("ERROR Dial Aborted after %v attemps\n", i)
 			// sd := SvrData{}
 			sd.Status = "Not connected"

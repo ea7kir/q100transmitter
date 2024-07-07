@@ -12,8 +12,6 @@ import (
 	"net"
 	"strings"
 	"time"
-
-	"github.com/ea7kir/qLog"
 )
 
 /*
@@ -127,7 +125,7 @@ func SetParams(cfg *EncConfig) error {
 			break
 		}
 		if i == MAXTRIES {
-			qLog.Fatal("Dial Aborted after %v attemps\n", i)
+			log.Fatalf("FATAL   Dial Aborted after %v attemps\n", i)
 		}
 		time.Sleep(time.Millisecond * 500)
 	}

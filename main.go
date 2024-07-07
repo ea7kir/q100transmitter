@@ -7,7 +7,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"image"
 	"image/color"
 	"log"
@@ -23,8 +22,6 @@ import (
 	"time"
 
 	// _ "net/http/pprof"
-
-	"github.com/ea7kir/qLog"
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
@@ -129,20 +126,14 @@ var (
 // go tool pprof -http=":" pprof.q100transmitter.samples.cpu.001.pb.gz
 
 func main() {
-	logFile, err := os.OpenFile("/home/pi/Q100/transmitter.log", os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		fmt.Println("failed to open log file:", err)
-		os.Exit(1)
-	}
-	// log.SetOutput(os.Stderr)
-	qLog.SetOutput(logFile)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	log.Printf("INFO ----- q100transmitter Opened -----")
 
 	// read callsign from /home/pi/Q100/callsign
 	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
 	if err != nil {
-		qLog.Fatal("ünable read callsign: %err", err)
+		log.Fatalf("FATAL   ünable read callsign: %err", err)
 	}
 	plConfig.Provider = string(bytes)
 	// current Pluto firmware doesn't provide a way to set this
@@ -167,9 +158,7 @@ func main() {
 		w.Option(app.Fullscreen.Option())
 
 		if err := loop(&w); err != nil {
-			log.Printf("ERROR failed to start loop: %v", err)
-			// log.Close()
-			os.Exit(1)
+			log.Fatalf("FATAL failed to start loop: %v", err)
 		}
 
 		cancel()
@@ -189,9 +178,7 @@ func main() {
 			time.Sleep(1 * time.Second)
 			cmd := exec.Command("sudo", "poweroff")
 			if err := cmd.Start(); err != nil {
-				log.Printf("ERROR failed to poweroff: %v", err)
-				// log.Close()
-				os.Exit(1)
+				log.Fatalf("FATAL failed to poweroff: %v", err)
 			}
 			cmd.Wait()
 		}

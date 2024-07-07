@@ -11,8 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/ea7kir/qLog"
 )
 
 /*
@@ -148,15 +146,13 @@ func writePluto() {
 
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		qLog.Fatal("%s", err)
-		os.Exit(1)
+		log.Fatalf("FATAL   %s", err)
 	}
 	defer f.Close()
 
 	_, err = f.WriteString(settings)
 	if err != nil {
-		qLog.Fatal("%s", err)
-		os.Exit(1)
+		log.Fatalf("FATAL   %s", err)
 	}
 	// log.Printf("INFO Pluto settings saved to local file: %s", settingsFileName)
 
@@ -175,7 +171,6 @@ func writePluto() {
 	)
 	_, err = cmd.Output()
 	if err != nil {
-		qLog.Fatal("Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
-		os.Exit(1)
+		log.Fatalf("FATAL   Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
 	}
 }
