@@ -12,7 +12,23 @@ import (
 	"q100transmitter/pttSwitch"
 )
 
-// API
+// type TuCmd_t struct {
+// 	uint32
+// }
+
+// const (
+// 	DecBand_cmd = iota
+// 	IncBand_cmd
+// 	DecSr_cmd
+// 	IncSr_cmd
+// 	DecFreq_cmd
+// 	IncFreq_cmd
+// 	Tune_cmd
+// 	Cal_cmd
+// )
+
+// var cmdChan *chan TuCmd_t
+
 type (
 	TuConfig_t struct {
 		Band                    string
@@ -62,7 +78,6 @@ type (
 	}
 )
 
-// API
 var (
 	tuData        TuData_t
 	dataChan      *chan TuData_t
