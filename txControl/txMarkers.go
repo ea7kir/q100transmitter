@@ -1,4 +1,4 @@
-package spClient
+package txControl
 
 /*****************************************************************
  * SPECTRUM MARKERS FOR TRANSMITING
@@ -50,15 +50,3 @@ var (
 		"33":   1.5,
 	}
 )
-
-// Returns frequency and bandWidth Markers as float32
-func getMarkers(frequency, symbolRate string) (float32, float32) {
-	centre := const_frequencyCentre[frequency] / 9.18 // NOTE: 9.18 is a temporary kludge
-	width := const_symbolRateWidth[symbolRate]
-	return centre, width
-}
-
-// Sets the spData Marker values
-func SetMarker(frequency string, symbolRate string) {
-	spData.MarkerCentre, spData.MarkerWidth = getMarkers(frequency, symbolRate)
-}

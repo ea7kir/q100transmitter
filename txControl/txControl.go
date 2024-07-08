@@ -10,7 +10,6 @@ import (
 	"q100transmitter/encoderClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
-	"q100transmitter/spClient"
 )
 
 // API
@@ -57,10 +56,16 @@ type (
 		list      []string
 		Value     string
 	}
+	TuData_t struct {
+		MarkerCentre float32
+		MarkerWidth  float32
+	}
 )
 
 // API
 var (
+	TuData_v      TuData_t
+	dataChan      *chan TuData_t
 	Band          Selector
 	SymbolRate    Selector
 	Frequency     Selector
@@ -269,7 +274,9 @@ var (
 )
 
 // API
-func Initialize(cfg TuConfig) {
+func Start(cfg TuConfig, ch chan TuData_t) {
+	dataChan = &ch
+
 	Band = newSelector(const_BAND_LIST, cfg.Band)
 
 	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, cfg.WideSymbolrate)
@@ -479,5 +486,7 @@ func somethingChanged() {
 	pttSwitch.SetPtt(false)
 	IsPtt = false
 	IsTuned = false
-	spClient.SetMarker(Frequency.Value, SymbolRate.Value)
+	TuData_v.MarkerCentre = const_frequencyCentre[Frequency.Value] / 9.18 // NOTE: 9.18 is a temporary kludge
+	TuData_v.MarkerWidth = const_symbolRateWidth[SymbolRate.Value]
+	*dataChan <- TuData_v
 }

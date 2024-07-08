@@ -115,6 +115,8 @@ var (
 
 // local data
 var (
+	tuData     txControl.TuData_t
+	tuChannel  = make(chan txControl.TuData_t, 1)
 	spData     spClient.SpData
 	spChannel  = make(chan spClient.SpData, 3) //, 5)
 	svrData    paClient.SvrData
@@ -142,14 +144,15 @@ func main() {
 
 	// spClient.Intitialize(spConfig, spChannel)
 	ctx, cancel := context.WithCancel(context.Background())
-	spClient.Start(ctx, spConfig, spChannel)
+	go spClient.Start(ctx, spConfig, spChannel)
 
 	// TODO: implement with a done channel or a context.Cancel
 	paClient.Initialize(svrConfig, svrChannel)
 	encoderClient.Initialize(encConfig)
 	plutoClient.Initialize(plConfig)
 	pttSwitch.Initialize()
-	txControl.Initialize(tuConfig)
+
+	txControl.Start(tuConfig, tuChannel)
 
 	go func() {
 		os.Setenv("DISPLAY", ":0") // required for X11
@@ -161,7 +164,7 @@ func main() {
 			log.Fatalf("FATAL failed to start loop: %v", err)
 		}
 
-		cancel()
+		cancel() // TODO: this NOT WORKING !!!!!!!!!!!!!!!!!!!!!!
 		log.Printf("INFO ----- cancel() called")
 		// allow time to cancel all functions
 		time.Sleep(time.Second * 2)
@@ -214,6 +217,8 @@ func loop(w *app.Window) error {
 			done = nil
 			return nil
 			// w.Perform(system.ActionClose)
+		case tuData = <-tuChannel:
+			w.Invalidate()
 		case svrData = <-svrChannel:
 			w.Invalidate()
 		case spData = <-spChannel:
@@ -516,7 +521,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
-				canvas.Rect(spData.MarkerCentre, 50, spData.MarkerWidth, 100, q100color.gfxMarker)
+				canvas.Rect(tuData.MarkerCentre, 50, tuData.MarkerWidth, 100, q100color.gfxMarker)
 				// polygon
 				canvas.Polygon(spClient.Xp, spData.Yp, q100color.gfxGreen)
 				// graticule
