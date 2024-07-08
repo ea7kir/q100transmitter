@@ -41,17 +41,17 @@ import (
 
 // configuration data
 var (
-	spConfig = spClient.SpConfig{
+	spConfig = spClient.SpConfig_t{
 		// Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
 		// Origin: "http://eshail.batc.org.uk/wb",
 		Origin: "https://eshail.batc.org.uk/",
 		Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/wss",
 	}
-	svrConfig = paClient.SvrConfig{
+	svrConfig = paClient.SvrConfig_t{
 		Url:  "paserver.local",
 		Port: 9999, //8765,
 	}
-	encConfig = encoderClient.EncConfig{
+	encConfig = encoderClient.EncConfig_t{
 		// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
 		// AudioBitRate: "64000",     // 32000 | 64000
 		// VideoBitRate: "350",       // 32...16384
@@ -60,7 +60,7 @@ var (
 		StreamPort: "8282",
 		ConfigIP:   "192.168.3.1",
 	}
-	plConfig = plutoClient.PlConfig{
+	plConfig = plutoClient.PlConfig_t{
 		// configure setting not provided by the GUI
 		// Provider: "",
 		// Service:  "",
@@ -75,7 +75,7 @@ var (
 		// Remux:           "1",
 		Url: "pluto.local", // or maybe "192.168.2.1"
 	}
-	tuConfig = txControl.TuConfig{
+	tuConfig = txControl.TuConfig_t{
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
 		NarrowSymbolrate:        "333",
@@ -117,10 +117,10 @@ var (
 var (
 	tuData     txControl.TuData_t
 	tuChannel  = make(chan txControl.TuData_t, 1)
-	spData     spClient.SpData
-	spChannel  = make(chan spClient.SpData, 3) //, 5)
-	svrData    paClient.SvrData
-	svrChannel = make(chan paClient.SvrData, 3) //, 5)
+	spData     spClient.SpData_t
+	spChannel  = make(chan spClient.SpData_t, 3) //, 5)
+	svrData    paClient.SvrData_t
+	svrChannel = make(chan paClient.SvrData_t, 3) //, 5)
 )
 
 // profile from the Mac
@@ -443,7 +443,7 @@ func (ui *UI) q100_TopStatusRow(gtx C) D {
 	)
 }
 
-// returns a single Selector as [ button label button ]
+// returns a single Selector_t as [ button label button ]
 func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btnWidth, lblWidth unit.Dp) D {
 	inset := layout.Inset{
 		Top:    2,

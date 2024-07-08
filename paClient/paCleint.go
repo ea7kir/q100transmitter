@@ -17,12 +17,12 @@ import (
 
 type (
 	// API
-	SvrConfig struct {
+	SvrConfig_t struct {
 		Url  string
 		Port int
 	}
 	// API
-	SvrData struct {
+	SvrData_t struct {
 		Status string
 	}
 )
@@ -32,7 +32,7 @@ var (
 )
 
 // API
-func Initialize(cfg SvrConfig, ch chan SvrData) {
+func Initialize(cfg SvrConfig_t, ch chan SvrData_t) {
 	go readServer(cfg, ch)
 	// TODO: create the connection in loop to retry
 	// defer
@@ -49,8 +49,8 @@ func Stop() {
 // TODO: need to add a timeout
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
-func readServer(cfg SvrConfig, ch chan SvrData) {
-	sd := SvrData{}
+func readServer(cfg SvrConfig_t, ch chan SvrData_t) {
+	sd := SvrData_t{}
 	sd.Status = "Connecting..."
 	ch <- sd
 
@@ -70,7 +70,7 @@ func readServer(cfg SvrConfig, ch chan SvrData) {
 		if i == MAXTRIES {
 			// log.Fatalf("FATAL   Dial Aborted after %v attemps\n", i)
 			log.Printf("ERROR Dial Aborted after %v attemps\n", i)
-			// sd := SvrData{}
+			// sd := SvrData_t{}
 			sd.Status = "Not connected"
 			ch <- sd
 			return

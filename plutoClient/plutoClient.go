@@ -53,7 +53,7 @@ sshpass -panalog scp /home/pi/settings.txt root@192.168.2.1:/www/  # not working
 */
 
 type (
-	PlConfig struct {
+	PlConfig_t struct {
 		Frequency       string // "2409.75"
 		Mode            string // "DBS2"
 		Constellation   string // "QPSK"
@@ -75,10 +75,10 @@ type (
 )
 
 var (
-	arg PlConfig
+	arg PlConfig_t
 )
 
-func Initialize(cfg PlConfig) {
+func Initialize(cfg PlConfig_t) {
 	arg = cfg
 	arg.calibrationMode = "nocalib"
 	arg.pcr_pts = "800"
@@ -105,7 +105,7 @@ func Stop() {
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.
-func SetParams(cfg *PlConfig) {
+func SetParams(cfg *PlConfig_t) {
 	// overide settings provided by the GUI
 	arg.Frequency = strings.Fields(cfg.Frequency)[0] // remove " / 27" etc
 	arg.Mode = strings.Replace(cfg.Mode, "-", "", 1) // remove "-""

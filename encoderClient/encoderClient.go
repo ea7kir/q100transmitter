@@ -35,7 +35,7 @@ SRT: Disabled
 
 type (
 	// API
-	EncConfig struct {
+	EncConfig_t struct {
 		Codecs                string
 		AudioBitRate          string
 		VideoBitRate          string
@@ -65,11 +65,11 @@ type (
 )
 
 var (
-	arg EncConfig
+	arg EncConfig_t
 )
 
 // API
-func Initialize(cfg EncConfig) {
+func Initialize(cfg EncConfig_t) {
 	arg = cfg
 	// settings not used by the GUI
 	arg.audio_sample_rate = "44100" // or "48000"
@@ -97,7 +97,7 @@ func Stop() {
 	log.Printf("INFO encoderClient will stop... - NOT IMPLEMENTED")
 }
 
-func SetParams(cfg *EncConfig) error {
+func SetParams(cfg *EncConfig_t) error {
 	const (
 		PORT = "55555"
 		// SUCCESS = "#8001,23,06,OK!"

@@ -14,7 +14,7 @@ import (
 
 // API
 type (
-	TuConfig struct {
+	TuConfig_t struct {
 		Band                    string
 		WideFrequency           string
 		WideSymbolrate          string
@@ -50,7 +50,7 @@ type (
 		NarrowGain              string
 		VeryNarrowGain          string
 	}
-	Selector struct {
+	Selector_t struct {
 		currIndex int
 		lastIndex int
 		list      []string
@@ -66,18 +66,18 @@ type (
 var (
 	TuData_v      TuData_t
 	dataChan      *chan TuData_t
-	Band          Selector
-	SymbolRate    Selector
-	Frequency     Selector
-	Mode          Selector
-	Codecs        Selector
-	Constellation Selector
-	Fec           Selector
-	VideoBitRate  Selector
-	AudioBitRate  Selector
-	Resolution    Selector
-	Spare2        Selector
-	Gain          Selector
+	Band          Selector_t
+	SymbolRate    Selector_t
+	Frequency     Selector_t
+	Mode          Selector_t
+	Codecs        Selector_t
+	Constellation Selector_t
+	Fec           Selector_t
+	VideoBitRate  Selector_t
+	AudioBitRate  Selector_t
+	Resolution    Selector_t
+	Spare2        Selector_t
+	Gain          Selector_t
 	IsTuned       bool
 	IsPtt         bool
 )
@@ -238,43 +238,43 @@ var (
 		"-23", "-22", "-21", "-20", "-19", "-18", "-17", "-16", "-15", "-14", "-13", "-12", "-11", "-10", //"-9","-8","-7","-6","-5","-4","-3","-2","-1","0",
 	}
 
-	wideSymbolRate          Selector
-	narrowSymbolRate        Selector
-	veryNarrowSymbolRate    Selector
-	wideFrequency           Selector
-	narrowFrequency         Selector
-	veryNarrowFrequency     Selector
-	wideMode                Selector
-	narrowMode              Selector
-	veryNarrowMode          Selector
-	wideCodecs              Selector
-	narrowCodecs            Selector
-	veryNarrowCodecs        Selector
-	wideConstellation       Selector
-	narrowConstellation     Selector
-	veryNarrowConstellation Selector
-	wideFec                 Selector
-	narrowFec               Selector
-	veryNarrowFec           Selector
-	wideVideoBitRate        Selector
-	narrowVideoBitRate      Selector
-	veryNarrowVideoBitRate  Selector
-	wideAudioBitRate        Selector
-	narrowAudioBitRate      Selector
-	veryNarrowAudioBitRate  Selector
-	wideResolution          Selector
-	narrowResolution        Selector
-	veryNarrowResolution    Selector
-	wideSpare2              Selector
-	narrowSpare2            Selector
-	veryNarrowSpare2        Selector
-	wideGain                Selector
-	narrowGain              Selector
-	veryNarrowGain          Selector
+	wideSymbolRate          Selector_t
+	narrowSymbolRate        Selector_t
+	veryNarrowSymbolRate    Selector_t
+	wideFrequency           Selector_t
+	narrowFrequency         Selector_t
+	veryNarrowFrequency     Selector_t
+	wideMode                Selector_t
+	narrowMode              Selector_t
+	veryNarrowMode          Selector_t
+	wideCodecs              Selector_t
+	narrowCodecs            Selector_t
+	veryNarrowCodecs        Selector_t
+	wideConstellation       Selector_t
+	narrowConstellation     Selector_t
+	veryNarrowConstellation Selector_t
+	wideFec                 Selector_t
+	narrowFec               Selector_t
+	veryNarrowFec           Selector_t
+	wideVideoBitRate        Selector_t
+	narrowVideoBitRate      Selector_t
+	veryNarrowVideoBitRate  Selector_t
+	wideAudioBitRate        Selector_t
+	narrowAudioBitRate      Selector_t
+	veryNarrowAudioBitRate  Selector_t
+	wideResolution          Selector_t
+	narrowResolution        Selector_t
+	veryNarrowResolution    Selector_t
+	wideSpare2              Selector_t
+	narrowSpare2            Selector_t
+	veryNarrowSpare2        Selector_t
+	wideGain                Selector_t
+	narrowGain              Selector_t
+	veryNarrowGain          Selector_t
 )
 
 // API
-func Start(cfg TuConfig, ch chan TuData_t) {
+func Start(cfg TuConfig_t, ch chan TuData_t) {
 	dataChan = &ch
 
 	Band = newSelector(const_BAND_LIST, cfg.Band)
@@ -337,7 +337,7 @@ func Stop() {
 // API
 func Tune() {
 	if !IsTuned {
-		plutoParam := plutoClient.PlConfig{
+		plutoParam := plutoClient.PlConfig_t{
 			Frequency:     Frequency.Value,
 			Mode:          Mode.Value,
 			Constellation: Constellation.Value,
@@ -347,7 +347,7 @@ func Tune() {
 		}
 		plutoClient.SetParams(&plutoParam)
 
-		encoderArgs := encoderClient.EncConfig{
+		encoderArgs := encoderClient.EncConfig_t{
 			Codecs:       Codecs.Value,
 			AudioBitRate: AudioBitRate.Value,
 			VideoBitRate: VideoBitRate.Value,
@@ -383,7 +383,7 @@ func Ptt() {
 }
 
 // API
-func IncBandSelector(st *Selector) {
+func IncBandSelector(st *Selector_t) {
 	if st.currIndex < st.lastIndex {
 		st.currIndex++
 		st.Value = st.list[st.currIndex]
@@ -392,7 +392,7 @@ func IncBandSelector(st *Selector) {
 }
 
 // API
-func DecBandSelector(st *Selector) {
+func DecBandSelector(st *Selector_t) {
 	if st.currIndex > 0 {
 		st.currIndex--
 		st.Value = st.list[st.currIndex]
@@ -401,7 +401,7 @@ func DecBandSelector(st *Selector) {
 }
 
 // API
-func IncSelector(st *Selector) {
+func IncSelector(st *Selector_t) {
 	if st.currIndex < st.lastIndex {
 		st.currIndex++
 		st.Value = st.list[st.currIndex]
@@ -410,7 +410,7 @@ func IncSelector(st *Selector) {
 }
 
 // API
-func DecSelector(st *Selector) {
+func DecSelector(st *Selector_t) {
 	if st.currIndex > 0 {
 		st.currIndex--
 		st.Value = st.list[st.currIndex]
@@ -428,9 +428,9 @@ func indexInList(list []string, with string) int {
 	return 0
 }
 
-func newSelector(values []string, with string) Selector {
+func newSelector(values []string, with string) Selector_t {
 	index := indexInList(values, with)
-	st := Selector{
+	st := Selector_t{
 		currIndex: index,
 		lastIndex: len(values) - 1,
 		list:      values,
