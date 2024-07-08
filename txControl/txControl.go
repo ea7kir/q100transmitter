@@ -64,7 +64,7 @@ type (
 
 // API
 var (
-	TuData_v      TuData_t
+	tuData        TuData_t
 	dataChan      *chan TuData_t
 	Band          Selector_t
 	SymbolRate    Selector_t
@@ -486,7 +486,7 @@ func somethingChanged() {
 	pttSwitch.SetPtt(false)
 	IsPtt = false
 	IsTuned = false
-	TuData_v.MarkerCentre = const_frequencyCentre[Frequency.Value] / 9.18 // NOTE: 9.18 is a temporary kludge
-	TuData_v.MarkerWidth = const_symbolRateWidth[SymbolRate.Value]
-	*dataChan <- TuData_v
+	tuData.MarkerCentre = const_frequencyCentre[Frequency.Value] / 9.18 // NOTE: 9.18 is a temporary kludge
+	tuData.MarkerWidth = const_symbolRateWidth[SymbolRate.Value]
+	*dataChan <- tuData
 }
