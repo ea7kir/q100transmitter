@@ -1,4 +1,5 @@
 # ignore executable binary
 q100transmitter
+q100transmitter-ok
 # ignore tests
 *.test
