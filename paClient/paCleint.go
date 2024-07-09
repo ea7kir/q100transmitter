@@ -30,7 +30,7 @@ type (
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 
-func ReadServer(ctx context.Context, cfg SvrConfig_t, ch chan SvrData_t) {
+func ReadPaServer(ctx context.Context, cfg SvrConfig_t, ch chan SvrData_t) {
 	sd := SvrData_t{}
 	// sd.Status = "Connecting..."
 	// ch <- sd
@@ -68,7 +68,7 @@ func ReadServer(ctx context.Context, cfg SvrConfig_t, ch chan SvrData_t) {
 		case <-ctx.Done():
 			ticker.Stop()
 			conn.Close()
-			log.Printf(("INFO paClient has stopped"))
+			log.Printf(("INFO ----- paClient has stopped"))
 			return
 		case <-ticker.C:
 			if _, err := conn.Write([]byte(clientRequest)); err != nil {

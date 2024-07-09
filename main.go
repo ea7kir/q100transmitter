@@ -142,16 +142,18 @@ func main() {
 	plConfig.Service = "n/a"
 	log.Printf("INFO Provider: %v Service: %v", plConfig.Provider, plConfig.Service)
 
-	// spClient.Intitialize(spConfig, spChannel)
 	ctx, cancel := context.WithCancel(context.Background())
-	go spClient.Start(ctx, spConfig, spChannel)
+
+	go spClient.ReadSpectrumServer(ctx, spConfig, spChannel)
+	go paClient.ReadPaServer(ctx, svrConfig, svrChannel)
 
 	// TODO: implement with a done channel or a context.Cancel
-	go paClient.ReadServer(ctx, svrConfig, svrChannel)
+	// TODO: move these into txControl
 	encoderClient.Initialize(encConfig)
 	plutoClient.Initialize(plConfig)
 	pttSwitch.Initialize()
 
+	// TODO: paas ctx and the other configs
 	txControl.Start(tuConfig, tuChannel)
 
 	go func() {
@@ -164,17 +166,17 @@ func main() {
 			log.Fatalf("FATAL failed to start loop: %v", err)
 		}
 
-		cancel() // TODO: this NOT WORKING !!!!!!!!!!!!!!!!!!!!!!
+		cancel()
 		log.Printf("INFO ----- cancel() called")
 		// allow time to cancel all functions
 		time.Sleep(time.Second * 2)
 
 		// TODO: implement with a done channel or a context.Cancel
 		txControl.Stop()
+		// TODO: move these into txControl
 		pttSwitch.Stop()
 		plutoClient.Stop()
 		encoderClient.Stop()
-		// paClient.Stop()
 
 		if !true { // change to true for powerdown
 			log.Printf("INFO ----- q100transmitter will poweroff -----")

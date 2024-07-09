@@ -30,7 +30,7 @@ var (
 	Xp = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
 )
 
-func Start(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
+func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 	Xp[0] = 0
 	for i := 1; i < numPoints-1; i++ {
 		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
@@ -69,7 +69,6 @@ func Start(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 	for {
 		select {
 		case <-done:
-			log.Printf("INFO ----- SpClient will stop")
 			ws.Close()
 			log.Printf("INFO ----- spClient has stopped")
 			return
