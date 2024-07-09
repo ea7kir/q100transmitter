@@ -147,7 +147,7 @@ func main() {
 	go spClient.Start(ctx, spConfig, spChannel)
 
 	// TODO: implement with a done channel or a context.Cancel
-	paClient.Initialize(svrConfig, svrChannel)
+	go paClient.ReadServer(ctx, svrConfig, svrChannel)
 	encoderClient.Initialize(encConfig)
 	plutoClient.Initialize(plConfig)
 	pttSwitch.Initialize()
@@ -174,7 +174,7 @@ func main() {
 		pttSwitch.Stop()
 		plutoClient.Stop()
 		encoderClient.Stop()
-		paClient.Stop()
+		// paClient.Stop()
 
 		if !true { // change to true for powerdown
 			log.Printf("INFO ----- q100transmitter will poweroff -----")

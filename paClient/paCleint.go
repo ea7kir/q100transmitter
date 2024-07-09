@@ -7,6 +7,7 @@ package paClient
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -16,46 +17,26 @@ import (
 )
 
 type (
-	// API
 	SvrConfig_t struct {
 		Url  string
 		Port int
 	}
-	// API
 	SvrData_t struct {
 		Status string
 	}
 )
 
-var (
-	done bool
-)
-
-// API
-func Initialize(cfg SvrConfig_t, ch chan SvrData_t) {
-	go readServer(cfg, ch)
-	// TODO: create the connection in loop to retry
-	// defer
-	// if ok the start a tickker and go client
-}
-
-// API
-func Stop() {
-	log.Printf("WARN  paClient will stop... - NOT IMPLELENTED")
-	// is it coonected?  send an EOF
-	done = true
-}
-
 // TODO: need to add a timeout
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
-func readServer(cfg SvrConfig_t, ch chan SvrData_t) {
+
+func ReadServer(ctx context.Context, cfg SvrConfig_t, ch chan SvrData_t) {
 	sd := SvrData_t{}
-	sd.Status = "Connecting..."
-	ch <- sd
+	// sd.Status = "Connecting..."
+	// ch <- sd
 
 	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
-	log.Printf("INFO Client %v connected", url)
+	log.Printf("INFO connecting to %v", url)
 
 	const MAXTRIES = 10
 	var conn net.Conn
@@ -75,46 +56,43 @@ func readServer(cfg SvrConfig_t, ch chan SvrData_t) {
 			ch <- sd
 			return
 		}
-
 	}
-	defer conn.Close()
 
 	serverReader := bufio.NewReader(conn)
 	clientRequest := "\n"
 
-	// for {
-
-	// TODO: better to use a ticker
-	// t := time.NewTicker(2 * time.Second)
-	// <-t.C
-	// send request
+	ticker := time.NewTicker(time.Second * 2)
 
 	for {
-		if done {
-			log.Printf("WARN  paClient will stop...")
+		select {
+		case <-ctx.Done():
+			ticker.Stop()
+			conn.Close()
+			log.Printf(("INFO paClient has stopped"))
 			return
-		}
-
-		time.Sleep(2 * time.Second)
-
-		if _, err := conn.Write([]byte(clientRequest)); err != nil {
-			log.Printf("ERROR failed to send the client request: %v\n", err)
-			sd.Status = "Failed to send request"
-			ch <- sd
-		}
-
-		// Waiting for the server response
-		serverResponse, err := serverReader.ReadString('\n')
-		switch err {
-		case nil:
-			sd.Status = strings.TrimSpace(serverResponse)
-			ch <- sd
-		case io.EOF:
-			log.Printf("WARN  server closed the connection")
-			return
-		default:
-			log.Printf("ERROR server error: %v\n", err)
-			return
+		case <-ticker.C:
+			if _, err := conn.Write([]byte(clientRequest)); err != nil {
+				log.Printf("ERROR failed to send the client request: %v\n", err)
+				sd.Status = "Failed to send request"
+				ch <- sd
+			}
+			// Waiting for the server response
+			serverResponse, err := serverReader.ReadString('\n')
+			switch err {
+			case nil:
+				sd.Status = strings.TrimSpace(serverResponse)
+				ch <- sd
+			case io.EOF:
+				log.Printf("WARN  server closed the connection")
+				sd.Status = "Server closed the connection"
+				ch <- sd
+				return
+			default:
+				log.Printf("ERROR server error: %v\n", err)
+				sd.Status = "Server error occured"
+				ch <- sd
+				return
+			}
 		}
 	}
 }
