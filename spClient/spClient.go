@@ -64,11 +64,10 @@ func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 
 	var bytes = make([]byte, 2048) // larger than 1844
 	var n int
-	done := ctx.Done()
 
 	for {
 		select {
-		case <-done:
+		case <-ctx.Done():
 			ws.Close()
 			log.Printf("INFO ----- spClient has stopped")
 			return

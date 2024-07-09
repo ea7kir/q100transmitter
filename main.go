@@ -19,6 +19,7 @@ import (
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spClient"
 	"q100transmitter/txControl"
+	"syscall"
 	"time"
 
 	// _ "net/http/pprof"
@@ -197,8 +198,13 @@ func main() {
 }
 
 func loop(w *app.Window) error {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer stop()
+	// ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	// defer stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	// defer signal.Stop(quit)
+
 	ui := UI{
 		//th: material.NewTheme(gofont.Collection()),
 		th: material.NewTheme(),
@@ -209,14 +215,16 @@ func loop(w *app.Window) error {
 	var ops op.Ops
 	// Capture the context done channel in a variable so that we can nil it
 	// out after it closes and prevent its select case from firing again.
-	done := ctx.Done()
+	// done := ctx.Done()
 
 	for {
 		select {
-		case <-done:
+		// case <-ctx.Done():
+		case <-interrupt:
 			// When the context cancels, assign the done channel to nil to
 			// prevent it from firing over and over.
-			done = nil
+			// ctx.Done() = nil
+			log.Printf("INTERRUPT")
 			return nil
 			// w.Perform(system.ActionClose)
 		case tuData = <-tuChannel:
@@ -236,7 +244,8 @@ func loop(w *app.Window) error {
 				showAboutBox()
 			}
 			if ui.shutdown.Clicked(gtx) {
-				return nil
+				interrupt <- syscall.SIGINT
+				// return nil
 				// w.Perform(system.ActionClose)
 			}
 			if ui.decBand.Clicked(gtx) {
