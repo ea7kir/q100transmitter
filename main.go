@@ -116,12 +116,14 @@ var (
 
 // local data
 var (
-	tuData     txControl.TuData_t
-	tuChannel  = make(chan txControl.TuData_t, 1)
-	spData     spClient.SpData_t
-	spChannel  = make(chan spClient.SpData_t, 3) //, 5)
-	svrData    paClient.SvrData_t
-	svrChannel = make(chan paClient.SvrData_t, 3) //, 5)
+	// tuCmd        txControl.TuCmd_t
+	tuCmdChannel = make(chan txControl.TuCmd_t, 1)
+	tuData       txControl.TuData_t
+	tuChannel    = make(chan txControl.TuData_t, 1)
+	spData       spClient.SpData_t
+	spChannel    = make(chan spClient.SpData_t, 3) //, 5)
+	svrData      paClient.SvrData_t
+	svrChannel   = make(chan paClient.SvrData_t, 3) //, 5)
 )
 
 // profile from the Mac
@@ -150,12 +152,11 @@ func main() {
 
 	// TODO: implement with a done channel or a context.Cancel
 	// TODO: move these into txControl
-	encoderClient.Initialize(encConfig)
-	plutoClient.Initialize(plConfig)
-	pttSwitch.Initialize()
+	encoderClient.Initialize(encConfig) // TODO: implment with ctx
+	plutoClient.Initialize(plConfig)    // TODO: implment with ctx
+	pttSwitch.Initialize()              // TODO: implment with ctx
 
-	// TODO: paas ctx and the other configs
-	txControl.Start(tuConfig, tuChannel)
+	go txControl.HandleCommands(ctx, tuConfig, tuCmdChannel, tuChannel)
 
 	go func() {
 		os.Setenv("DISPLAY", ":0") // required for X11
@@ -173,7 +174,7 @@ func main() {
 		time.Sleep(time.Second * 2)
 
 		// TODO: implement with a done channel or a context.Cancel
-		txControl.Stop()
+		// txControl.Stop()
 		// TODO: move these into txControl
 		pttSwitch.Stop()
 		plutoClient.Stop()
@@ -249,82 +250,108 @@ func loop(w *app.Window) error {
 				// w.Perform(system.ActionClose)
 			}
 			if ui.decBand.Clicked(gtx) {
-				txControl.DecBandSelector(&txControl.Band)
+				// txControl.DecBandSelector(&txControl.Band)
+				tuCmdChannel <- txControl.CmdDecBand
 			}
 			if ui.incBand.Clicked(gtx) {
-				txControl.IncBandSelector(&txControl.Band)
+				// txControl.IncBandSelector(&txControl.Band)
+				tuCmdChannel <- txControl.CmdIncBand
 			}
 			if ui.decSymbolRate.Clicked(gtx) {
-				txControl.DecSelector(&txControl.SymbolRate)
+				// txControl.DecSelector(&txControl.SymbolRate)
+				tuCmdChannel <- txControl.CmdDecSymbolRate
 			}
 			if ui.incSymbolRate.Clicked(gtx) {
-				txControl.IncSelector(&txControl.SymbolRate)
+				// txControl.IncSelector(&txControl.SymbolRate)
+				tuCmdChannel <- txControl.CmdIncSymbolRate
 			}
 			if ui.decFrequency.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Frequency)
+				// txControl.DecSelector(&txControl.Frequency)
+				tuCmdChannel <- txControl.CmdDecFrequency
 			}
 			if ui.incFrequency.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Frequency)
+				// txControl.IncSelector(&txControl.Frequency)
+				tuCmdChannel <- txControl.CmdIncFrequency
 			}
 			if ui.decMode.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Mode)
+				// txControl.DecSelector(&txControl.Mode)
+				tuCmdChannel <- txControl.CmdDecMode
 			}
 			if ui.incMode.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Mode)
+				// txControl.IncSelector(&txControl.Mode)
+				tuCmdChannel <- txControl.CmdIncMode
 			}
 			if ui.decCodecs.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Codecs)
+				// txControl.DecSelector(&txControl.Codecs)
+				tuCmdChannel <- txControl.CmdDecCodecs
 			}
 			if ui.incCodecs.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Codecs)
+				// txControl.IncSelector(&txControl.Codecs)
+				tuCmdChannel <- txControl.CmdIncCodecs
 			}
 			if ui.decConstellation.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Constellation)
+				// txControl.DecSelector(&txControl.Constellation)
+				tuCmdChannel <- txControl.CmdDecConstellation
 			}
 			if ui.incConstellation.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Constellation)
+				// txControl.IncSelector(&txControl.Constellation)
+				tuCmdChannel <- txControl.CmdIncConstaellation
 			}
 			if ui.decFec.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Fec)
+				// txControl.DecSelector(&txControl.Fec)
+				tuCmdChannel <- txControl.CmdDecFec
 			}
 			if ui.incFec.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Fec)
+				// txControl.IncSelector(&txControl.Fec)
+				tuCmdChannel <- txControl.CmdIncFec
 			}
 			if ui.decVideoBitRate.Clicked(gtx) {
-				txControl.DecSelector(&txControl.VideoBitRate)
+				// txControl.DecSelector(&txControl.VideoBitRate)
+				tuCmdChannel <- txControl.CmdDecVideoBitRate
 			}
 			if ui.incVideoBitRate.Clicked(gtx) {
-				txControl.IncSelector(&txControl.VideoBitRate)
+				// txControl.IncSelector(&txControl.VideoBitRate)
+				tuCmdChannel <- txControl.CmdIncVideoBitRate
 			}
 			if ui.decAudioBitRate.Clicked(gtx) {
-				txControl.DecSelector(&txControl.AudioBitRate)
+				// txControl.DecSelector(&txControl.AudioBitRate)
+				tuCmdChannel <- txControl.CmdDecAudioBitRate
 			}
 			if ui.incAudioBitRate.Clicked(gtx) {
-				txControl.IncSelector(&txControl.AudioBitRate)
+				// txControl.IncSelector(&txControl.AudioBitRate)
+				tuCmdChannel <- txControl.CmdIncAudioBitRate
 			}
 			if ui.decResolution.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Resolution)
+				// txControl.DecSelector(&txControl.Resolution)
+				tuCmdChannel <- txControl.CmdDecResolution
 			}
 			if ui.incResolution.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Resolution)
+				// txControl.IncSelector(&txControl.Resolution)
+				tuCmdChannel <- txControl.CmdIncResolution
 			}
 			if ui.decSpare2.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Spare2)
+				// txControl.DecSelector(&txControl.Spare2)
+				tuCmdChannel <- txControl.CmdDecSpare2
 			}
 			if ui.incSpare2.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Spare2)
+				// txControl.IncSelector(&txControl.Spare2)
+				tuCmdChannel <- txControl.CmdIncSpare2
 			}
 			if ui.decGain.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Gain)
+				// txControl.DecSelector(&txControl.Gain)
+				tuCmdChannel <- txControl.CmdDecGain
 			}
 			if ui.incGain.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Gain)
+				// txControl.IncSelector(&txControl.Gain)
+				tuCmdChannel <- txControl.CmdIncGain
 			}
 			if ui.tune.Clicked(gtx) {
-				txControl.Tune()
+				// txControl.Tune()
+				tuCmdChannel <- txControl.CmdTune
 			}
 			if ui.ptt.Clicked(gtx) {
-				txControl.Ptt()
+				// txControl.Ptt()
+				tuCmdChannel <- txControl.CmdPtt
 			}
 
 			// gtx := layout.NewContext(&ops, event)

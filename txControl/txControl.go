@@ -6,28 +6,12 @@
 package txControl
 
 import (
+	"context"
 	"log"
 	"q100transmitter/encoderClient"
 	"q100transmitter/plutoClient"
 	"q100transmitter/pttSwitch"
 )
-
-// type TuCmd_t struct {
-// 	uint32
-// }
-
-// const (
-// 	DecBand_cmd = iota
-// 	IncBand_cmd
-// 	DecSr_cmd
-// 	IncSr_cmd
-// 	DecFreq_cmd
-// 	IncFreq_cmd
-// 	Tune_cmd
-// 	Cal_cmd
-// )
-
-// var cmdChan *chan TuCmd_t
 
 type (
 	TuConfig_t struct {
@@ -79,8 +63,12 @@ type (
 )
 
 var (
-	tuData        TuData_t
-	dataChan      *chan TuData_t
+	tuCmd TuCmd_t
+	// cmdChan chan TuCmd_t
+
+	tuData   TuData_t
+	dataChan chan TuData_t
+
 	Band          Selector_t
 	SymbolRate    Selector_t
 	Frequency     Selector_t
@@ -288,9 +276,40 @@ var (
 	veryNarrowGain          Selector_t
 )
 
-// API
-func Start(cfg TuConfig_t, ch chan TuData_t) {
-	dataChan = &ch
+type TuCmd_t int
+
+const (
+	CmdDecBand = iota
+	CmdIncBand
+	CmdDecSymbolRate
+	CmdIncSymbolRate
+	CmdDecFrequency
+	CmdIncFrequency
+	CmdDecMode
+	CmdIncMode
+	CmdDecCodecs
+	CmdIncCodecs
+	CmdDecConstellation
+	CmdIncConstaellation
+	CmdDecFec
+	CmdIncFec
+	CmdDecVideoBitRate
+	CmdIncVideoBitRate
+	CmdDecAudioBitRate
+	CmdIncAudioBitRate
+	CmdDecResolution
+	CmdIncResolution
+	CmdDecSpare2
+	CmdIncSpare2
+	CmdDecGain
+	CmdIncGain
+	CmdTune
+	CmdPtt
+)
+
+func HandleCommands(ctx context.Context, cfg TuConfig_t, cmdCh chan TuCmd_t, dataCh chan TuData_t) {
+	// cmdChan = cmdCh
+	dataChan = dataCh
 
 	Band = newSelector(const_BAND_LIST, cfg.Band)
 
@@ -340,14 +359,78 @@ func Start(cfg TuConfig_t, ch chan TuData_t) {
 	veryNarrowGain = newSelector(const_VERY_NARROW_GAIN_LIST, cfg.VeryNarrowGain)
 
 	switchBand()
+
+	for {
+		select {
+		case <-ctx.Done():
+			IsPtt = pttSwitch.SetPtt(false)
+			log.Printf("INFO ----- txControl has stopped")
+			return
+		case tuCmd = <-cmdCh:
+			switch tuCmd {
+			case CmdDecBand:
+				DecBandSelector(&Band)
+			case CmdIncBand:
+				IncBandSelector(&Band)
+			case CmdDecSymbolRate:
+				DecSelector(&SymbolRate)
+			case CmdIncSymbolRate:
+				IncSelector(&SymbolRate)
+			case CmdDecFrequency:
+				DecSelector(&Frequency)
+			case CmdIncFrequency:
+				IncSelector(&Frequency)
+			case CmdDecMode:
+				DecSelector(&Mode)
+			case CmdIncMode:
+				IncSelector(&Mode)
+			case CmdDecCodecs:
+				DecSelector(&Codecs)
+			case CmdIncCodecs:
+				IncSelector(&Codecs)
+			case CmdDecConstellation:
+				DecSelector(&Constellation)
+			case CmdIncConstaellation:
+				IncSelector(&Constellation)
+			case CmdDecFec:
+				DecSelector(&Fec)
+			case CmdIncFec:
+				IncSelector(&Fec)
+			case CmdDecVideoBitRate:
+				DecSelector(&VideoBitRate)
+			case CmdIncVideoBitRate:
+				IncSelector(&VideoBitRate)
+			case CmdDecAudioBitRate:
+				DecSelector(&AudioBitRate)
+			case CmdIncAudioBitRate:
+				IncSelector(&AudioBitRate)
+			case CmdDecResolution:
+				DecSelector(&Resolution)
+			case CmdIncResolution:
+				IncSelector(&Resolution)
+			case CmdDecSpare2:
+				DecSelector(&Spare2)
+			case CmdIncSpare2:
+				IncSelector(&Spare2)
+			case CmdDecGain:
+				DecSelector(&Gain)
+			case CmdIncGain:
+				IncSelector(&Gain)
+			case CmdTune:
+				Tune()
+			case CmdPtt:
+				Ptt()
+			}
+		}
+		log.Printf("...")
+	}
 }
 
-// API
-func Stop() {
-	log.Printf("INFO Tuner will stop... - NOT IMPLEMENTED")
-	IsPtt = pttSwitch.SetPtt(false)
-	log.Printf("INFO Tuner has stopped")
-}
+// func Stop() {
+// 	log.Printf("INFO Tuner will stop... - NOT IMPLEMENTED")
+// 	IsPtt = pttSwitch.SetPtt(false)
+// 	log.Printf("INFO Tuner has stopped")
+// }
 
 // API
 func Tune() {
@@ -503,5 +586,5 @@ func somethingChanged() {
 	IsTuned = false
 	tuData.MarkerCentre = const_frequencyCentre[Frequency.Value] / 9.18 // NOTE: 9.18 is a temporary kludge
 	tuData.MarkerWidth = const_symbolRateWidth[SymbolRate.Value]
-	*dataChan <- tuData
+	dataChan <- tuData
 }
