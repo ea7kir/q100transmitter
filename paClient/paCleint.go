@@ -68,7 +68,7 @@ func ReadPaServer(ctx context.Context, cfg SvrConfig_t, ch chan SvrData_t) {
 		case <-ctx.Done():
 			ticker.Stop()
 			conn.Close()
-			log.Printf(("INFO ----- paClient has stopped"))
+			log.Printf(("CANCEL ----- paClient has cancelled"))
 			return
 		case <-ticker.C:
 			if _, err := conn.Write([]byte(clientRequest)); err != nil {

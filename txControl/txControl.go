@@ -14,7 +14,7 @@ import (
 )
 
 type (
-	TuConfig_t struct {
+	TxConfig_t struct {
 		Band                    string
 		WideFrequency           string
 		WideSymbolrate          string
@@ -50,39 +50,51 @@ type (
 		NarrowGain              string
 		VeryNarrowGain          string
 	}
-	Selector_t struct {
+
+	TxData_t struct {
+		CurBand          string
+		CurSymbolRate    string
+		CurFrequency     string
+		CurMode          string
+		CurCodecs        string
+		CurConstellation string
+		CurFec           string
+		CurVideoBitRate  string
+		CurAudioBitRate  string
+		CurResolution    string
+		CurSpare2        string
+		CurGain          string
+		MarkerCentre     float32
+		MarkerWidth      float32
+		CurIsTuned       bool
+		CurIsPtt         bool
+	}
+
+	selector_t struct {
 		currIndex int
 		lastIndex int
 		list      []string
-		Value     string
-	}
-	TuData_t struct {
-		MarkerCentre float32
-		MarkerWidth  float32
+		value     string
 	}
 )
 
 var (
-	tuCmd TuCmd_t
-	// cmdChan chan TuCmd_t
-
-	tuData   TuData_t
-	dataChan chan TuData_t
-
-	Band          Selector_t
-	SymbolRate    Selector_t
-	Frequency     Selector_t
-	Mode          Selector_t
-	Codecs        Selector_t
-	Constellation Selector_t
-	Fec           Selector_t
-	VideoBitRate  Selector_t
-	AudioBitRate  Selector_t
-	Resolution    Selector_t
-	Spare2        Selector_t
-	Gain          Selector_t
-	IsTuned       bool
-	IsPtt         bool
+	txData                TxData_t
+	dataChan              chan TxData_t
+	bandSelector          selector_t
+	symbolRateSelector    selector_t
+	frequencySelector     selector_t
+	modeSelector          selector_t
+	codecsSelector        selector_t
+	constellationSelector selector_t
+	fecSelector           selector_t
+	videoBitRateSelector  selector_t
+	audioBitRateSelector  selector_t
+	resolutionSelector    selector_t
+	spare2Selector        selector_t
+	gainSelector          selector_t
+	isTuned               bool
+	isPtt                 bool
 )
 
 var (
@@ -241,42 +253,42 @@ var (
 		"-23", "-22", "-21", "-20", "-19", "-18", "-17", "-16", "-15", "-14", "-13", "-12", "-11", "-10", //"-9","-8","-7","-6","-5","-4","-3","-2","-1","0",
 	}
 
-	wideSymbolRate          Selector_t
-	narrowSymbolRate        Selector_t
-	veryNarrowSymbolRate    Selector_t
-	wideFrequency           Selector_t
-	narrowFrequency         Selector_t
-	veryNarrowFrequency     Selector_t
-	wideMode                Selector_t
-	narrowMode              Selector_t
-	veryNarrowMode          Selector_t
-	wideCodecs              Selector_t
-	narrowCodecs            Selector_t
-	veryNarrowCodecs        Selector_t
-	wideConstellation       Selector_t
-	narrowConstellation     Selector_t
-	veryNarrowConstellation Selector_t
-	wideFec                 Selector_t
-	narrowFec               Selector_t
-	veryNarrowFec           Selector_t
-	wideVideoBitRate        Selector_t
-	narrowVideoBitRate      Selector_t
-	veryNarrowVideoBitRate  Selector_t
-	wideAudioBitRate        Selector_t
-	narrowAudioBitRate      Selector_t
-	veryNarrowAudioBitRate  Selector_t
-	wideResolution          Selector_t
-	narrowResolution        Selector_t
-	veryNarrowResolution    Selector_t
-	wideSpare2              Selector_t
-	narrowSpare2            Selector_t
-	veryNarrowSpare2        Selector_t
-	wideGain                Selector_t
-	narrowGain              Selector_t
-	veryNarrowGain          Selector_t
+	wideSymbolRate          selector_t
+	narrowSymbolRate        selector_t
+	veryNarrowSymbolRate    selector_t
+	wideFrequency           selector_t
+	narrowFrequency         selector_t
+	veryNarrowFrequency     selector_t
+	wideMode                selector_t
+	narrowMode              selector_t
+	veryNarrowMode          selector_t
+	wideCodecs              selector_t
+	narrowCodecs            selector_t
+	veryNarrowCodecs        selector_t
+	wideConstellation       selector_t
+	narrowConstellation     selector_t
+	veryNarrowConstellation selector_t
+	wideFec                 selector_t
+	narrowFec               selector_t
+	veryNarrowFec           selector_t
+	wideVideoBitRate        selector_t
+	narrowVideoBitRate      selector_t
+	veryNarrowVideoBitRate  selector_t
+	wideAudioBitRate        selector_t
+	narrowAudioBitRate      selector_t
+	veryNarrowAudioBitRate  selector_t
+	wideResolution          selector_t
+	narrowResolution        selector_t
+	veryNarrowResolution    selector_t
+	wideSpare2              selector_t
+	narrowSpare2            selector_t
+	veryNarrowSpare2        selector_t
+	wideGain                selector_t
+	narrowGain              selector_t
+	veryNarrowGain          selector_t
 )
 
-type TuCmd_t int
+type TxCmd_t int
 
 const (
 	CmdDecBand = iota
@@ -307,11 +319,11 @@ const (
 	CmdPtt
 )
 
-func HandleCommands(ctx context.Context, cfg TuConfig_t, cmdCh chan TuCmd_t, dataCh chan TuData_t) {
-	// cmdChan = cmdCh
+func HandleCommands(ctx context.Context, cfg TxConfig_t, cmdCh chan TxCmd_t, dataCh chan TxData_t) {
+
 	dataChan = dataCh
 
-	Band = newSelector(const_BAND_LIST, cfg.Band)
+	bandSelector = newSelector(const_BAND_LIST, cfg.Band)
 
 	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, cfg.WideSymbolrate)
 	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, cfg.WideFrequency)
@@ -363,155 +375,139 @@ func HandleCommands(ctx context.Context, cfg TuConfig_t, cmdCh chan TuCmd_t, dat
 	for {
 		select {
 		case <-ctx.Done():
-			IsPtt = pttSwitch.SetPtt(false)
-			log.Printf("INFO ----- txControl has stopped")
+			isPtt = pttSwitch.SetPtt(false)
+			log.Printf("CANCEL ----- txControl has cancelled")
 			return
-		case tuCmd = <-cmdCh:
-			switch tuCmd {
+		case command := <-cmdCh:
+			switch command {
 			case CmdDecBand:
-				DecBandSelector(&Band)
+				decBandSelector(&bandSelector)
 			case CmdIncBand:
-				IncBandSelector(&Band)
+				incBandSelector(&bandSelector)
 			case CmdDecSymbolRate:
-				DecSelector(&SymbolRate)
+				decSelector(&symbolRateSelector)
 			case CmdIncSymbolRate:
-				IncSelector(&SymbolRate)
+				incSelector(&symbolRateSelector)
 			case CmdDecFrequency:
-				DecSelector(&Frequency)
+				decSelector(&frequencySelector)
 			case CmdIncFrequency:
-				IncSelector(&Frequency)
+				incSelector(&frequencySelector)
 			case CmdDecMode:
-				DecSelector(&Mode)
+				decSelector(&modeSelector)
 			case CmdIncMode:
-				IncSelector(&Mode)
+				incSelector(&modeSelector)
 			case CmdDecCodecs:
-				DecSelector(&Codecs)
+				decSelector(&codecsSelector)
 			case CmdIncCodecs:
-				IncSelector(&Codecs)
+				incSelector(&codecsSelector)
 			case CmdDecConstellation:
-				DecSelector(&Constellation)
+				decSelector(&constellationSelector)
 			case CmdIncConstaellation:
-				IncSelector(&Constellation)
+				incSelector(&constellationSelector)
 			case CmdDecFec:
-				DecSelector(&Fec)
+				decSelector(&fecSelector)
 			case CmdIncFec:
-				IncSelector(&Fec)
+				incSelector(&fecSelector)
 			case CmdDecVideoBitRate:
-				DecSelector(&VideoBitRate)
+				decSelector(&videoBitRateSelector)
 			case CmdIncVideoBitRate:
-				IncSelector(&VideoBitRate)
+				incSelector(&videoBitRateSelector)
 			case CmdDecAudioBitRate:
-				DecSelector(&AudioBitRate)
+				decSelector(&audioBitRateSelector)
 			case CmdIncAudioBitRate:
-				IncSelector(&AudioBitRate)
+				incSelector(&audioBitRateSelector)
 			case CmdDecResolution:
-				DecSelector(&Resolution)
+				decSelector(&resolutionSelector)
 			case CmdIncResolution:
-				IncSelector(&Resolution)
+				incSelector(&resolutionSelector)
 			case CmdDecSpare2:
-				DecSelector(&Spare2)
+				decSelector(&spare2Selector)
 			case CmdIncSpare2:
-				IncSelector(&Spare2)
+				incSelector(&spare2Selector)
 			case CmdDecGain:
-				DecSelector(&Gain)
+				decSelector(&gainSelector)
 			case CmdIncGain:
-				IncSelector(&Gain)
+				incSelector(&gainSelector)
 			case CmdTune:
-				Tune()
+				setEncoder()
 			case CmdPtt:
-				Ptt()
+				setPtt()
 			}
 		}
-		log.Printf("...")
 	}
 }
 
-// func Stop() {
-// 	log.Printf("INFO Tuner will stop... - NOT IMPLEMENTED")
-// 	IsPtt = pttSwitch.SetPtt(false)
-// 	log.Printf("INFO Tuner has stopped")
-// }
-
-// API
-func Tune() {
-	if !IsTuned {
+// called from the TUNE button
+func setEncoder() {
+	if !isTuned {
 		plutoParam := plutoClient.PlConfig_t{
-			Frequency:     Frequency.Value,
-			Mode:          Mode.Value,
-			Constellation: Constellation.Value,
-			SymbolRate:    SymbolRate.Value,
-			Fec:           Fec.Value,
-			Gain:          Gain.Value,
+			Frequency:     frequencySelector.value,
+			Mode:          modeSelector.value,
+			Constellation: constellationSelector.value,
+			SymbolRate:    symbolRateSelector.value,
+			Fec:           fecSelector.value,
+			Gain:          gainSelector.value,
 		}
 		plutoClient.SetParams(&plutoParam)
 
 		encoderArgs := encoderClient.EncConfig_t{
-			Codecs:       Codecs.Value,
-			AudioBitRate: AudioBitRate.Value,
-			VideoBitRate: VideoBitRate.Value,
-			Resolution:   Resolution.Value,
+			Codecs:       codecsSelector.value,
+			AudioBitRate: audioBitRateSelector.value,
+			VideoBitRate: videoBitRateSelector.value,
+			Resolution:   resolutionSelector.value,
 		}
 		if err := encoderClient.SetParams(&encoderArgs); err != nil {
 			log.Printf("ERROR TUNE: %s", err)
 		}
 
-		IsTuned = true
+		isTuned = true
 	} else {
-		// if IsPtt {
-		IsPtt = pttSwitch.SetPtt(false)
-		// 	// IsPtt = false
-		// }
-		IsTuned = false
+		isPtt = pttSwitch.SetPtt(false)
+		isTuned = false
 	}
-	// log.Printf("INFO IsTuned is %v", IsTuned)
+	txData.CurIsTuned = isTuned
+	txData.CurIsPtt = isPtt
+	dataChan <- txData
 }
 
-// API
-func Ptt() {
-	if !IsTuned {
+// called from the PTT button
+func setPtt() {
+	if !isTuned {
 		return
 	}
-	if IsPtt {
-		pttSwitch.SetPtt(false)
-		IsPtt = false
-	} else {
-		pttSwitch.SetPtt(true)
-		IsPtt = true
-	}
+	isPtt = pttSwitch.SetPtt(!isPtt)
+	txData.CurIsPtt = isPtt
+	dataChan <- txData
 }
 
-// API
-func IncBandSelector(st *Selector_t) {
+func incBandSelector(st *selector_t) {
 	if st.currIndex < st.lastIndex {
 		st.currIndex++
-		st.Value = st.list[st.currIndex]
+		st.value = st.list[st.currIndex]
 		switchBand()
 	}
 }
 
-// API
-func DecBandSelector(st *Selector_t) {
+func decBandSelector(st *selector_t) {
 	if st.currIndex > 0 {
 		st.currIndex--
-		st.Value = st.list[st.currIndex]
+		st.value = st.list[st.currIndex]
 		switchBand()
 	}
 }
 
-// API
-func IncSelector(st *Selector_t) {
+func incSelector(st *selector_t) {
 	if st.currIndex < st.lastIndex {
 		st.currIndex++
-		st.Value = st.list[st.currIndex]
+		st.value = st.list[st.currIndex]
 		somethingChanged()
 	}
 }
 
-// API
-func DecSelector(st *Selector_t) {
+func decSelector(st *selector_t) {
 	if st.currIndex > 0 {
 		st.currIndex--
-		st.Value = st.list[st.currIndex]
+		st.value = st.list[st.currIndex]
 		somethingChanged()
 	}
 }
@@ -526,65 +522,79 @@ func indexInList(list []string, with string) int {
 	return 0
 }
 
-func newSelector(values []string, with string) Selector_t {
+func newSelector(values []string, with string) selector_t {
 	index := indexInList(values, with)
-	st := Selector_t{
+	st := selector_t{
 		currIndex: index,
 		lastIndex: len(values) - 1,
 		list:      values,
-		Value:     values[index],
+		value:     values[index],
 	}
 	return st
 }
 
 func switchBand() { // TODO: should switch back to previosly use settings
-	switch Band.Value {
+	switch bandSelector.value {
 
 	case const_BAND_LIST[0]: // wide
-		SymbolRate = wideSymbolRate
-		Frequency = wideFrequency
-		Mode = wideMode
-		Codecs = wideCodecs
-		Constellation = wideConstellation
-		Fec = wideFec
-		VideoBitRate = wideVideoBitRate
-		AudioBitRate = wideAudioBitRate
-		Resolution = wideResolution
-		Spare2 = wideSpare2
-		Gain = wideGain
+		symbolRateSelector = wideSymbolRate
+		frequencySelector = wideFrequency
+		modeSelector = wideMode
+		codecsSelector = wideCodecs
+		constellationSelector = wideConstellation
+		fecSelector = wideFec
+		videoBitRateSelector = wideVideoBitRate
+		audioBitRateSelector = wideAudioBitRate
+		resolutionSelector = wideResolution
+		spare2Selector = wideSpare2
+		gainSelector = wideGain
 	case const_BAND_LIST[1]: // narrow
-		SymbolRate = narrowSymbolRate
-		Frequency = narrowFrequency
-		Mode = narrowMode
-		Codecs = narrowCodecs
-		Constellation = narrowConstellation
-		Fec = narrowFec
-		VideoBitRate = narrowVideoBitRate
-		AudioBitRate = narrowAudioBitRate
-		Resolution = narrowResolution
-		Spare2 = narrowSpare2
-		Gain = narrowGain
+		symbolRateSelector = narrowSymbolRate
+		frequencySelector = narrowFrequency
+		modeSelector = narrowMode
+		codecsSelector = narrowCodecs
+		constellationSelector = narrowConstellation
+		fecSelector = narrowFec
+		videoBitRateSelector = narrowVideoBitRate
+		audioBitRateSelector = narrowAudioBitRate
+		resolutionSelector = narrowResolution
+		spare2Selector = narrowSpare2
+		gainSelector = narrowGain
 	case const_BAND_LIST[2]: // very narrow
-		SymbolRate = veryNarrowSymbolRate
-		Frequency = veryNarrowFrequency
-		Mode = veryNarrowMode
-		Codecs = veryNarrowCodecs
-		Constellation = veryNarrowConstellation
-		Fec = veryNarrowFec
-		VideoBitRate = veryNarrowVideoBitRate
-		AudioBitRate = veryNarrowAudioBitRate
-		Resolution = veryNarrowResolution
-		Spare2 = veryNarrowSpare2
-		Gain = veryNarrowGain
+		symbolRateSelector = veryNarrowSymbolRate
+		frequencySelector = veryNarrowFrequency
+		modeSelector = veryNarrowMode
+		codecsSelector = veryNarrowCodecs
+		constellationSelector = veryNarrowConstellation
+		fecSelector = veryNarrowFec
+		videoBitRateSelector = veryNarrowVideoBitRate
+		audioBitRateSelector = veryNarrowAudioBitRate
+		resolutionSelector = veryNarrowResolution
+		spare2Selector = veryNarrowSpare2
+		gainSelector = veryNarrowGain
 	}
 	somethingChanged()
 }
 
 func somethingChanged() {
 	pttSwitch.SetPtt(false)
-	IsPtt = false
-	IsTuned = false
-	tuData.MarkerCentre = const_frequencyCentre[Frequency.Value] / 9.18 // NOTE: 9.18 is a temporary kludge
-	tuData.MarkerWidth = const_symbolRateWidth[SymbolRate.Value]
-	dataChan <- tuData
+	isPtt = false
+	isTuned = false
+	txData.CurBand = bandSelector.value
+	txData.CurSymbolRate = symbolRateSelector.value
+	txData.CurFrequency = frequencySelector.value
+	txData.CurMode = modeSelector.value
+	txData.CurCodecs = codecsSelector.value
+	txData.CurConstellation = constellationSelector.value
+	txData.CurFec = fecSelector.value
+	txData.CurVideoBitRate = videoBitRateSelector.value
+	txData.CurAudioBitRate = audioBitRateSelector.value
+	txData.CurResolution = resolutionSelector.value
+	txData.CurSpare2 = spare2Selector.value
+	txData.CurGain = gainSelector.value
+	txData.MarkerCentre = const_frequencyCentre[frequencySelector.value] / 9.18 // NOTE: 9.18 is a temporary kludge
+	txData.MarkerWidth = const_symbolRateWidth[symbolRateSelector.value]
+	txData.CurIsTuned = isTuned
+	txData.CurIsPtt = isPtt
+	dataChan <- txData
 }

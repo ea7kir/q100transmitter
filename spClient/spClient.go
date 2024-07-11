@@ -69,7 +69,7 @@ func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 		select {
 		case <-ctx.Done():
 			ws.Close()
-			log.Printf("INFO ----- spClient has stopped")
+			log.Printf("CANCEL ----- spClient has cancelled")
 			return
 		default:
 		}
