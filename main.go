@@ -19,6 +19,7 @@ import (
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spClient"
 	"q100transmitter/txControl"
+	"syscall"
 	"time"
 
 	// _ "net/http/pprof"
@@ -75,7 +76,7 @@ var (
 		// Remux:           "1",
 		Url: "pluto.local", // or maybe "192.168.2.1"
 	}
-	tuConfig = txControl.TuConfig_t{
+	txConfig = txControl.TxConfig_t{
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
 		NarrowSymbolrate:        "333",
@@ -115,12 +116,14 @@ var (
 
 // local data
 var (
-	tuData     txControl.TuData_t
-	tuChannel  = make(chan txControl.TuData_t, 1)
-	spData     spClient.SpData_t
-	spChannel  = make(chan spClient.SpData_t, 3) //, 5)
-	svrData    paClient.SvrData_t
-	svrChannel = make(chan paClient.SvrData_t, 3) //, 5)
+	// tuCmd        txControl.TxCmd_t
+	txCmdChannel = make(chan txControl.TxCmd_t, 5)
+	txData       txControl.TxData_t
+	tuChannel    = make(chan txControl.TxData_t, 5)
+	spData       spClient.SpData_t
+	spChannel    = make(chan spClient.SpData_t, 5) //, 5)
+	svrData      paClient.SvrData_t
+	svrChannel   = make(chan paClient.SvrData_t, 5) //, 5)
 )
 
 // profile from the Mac
@@ -140,21 +143,18 @@ func main() {
 	plConfig.Provider = string(bytes)
 	// current Pluto firmware doesn't provide a way to set this
 	plConfig.Service = "n/a"
-	log.Printf("INFO Provider: %v Service: %v", plConfig.Provider, plConfig.Service)
 
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go spClient.ReadSpectrumServer(ctx, spConfig, spChannel)
 	go paClient.ReadPaServer(ctx, svrConfig, svrChannel)
 
-	// TODO: implement with a done channel or a context.Cancel
-	// TODO: move these into txControl
-	encoderClient.Initialize(encConfig)
-	plutoClient.Initialize(plConfig)
-	pttSwitch.Initialize()
+	// TODO: move these into txControl na react to ctx cancel
+	encoderClient.Initialize(encConfig) // TODO: implment with ctx
+	plutoClient.Initialize(plConfig)    // TODO: implment with ctx
+	pttSwitch.Initialize()              // TODO: implment with ctx
 
-	// TODO: paas ctx and the other configs
-	txControl.Start(tuConfig, tuChannel)
+	go txControl.HandleCommands(ctx, txConfig, txCmdChannel, tuChannel)
 
 	go func() {
 		os.Setenv("DISPLAY", ":0") // required for X11
@@ -167,13 +167,11 @@ func main() {
 		}
 
 		cancel()
-		log.Printf("INFO ----- cancel() called")
+		log.Printf("CANCEL IN MAIN ----- cancel() called")
 		// allow time to cancel all functions
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 3)
 
-		// TODO: implement with a done channel or a context.Cancel
-		txControl.Stop()
-		// TODO: move these into txControl
+		// TODO: move these into txControl na react to ctx cancel
 		pttSwitch.Stop()
 		plutoClient.Stop()
 		encoderClient.Stop()
@@ -197,8 +195,13 @@ func main() {
 }
 
 func loop(w *app.Window) error {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer stop()
+	// ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	// defer stop()
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	// defer signal.Stop(quit)
+
 	ui := UI{
 		//th: material.NewTheme(gofont.Collection()),
 		th: material.NewTheme(),
@@ -209,17 +212,20 @@ func loop(w *app.Window) error {
 	var ops op.Ops
 	// Capture the context done channel in a variable so that we can nil it
 	// out after it closes and prevent its select case from firing again.
-	done := ctx.Done()
+	// done := ctx.Done()
 
 	for {
 		select {
-		case <-done:
+		// case <-ctx.Done():
+		case <-interrupt:
 			// When the context cancels, assign the done channel to nil to
 			// prevent it from firing over and over.
-			done = nil
+			// ctx.Done() = nil
+			interrupt = nil // TODO: is this neccessat?
+			log.Printf("INTERRUPT")
 			return nil
-			// w.Perform(system.ActionClose)
-		case tuData = <-tuChannel:
+			// w.Perform(system.ActionClose) // panics
+		case txData = <-tuChannel:
 			w.Invalidate()
 		case svrData = <-svrChannel:
 			w.Invalidate()
@@ -236,89 +242,90 @@ func loop(w *app.Window) error {
 				showAboutBox()
 			}
 			if ui.shutdown.Clicked(gtx) {
-				return nil
-				// w.Perform(system.ActionClose)
+				interrupt <- syscall.SIGINT
+				// TODO: try using continue
+				// return nil
+				// w.Perform(system.ActionClose) // panics
 			}
 			if ui.decBand.Clicked(gtx) {
-				txControl.DecBandSelector(&txControl.Band)
+				txCmdChannel <- txControl.CmdDecBand
 			}
 			if ui.incBand.Clicked(gtx) {
-				txControl.IncBandSelector(&txControl.Band)
+				txCmdChannel <- txControl.CmdIncBand
 			}
 			if ui.decSymbolRate.Clicked(gtx) {
-				txControl.DecSelector(&txControl.SymbolRate)
+				txCmdChannel <- txControl.CmdDecSymbolRate
 			}
 			if ui.incSymbolRate.Clicked(gtx) {
-				txControl.IncSelector(&txControl.SymbolRate)
+				txCmdChannel <- txControl.CmdIncSymbolRate
 			}
 			if ui.decFrequency.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Frequency)
+				txCmdChannel <- txControl.CmdDecFrequency
 			}
 			if ui.incFrequency.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Frequency)
+				txCmdChannel <- txControl.CmdIncFrequency
 			}
 			if ui.decMode.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Mode)
+				txCmdChannel <- txControl.CmdDecMode
 			}
 			if ui.incMode.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Mode)
+				txCmdChannel <- txControl.CmdIncMode
 			}
 			if ui.decCodecs.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Codecs)
+				txCmdChannel <- txControl.CmdDecCodecs
 			}
 			if ui.incCodecs.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Codecs)
+				txCmdChannel <- txControl.CmdIncCodecs
 			}
 			if ui.decConstellation.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Constellation)
+				txCmdChannel <- txControl.CmdDecConstellation
 			}
 			if ui.incConstellation.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Constellation)
+				txCmdChannel <- txControl.CmdIncConstaellation
 			}
 			if ui.decFec.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Fec)
+				txCmdChannel <- txControl.CmdDecFec
 			}
 			if ui.incFec.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Fec)
+				txCmdChannel <- txControl.CmdIncFec
 			}
 			if ui.decVideoBitRate.Clicked(gtx) {
-				txControl.DecSelector(&txControl.VideoBitRate)
+				txCmdChannel <- txControl.CmdDecVideoBitRate
 			}
 			if ui.incVideoBitRate.Clicked(gtx) {
-				txControl.IncSelector(&txControl.VideoBitRate)
+				txCmdChannel <- txControl.CmdIncVideoBitRate
 			}
 			if ui.decAudioBitRate.Clicked(gtx) {
-				txControl.DecSelector(&txControl.AudioBitRate)
+				txCmdChannel <- txControl.CmdDecAudioBitRate
 			}
 			if ui.incAudioBitRate.Clicked(gtx) {
-				txControl.IncSelector(&txControl.AudioBitRate)
+				txCmdChannel <- txControl.CmdIncAudioBitRate
 			}
 			if ui.decResolution.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Resolution)
+				txCmdChannel <- txControl.CmdDecResolution
 			}
 			if ui.incResolution.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Resolution)
+				txCmdChannel <- txControl.CmdIncResolution
 			}
 			if ui.decSpare2.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Spare2)
+				txCmdChannel <- txControl.CmdDecSpare2
 			}
 			if ui.incSpare2.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Spare2)
+				txCmdChannel <- txControl.CmdIncSpare2
 			}
 			if ui.decGain.Clicked(gtx) {
-				txControl.DecSelector(&txControl.Gain)
+				txCmdChannel <- txControl.CmdDecGain
 			}
 			if ui.incGain.Clicked(gtx) {
-				txControl.IncSelector(&txControl.Gain)
+				txCmdChannel <- txControl.CmdIncGain
 			}
 			if ui.tune.Clicked(gtx) {
-				txControl.Tune()
+				txCmdChannel <- txControl.CmdTune
 			}
 			if ui.ptt.Clicked(gtx) {
-				txControl.Ptt()
+				txCmdChannel <- txControl.CmdPtt
 			}
 
-			// gtx := layout.NewContext(&ops, event)
 			// set the screen background to to dark grey
 			paint.Fill(gtx.Ops, q100color.screenGrey)
 			ui.layoutFlexes(gtx)
@@ -353,6 +360,7 @@ var q100color = struct {
 
 // define all buttons
 type UI struct {
+	//TODO: try adding txData to here
 	about, shutdown                    widget.Clickable
 	decBand, incBand                   widget.Clickable
 	decSymbolRate, incSymbolRate       widget.Clickable
@@ -490,13 +498,13 @@ func (ui *UI) q100_MainTuningRow(gtx C) D {
 		Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, txControl.Band.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decBand, &ui.incBand, txData.CurBand, btnWidth, 100)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, txControl.SymbolRate.Value, btnWidth, 50)
+			return ui.q100_Selector(gtx, &ui.decSymbolRate, &ui.incSymbolRate, txData.CurSymbolRate, btnWidth, 50)
 		}),
 		layout.Rigid(func(gtx C) D {
-			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, txControl.Frequency.Value, btnWidth, 100)
+			return ui.q100_Selector(gtx, &ui.decFrequency, &ui.incFrequency, txData.CurFrequency, btnWidth, 100)
 		}),
 	)
 }
@@ -523,7 +531,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 
 				canvas.Background(q100color.gfxBgd)
 				// tuning marker
-				canvas.Rect(tuData.MarkerCentre, 50, tuData.MarkerWidth, 100, q100color.gfxMarker)
+				canvas.Rect(txData.MarkerCentre, 50, txData.MarkerWidth, 100, q100color.gfxMarker)
 				// polygon
 				canvas.Polygon(spClient.Xp, spData.Yp, q100color.gfxGreen)
 				// graticule
@@ -567,16 +575,12 @@ func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]st
 		// Spacing: layout.SpaceEvenly,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx C) D {
-			// return ui.q100_LabelValue(gtx, name[0], value[0])
-			// return ui.q100_Selector(gtx, &ui.decMode, &ui.incMode, txController.Mode.Value, btnWidth, lblWidth)
 			return ui.q100_Selector(gtx, dec[0], inc[0], value[0], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
-			// return ui.q100_LabelValue(gtx, name[1], value[1])
 			return ui.q100_Selector(gtx, dec[1], inc[1], value[1], btnWidth, lblWidth)
 		}),
 		layout.Rigid(func(gtx C) D {
-			// return ui.q100_LabelValue(gtx, name[2], value[2])
 			return ui.q100_Selector(gtx, dec[2], inc[2], value[2], btnWidth, lblWidth)
 		}),
 	)
@@ -600,14 +604,14 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.tune, "TUNE", txControl.IsTuned, q100color.buttonGreen)
+				return ui.q100_Button(gtx, &ui.tune, "TUNE", txData.CurIsTuned, q100color.buttonGreen)
 			})
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
 				gtx.Constraints.Min.Y = gtx.Dp(btnHeight)
-				return ui.q100_Button(gtx, &ui.ptt, "PTT", txControl.IsPtt, q100color.buttonRed)
+				return ui.q100_Button(gtx, &ui.ptt, "PTT", txData.CurIsPtt, q100color.buttonRed)
 			})
 		}),
 	)
@@ -617,15 +621,15 @@ func (ui *UI) q100_Column2Buttons(gtx C) D {
 func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 	dec1 := [3]*widget.Clickable{&ui.decCodecs, &ui.decVideoBitRate, &ui.decAudioBitRate}
 	inc1 := [3]*widget.Clickable{&ui.incCodecs, &ui.incVideoBitRate, &ui.incAudioBitRate}
-	val1 := [3]string{txControl.Codecs.Value, txControl.VideoBitRate.Value, txControl.AudioBitRate.Value}
+	val1 := [3]string{txData.CurCodecs, txData.CurVideoBitRate, txData.CurAudioBitRate}
 
 	dec2 := [3]*widget.Clickable{&ui.decMode, &ui.decConstellation, &ui.decFec}
 	inc2 := [3]*widget.Clickable{&ui.incMode, &ui.incConstellation, &ui.incFec}
-	val2 := [3]string{txControl.Mode.Value, txControl.Constellation.Value, txControl.Fec.Value}
+	val2 := [3]string{txData.CurMode, txData.CurConstellation, txData.CurFec}
 
 	dec3 := [3]*widget.Clickable{&ui.decResolution, &ui.decSpare2, &ui.decGain}
 	inc3 := [3]*widget.Clickable{&ui.incResolution, &ui.incSpare2, &ui.incGain}
-	val3 := [3]string{txControl.Resolution.Value, txControl.Spare2.Value, txControl.Gain.Value}
+	val3 := [3]string{txData.CurResolution, txData.CurSpare2, txData.CurGain}
 
 	return layout.Flex{
 		Axis: layout.Horizontal,
