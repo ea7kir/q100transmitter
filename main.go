@@ -424,7 +424,7 @@ func (ui *UI) q100_Label(gtx C, label string, txtColor color.NRGBA) D {
 
 // Returns 1 row of 2 buttons and a label for About, Status and Shutdown
 func (ui *UI) q100_TopStatusRow(gtx C) D {
-	const btnWidth = 30
+	const btnWidth = 50
 	inset := layout.Inset{
 		Top:    2,
 		Bottom: 2,
@@ -491,7 +491,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 
 // Returns 1 row of 3 Selectors for Band SymbolRate and Frequency
 func (ui *UI) q100_MainTuningRow(gtx C) D {
-	const btnWidth = 0
+	const btnWidth = 50
 
 	return layout.Flex{
 		Axis:    layout.Horizontal,
@@ -567,8 +567,8 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 
 // returns a column of 3 rows of [label__  label__]
 func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]string) D {
-	const btnWidth = 0
-	const lblWidth = 65 //123 //65
+	const btnWidth = 50
+	const lblWidth = 85 //65 //123 //65
 
 	return layout.Flex{
 		Axis: layout.Vertical,
