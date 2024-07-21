@@ -42,12 +42,6 @@ import (
 
 // configuration data
 var (
-	spConfig = spClient.SpConfig_t{
-		// Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
-		// Origin: "http://eshail.batc.org.uk/wb",
-		Origin: "https://eshail.batc.org.uk/",
-		Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/wss",
-	}
 	svrConfig = paClient.SvrConfig_t{
 		Url:  "paserver.local",
 		Port: 9999, //8765,
@@ -102,8 +96,8 @@ var (
 		WideAudioBitRate:        "64000", // 32000 | 64000
 		NarrowAudioBitRate:      "64000",
 		VeryNarrowAudioBitRate:  "32000",
-		WideResolution:          "1080p", // 720p | 1080p
-		NarrowResolution:        "1080p",
+		WideResolution:          "720p", // 720p | 1080p
+		NarrowResolution:        "720p",
 		VeryNarrowResolution:    "720p",
 		WideSpare2:              "sp2-a",
 		NarrowSpare2:            "sp2-a",
@@ -146,7 +140,7 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	go spClient.ReadSpectrumServer(ctx, spConfig, spChannel)
+	go spClient.ReadSpectrumServer(ctx, spChannel)
 	go paClient.ReadPaServer(ctx, svrConfig, svrChannel)
 
 	// TODO: move these into txControl na react to ctx cancel

@@ -13,13 +13,13 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-const numPoints = 918
+const (
+	config_Origin    = "https://eshail.batc.org.uk/"
+	config_Url       = "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/wss"
+	config_NumPoints = 918
+)
 
 type (
-	SpConfig_t struct {
-		Url    string
-		Origin string
-	}
 	SpData_t struct {
 		Yp          []float32
 		BeaconLevel float32
@@ -27,26 +27,25 @@ type (
 )
 
 var (
-	Xp = make([]float32, numPoints) // x coordinates from 0.0 to 100.0
+	Xp = make([]float32, config_NumPoints) // x coordinates from 0.0 to 100.0
 )
 
-func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
+func ReadSpectrumServer(ctx context.Context, ch chan<- SpData_t) {
 	Xp[0] = 0
-	for i := 1; i < numPoints-1; i++ {
-		Xp[i] = 100.0 * (float32(i) / float32(numPoints))
+	for i := 1; i < config_NumPoints-1; i++ {
+		Xp[i] = 100.0 * (float32(i) / float32(config_NumPoints))
 	}
-	Xp[numPoints-1] = 100
+	Xp[config_NumPoints-1] = 100
 
-	// TODO: needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
-	//	which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-
-	const MAXTRIES = 10
 	var ws *websocket.Conn
 	var err error
 
+	// TODO: needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
+	//	which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	const MAXTRIES = 10
 	for i := 1; i <= MAXTRIES; i++ {
 		log.Printf("INFO Dial attempt %v", i)
-		ws, err = websocket.Dial(cfg.Url, "", cfg.Origin)
+		ws, err = websocket.Dial(config_Url, "", config_Origin)
 		if err == nil {
 			// ws = new_ws
 			break
@@ -58,7 +57,7 @@ func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 	}
 
 	var spData = SpData_t{
-		Yp:          make([]float32, numPoints),
+		Yp:          make([]float32, config_NumPoints),
 		BeaconLevel: 0.5,
 	}
 
@@ -73,12 +72,7 @@ func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 			return
 		default:
 		}
-		// if ctx.Err() != nil {
-		// 	time.Sleep(time.Duration(time.Second))
-		// 	ws.Close()
-		// 	log.Printf("INFO ----- Cancelled readAndDecode and ws closed")
-		// 	return
-		// }
+
 		if n, err = ws.Read(bytes); err != nil {
 			log.Printf("WARN Read failed: %v", err)
 			continue
@@ -102,7 +96,7 @@ func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 		}
 		// log.Printf("INFO count = %v\n", count)
 		spData.Yp[0] = 0
-		spData.Yp[numPoints-1] = 0
+		spData.Yp[config_NumPoints-1] = 0
 
 		spData.BeaconLevel = 0
 		for i := 32; i <= 133; i++ { // beacon center is 103
@@ -112,5 +106,6 @@ func ReadSpectrumServer(ctx context.Context, cfg SpConfig_t, ch chan SpData_t) {
 		// log.Printf("INFO beacon level %v : Yp[i] %v", spData.BeaconLevel, spData.Yp[103])
 
 		ch <- spData
+
 	}
 }
