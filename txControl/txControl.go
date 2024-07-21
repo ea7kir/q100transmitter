@@ -13,6 +13,43 @@ import (
 	"q100transmitter/pttSwitch"
 )
 
+const (
+	config_Band                    = "Narrow"
+	config_WideSymbolrate          = "1000"
+	config_NarrowSymbolrate        = "333"
+	config_VeryNarrowSymbolRate    = "125"
+	config_WideFrequency           = "2405.25 / 09"
+	config_NarrowFrequency         = "2409.75 / 27"
+	config_VeryNarrowFrequency     = "2406.50 / 14"
+	config_WideMode                = "DVB-S2"
+	config_NarrowMode              = "DVB-S2"
+	config_VeryNarrowMode          = "DVB-S2"
+	config_WideCodecs              = "H265 ACC" // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
+	config_NarrowCdecs             = "H265 ACC"
+	config_VeryNarrowCodecs        = "H265 ACC"
+	config_WideConstellation       = "QPSK"
+	config_NarrowConstellation     = "QPSK"
+	config_VeryNarrorConstellation = "QPSK"
+	config_WideFec                 = "3/4"
+	config_NarrowFec               = "3/4"
+	config_VeryNarrowFec           = "3/4"
+	config_WideVideoBitRate        = "440" // 32...16384
+	config_NarrowVideoBitRate      = "340"
+	config_VeryNarrowVideoBitRate  = "310"
+	config_WideAudioBitRate        = "64000" // 32000 | 64000
+	config_NarrowAudioBitRate      = "64000"
+	config_VeryNarrowAudioBitRate  = "32000"
+	config_WideResolution          = "720p" // 720p | 1080p
+	config_NarrowResolution        = "720p"
+	config_VeryNarrowResolution    = "720p"
+	config_WideSpare2              = "sp2-a"
+	config_NarrowSpare2            = "sp2-a"
+	config_VeryNarrowSpare2        = "sp2-a"
+	config_WideGain                = "-15"
+	config_NarrowGain              = "-14"
+	config_VeryNarrowGain          = "-20"
+)
+
 type (
 	TxConfig_t struct {
 		Band                    string

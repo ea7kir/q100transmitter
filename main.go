@@ -42,30 +42,30 @@ import (
 
 // configuration data
 var (
-	encConfig = encoderClient.EncConfig_t{
-		// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
-		// AudioBitRate: "64000",     // 32000 | 64000
-		// VideoBitRate: "350",       // 32...16384
-		// // alter the following with caution
-		StreamIP:   "192.168.3.10",
-		StreamPort: "8282",
-		ConfigIP:   "192.168.3.1",
-	}
-	plutoConfig = plutoClient.PlConfig_t{
-		// configure setting not provided by the GUI
-		// Provider: "",
-		// Service:  "",
-		// alter the following with caution
-		// CalibrationMode: "nocalib",
-		// Pcr_pts:         "800",
-		// Pat_period:      "200",
-		// Roll_off:        "0.35",
-		// Pilots:          "off",
-		// Frame:           "LongFrame",
-		// H265box:         "undefined",
-		// Remux:           "1",
-		Url: "pluto.local", // or maybe "192.168.2.1"
-	}
+	// encConfig = encoderClient.EncConfig_t{
+	// 	// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
+	// 	// AudioBitRate: "64000",     // 32000 | 64000
+	// 	// VideoBitRate: "350",       // 32...16384
+	// 	// // alter the following with caution
+	// 	StreamIP:   "192.168.3.10",
+	// 	StreamPort: "8282",
+	// 	ConfigIP:   "192.168.3.1",
+	// }
+	// plutoConfig = plutoClient.PlConfig_t{
+	// 	// configure setting not provided by the GUI
+	// 	// Provider: "",
+	// 	// Service:  "",
+	// 	// alter the following with caution
+	// 	// CalibrationMode: "nocalib",
+	// 	// Pcr_pts:         "800",
+	// 	// Pat_period:      "200",
+	// 	// Roll_off:        "0.35",
+	// 	// Pilots:          "off",
+	// 	// Frame:           "LongFrame",
+	// 	// H265box:         "undefined",
+	// 	// Remux:           "1",
+	// 	Url: "pluto.local", // or maybe "192.168.2.1"
+	// }
 	txConfig = txControl.TxConfig_t{
 		Band:                    "Narrow",
 		WideSymbolrate:          "1000",
@@ -130,9 +130,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("FATAL failed to read callsign: %err", err)
 	}
-	plutoConfig.Provider = string(bytes)
-	// current Pluto firmware doesn't provide a way to set this
-	plutoConfig.Service = "n/a"
+	provider := string(bytes)
+	service := "n/a" // current Pluto firmware doesn't provide a way to set this
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -140,9 +139,9 @@ func main() {
 	go paClient.ReadPaServer(ctx, paDataChan)
 
 	// TODO: move these into txControl na react to ctx cancel
-	encoderClient.Initialize(encConfig) // TODO: implment with ctx
-	plutoClient.Initialize(plutoConfig) // TODO: implment with ctx
-	pttSwitch.Start()                   // TODO: implment with ctx
+	encoderClient.Start()                // TODO: implment with ctx
+	plutoClient.Start(provider, service) // TODO: implment with ctx
+	pttSwitch.Start()                    // TODO: implment with ctx
 
 	go txControl.HandleCommands(ctx, txConfig, txCmdChan, txDataChan)
 
@@ -162,7 +161,7 @@ func main() {
 		time.Sleep(time.Second * 3)
 
 		// TODO: move these into txControl na react to ctx cancel
-		pttSwitch.Stop()
+		pttSwitch.Stop()     // TODO replace with ctx
 		plutoClient.Stop()   // TODO replace with ctx
 		encoderClient.Stop() // TODO replace with ctx
 
