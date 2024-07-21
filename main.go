@@ -51,7 +51,7 @@ var (
 		StreamPort: "8282",
 		ConfigIP:   "192.168.3.1",
 	}
-	plConfig = plutoClient.PlConfig_t{
+	plutoConfig = plutoClient.PlConfig_t{
 		// configure setting not provided by the GUI
 		// Provider: "",
 		// Service:  "",
@@ -107,13 +107,13 @@ var (
 // local data
 var (
 	// tuCmd        txControl.TxCmd_t
-	txCmdChannel = make(chan txControl.TxCmd_t, 5)
-	txData       txControl.TxData_t
-	tuChannel    = make(chan txControl.TxData_t, 5)
-	spData       spClient.SpData_t
-	spChannel    = make(chan spClient.SpData_t, 5) //, 5)
-	svrData      paClient.SvrData_t
-	svrChannel   = make(chan paClient.SvrData_t, 5) //, 5)
+	txCmdChan  = make(chan txControl.TxCmd_t, 5)
+	txData     txControl.TxData_t
+	txDataChan = make(chan txControl.TxData_t, 5)
+	spData     spClient.SpData_t
+	spDataChan = make(chan spClient.SpData_t, 5) //, 5)
+	paData     paClient.SvrData_t
+	paDataChan = make(chan paClient.SvrData_t, 5) //, 5)
 )
 
 // profile from the Mac
@@ -128,23 +128,23 @@ func main() {
 	// read callsign from /home/pi/Q100/callsign
 	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
 	if err != nil {
-		log.Fatalf("FATAL   ünable read callsign: %err", err)
+		log.Fatalf("FATAL failed to read callsign: %err", err)
 	}
-	plConfig.Provider = string(bytes)
+	plutoConfig.Provider = string(bytes)
 	// current Pluto firmware doesn't provide a way to set this
-	plConfig.Service = "n/a"
+	plutoConfig.Service = "n/a"
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	go spClient.ReadSpectrumServer(ctx, spChannel)
-	go paClient.ReadPaServer(ctx, svrChannel)
+	go spClient.ReadSpectrumServer(ctx, spDataChan)
+	go paClient.ReadPaServer(ctx, paDataChan)
 
 	// TODO: move these into txControl na react to ctx cancel
 	encoderClient.Initialize(encConfig) // TODO: implment with ctx
-	plutoClient.Initialize(plConfig)    // TODO: implment with ctx
-	pttSwitch.Initialize()              // TODO: implment with ctx
+	plutoClient.Initialize(plutoConfig) // TODO: implment with ctx
+	pttSwitch.Start()                   // TODO: implment with ctx
 
-	go txControl.HandleCommands(ctx, txConfig, txCmdChannel, tuChannel)
+	go txControl.HandleCommands(ctx, txConfig, txCmdChan, txDataChan)
 
 	go func() {
 		os.Setenv("DISPLAY", ":0") // required for X11
@@ -163,8 +163,8 @@ func main() {
 
 		// TODO: move these into txControl na react to ctx cancel
 		pttSwitch.Stop()
-		plutoClient.Stop()
-		encoderClient.Stop()
+		plutoClient.Stop()   // TODO replace with ctx
+		encoderClient.Stop() // TODO replace with ctx
 
 		if !true { // change to true for powerdown
 			log.Printf("INFO ----- q100transmitter will poweroff -----")
@@ -215,11 +215,11 @@ func loop(w *app.Window) error {
 			log.Printf("INTERRUPT")
 			return nil
 			// w.Perform(system.ActionClose) // panics
-		case txData = <-tuChannel:
+		case txData = <-txDataChan:
 			w.Invalidate()
-		case svrData = <-svrChannel:
+		case paData = <-paDataChan:
 			w.Invalidate()
-		case spData = <-spChannel:
+		case spData = <-spDataChan:
 			w.Invalidate()
 		}
 
@@ -238,82 +238,82 @@ func loop(w *app.Window) error {
 				// w.Perform(system.ActionClose) // panics
 			}
 			if ui.decBand.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecBand
+				txCmdChan <- txControl.CmdDecBand
 			}
 			if ui.incBand.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncBand
+				txCmdChan <- txControl.CmdIncBand
 			}
 			if ui.decSymbolRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecSymbolRate
+				txCmdChan <- txControl.CmdDecSymbolRate
 			}
 			if ui.incSymbolRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncSymbolRate
+				txCmdChan <- txControl.CmdIncSymbolRate
 			}
 			if ui.decFrequency.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecFrequency
+				txCmdChan <- txControl.CmdDecFrequency
 			}
 			if ui.incFrequency.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncFrequency
+				txCmdChan <- txControl.CmdIncFrequency
 			}
 			if ui.decMode.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecMode
+				txCmdChan <- txControl.CmdDecMode
 			}
 			if ui.incMode.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncMode
+				txCmdChan <- txControl.CmdIncMode
 			}
 			if ui.decCodecs.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecCodecs
+				txCmdChan <- txControl.CmdDecCodecs
 			}
 			if ui.incCodecs.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncCodecs
+				txCmdChan <- txControl.CmdIncCodecs
 			}
 			if ui.decConstellation.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecConstellation
+				txCmdChan <- txControl.CmdDecConstellation
 			}
 			if ui.incConstellation.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncConstaellation
+				txCmdChan <- txControl.CmdIncConstaellation
 			}
 			if ui.decFec.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecFec
+				txCmdChan <- txControl.CmdDecFec
 			}
 			if ui.incFec.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncFec
+				txCmdChan <- txControl.CmdIncFec
 			}
 			if ui.decVideoBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecVideoBitRate
+				txCmdChan <- txControl.CmdDecVideoBitRate
 			}
 			if ui.incVideoBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncVideoBitRate
+				txCmdChan <- txControl.CmdIncVideoBitRate
 			}
 			if ui.decAudioBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecAudioBitRate
+				txCmdChan <- txControl.CmdDecAudioBitRate
 			}
 			if ui.incAudioBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncAudioBitRate
+				txCmdChan <- txControl.CmdIncAudioBitRate
 			}
 			if ui.decResolution.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecResolution
+				txCmdChan <- txControl.CmdDecResolution
 			}
 			if ui.incResolution.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncResolution
+				txCmdChan <- txControl.CmdIncResolution
 			}
 			if ui.decSpare2.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecSpare2
+				txCmdChan <- txControl.CmdDecSpare2
 			}
 			if ui.incSpare2.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncSpare2
+				txCmdChan <- txControl.CmdIncSpare2
 			}
 			if ui.decGain.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecGain
+				txCmdChan <- txControl.CmdDecGain
 			}
 			if ui.incGain.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncGain
+				txCmdChan <- txControl.CmdIncGain
 			}
 			if ui.tune.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdTune
+				txCmdChan <- txControl.CmdTune
 			}
 			if ui.ptt.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdPtt
+				txCmdChan <- txControl.CmdPtt
 			}
 
 			// set the screen background to to dark grey
@@ -432,7 +432,7 @@ func (ui *UI) q100_TopStatusRow(gtx C) D {
 			})
 		}),
 		layout.Flexed(1, func(gtx C) D {
-			return ui.q100_Label(gtx, svrData.Status, q100color.labelOrange)
+			return ui.q100_Label(gtx, paData.Status, q100color.labelOrange)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {

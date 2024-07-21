@@ -19,17 +19,17 @@ const (
 	// GND_PIN to RPi pin 14 Ground            - Brown
 	// VCC_PIN to RPi pin 17 3V3               - Red
 
-	CTRL_PIN = rpi.J8p18 // RPi pin 18 GPIO_24 - Yellow
+	kCTRL_PIN = rpi.J8p18 // RPi pin 18 GPIO_24 - Yellow
 
 	// Remote mute to the LU Meter project
 	// using the TX-Remote PCB
 
 	// GND_PIN to RPi pin 39 Ground			   - Brown
 
-	MUTE_PIN = rpi.J8p40 // RPi pin 16 GPIO_21 - Orenage
+	kMUTE_PIN = rpi.J8p40 // RPi pin 16 GPIO_21 - Orenage
 
-	LOW  = 0
-	HIGH = 1
+	kLOW  = 0
+	kHIGH = 1
 )
 
 var (
@@ -38,27 +38,27 @@ var (
 )
 
 // API
-func Initialize() {
-	hvc349ControlLine, err := gpiocdev.RequestLine("gpiochip0", CTRL_PIN, gpiocdev.AsOutput(0))
+func Start() {
+	hvc349ControlLine, err := gpiocdev.RequestLine("gpiochip0", kCTRL_PIN, gpiocdev.AsOutput(0))
 	if err != nil {
 		panic(err)
 	}
 	hvc349Control = hvc349ControlLine
-	hvc349ControlLine.SetValue(HIGH)
-	muteEnableLine, err := gpiocdev.RequestLine("gpiochip0", MUTE_PIN, gpiocdev.AsOutput(0))
+	hvc349ControlLine.SetValue(kHIGH)
+	muteEnableLine, err := gpiocdev.RequestLine("gpiochip0", kMUTE_PIN, gpiocdev.AsOutput(0))
 	if err != nil {
 		panic(err)
 	}
 	muteEnable = muteEnableLine
-	muteEnable.SetValue(LOW)
+	muteEnable.SetValue(kLOW)
 }
 
 // API
 func Stop() {
 	log.Printf("INFO PTTr will stop... - NOT IMPLEMENTED")
 	SetPtt(false)
-	hvc349Control.SetValue(HIGH)
-	muteEnable.SetValue(LOW)
+	hvc349Control.SetValue(kHIGH)
+	muteEnable.SetValue(kLOW)
 
 	hvc349Control.Reconfigure(gpiocdev.AsInput)
 	hvc349Control.Close()
@@ -70,12 +70,12 @@ func Stop() {
 func SetPtt(tx bool) bool {
 	switch tx {
 	case true:
-		hvc349Control.SetValue(LOW)
-		muteEnable.SetValue(HIGH)
+		hvc349Control.SetValue(kLOW)
+		muteEnable.SetValue(kHIGH)
 		log.Printf("INFO PTT is %v", "Enabled")
 	case false:
-		hvc349Control.SetValue(HIGH)
-		muteEnable.SetValue(LOW)
+		hvc349Control.SetValue(kHIGH)
+		muteEnable.SetValue(kLOW)
 		// log.Printf("INFO PTT is %v", "Disabled") // too much logging, because called on when any button is pressed
 	}
 	return tx

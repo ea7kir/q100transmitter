@@ -30,7 +30,7 @@ var (
 	Xp = make([]float32, config_NumPoints) // x coordinates from 0.0 to 100.0
 )
 
-func ReadSpectrumServer(ctx context.Context, ch chan<- SpData_t) {
+func ReadSpectrumServer(ctx context.Context, spDataChan chan<- SpData_t) {
 	Xp[0] = 0
 	for i := 1; i < config_NumPoints-1; i++ {
 		Xp[i] = 100.0 * (float32(i) / float32(config_NumPoints))
@@ -105,7 +105,7 @@ func ReadSpectrumServer(ctx context.Context, ch chan<- SpData_t) {
 		spData.BeaconLevel = spData.BeaconLevel / 103
 		// log.Printf("INFO beacon level %v : Yp[i] %v", spData.BeaconLevel, spData.Yp[103])
 
-		ch <- spData
+		spDataChan <- spData
 
 	}
 }
