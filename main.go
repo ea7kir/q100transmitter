@@ -42,10 +42,6 @@ import (
 
 // configuration data
 var (
-	svrConfig = paClient.SvrConfig_t{
-		Url:  "paserver.local",
-		Port: 9999, //8765,
-	}
 	encConfig = encoderClient.EncConfig_t{
 		// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
 		// AudioBitRate: "64000",     // 32000 | 64000
@@ -141,7 +137,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go spClient.ReadSpectrumServer(ctx, spChannel)
-	go paClient.ReadPaServer(ctx, svrConfig, svrChannel)
+	go paClient.ReadPaServer(ctx, svrChannel)
 
 	// TODO: move these into txControl na react to ctx cancel
 	encoderClient.Initialize(encConfig) // TODO: implment with ctx
