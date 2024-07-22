@@ -13,43 +13,80 @@ import (
 	"q100transmitter/pttSwitch"
 )
 
+const (
+	config_Band                    = "Narrow"
+	config_WideSymbolrate          = "1000"
+	config_NarrowSymbolrate        = "333"
+	config_VeryNarrowSymbolRate    = "125"
+	config_WideFrequency           = "2405.25 / 09"
+	config_NarrowFrequency         = "2409.75 / 27"
+	config_VeryNarrowFrequency     = "2406.50 / 14"
+	config_WideMode                = "DVB-S2"
+	config_NarrowMode              = "DVB-S2"
+	config_VeryNarrowMode          = "DVB-S2"
+	config_WideCodecs              = "H265 ACC" // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
+	config_NarrowCdecs             = "H265 ACC"
+	config_VeryNarrowCodecs        = "H265 ACC"
+	config_WideConstellation       = "QPSK"
+	config_NarrowConstellation     = "QPSK"
+	config_VeryNarrorConstellation = "QPSK"
+	config_WideFec                 = "3/4"
+	config_NarrowFec               = "3/4"
+	config_VeryNarrowFec           = "3/4"
+	config_WideVideoBitRate        = "440" // 32...16384
+	config_NarrowVideoBitRate      = "340"
+	config_VeryNarrowVideoBitRate  = "310"
+	config_WideAudioBitRate        = "64000" // 32000 | 64000
+	config_NarrowAudioBitRate      = "64000"
+	config_VeryNarrowAudioBitRate  = "32000"
+	config_WideResolution          = "720p" // 720p | 1080p
+	config_NarrowResolution        = "720p"
+	config_VeryNarrowResolution    = "720p"
+	config_WideSpare2              = "sp2-a"
+	config_NarrowSpare2            = "sp2-a"
+	config_VeryNarrowSpare2        = "sp2-a"
+	config_WideGain                = "-15"
+	config_NarrowGain              = "-14"
+	config_VeryNarrowGain          = "-20"
+)
+
 type (
-	TxConfig_t struct {
-		Band                    string
-		WideFrequency           string
-		WideSymbolrate          string
-		NarrowFrequency         string
-		NarrowSymbolrate        string
-		VeryNarrowFrequency     string
-		VeryNarrowSymbolRate    string
-		WideMode                string
-		NarrowMode              string
-		VeryNarrowMode          string
-		WideCodecs              string
-		NarrowCdecs             string
-		VeryNarrowCodecs        string
-		WideConstellation       string
-		NarrowConstellation     string
-		VeryNarrorConstellation string
-		WideFec                 string
-		NarrowFec               string
-		VeryNarrowFec           string
-		WideVideoBitRate        string
-		NarrowVideoBitRate      string
-		VeryNarrowVideoBitRate  string
-		WideAudioBitRate        string
-		NarrowAudioBitRate      string
-		VeryNarrowAudioBitRate  string
-		WideResolution          string
-		NarrowResolution        string
-		VeryNarrowResolution    string
-		WideSpare2              string
-		NarrowSpare2            string
-		VeryNarrowSpare2        string
-		WideGain                string
-		NarrowGain              string
-		VeryNarrowGain          string
-	}
+	// TxConfig_t struct {
+	// 	Band                    string
+	// 	WideFrequency           string
+	// 	WideSymbolrate          string
+	// 	NarrowFrequency         string
+	// 	NarrowSymbolrate        string
+	// 	VeryNarrowFrequency     string
+	// 	VeryNarrowSymbolRate    string
+	// 	WideMode                string
+	// 	NarrowMode              string
+	// 	VeryNarrowMode          string
+	// 	WideCodecs              string
+	// 	NarrowCdecs             string
+	// 	VeryNarrowCodecs        string
+	// 	WideConstellation       string
+	// 	NarrowConstellation     string
+	// 	VeryNarrorConstellation string
+	// 	WideFec                 string
+	// 	NarrowFec               string
+	// 	VeryNarrowFec           string
+	// 	WideVideoBitRate        string
+	// 	NarrowVideoBitRate      string
+	// 	VeryNarrowVideoBitRate  string
+	// 	WideAudioBitRate        string
+	// 	NarrowAudioBitRate      string
+	// 	VeryNarrowAudioBitRate  string
+	// 	WideResolution          string
+	// 	NarrowResolution        string
+	// 	VeryNarrowResolution    string
+	// 	WideSpare2              string
+	// 	NarrowSpare2            string
+	// 	VeryNarrowSpare2        string
+	// 	WideGain                string
+	// 	NarrowGain              string
+	// 	VeryNarrowGain          string
+	// }
 
 	TxData_t struct {
 		CurBand          string
@@ -319,56 +356,56 @@ const (
 	CmdPtt
 )
 
-func HandleCommands(ctx context.Context, cfg TxConfig_t, cmdCh chan TxCmd_t, dataCh chan TxData_t) {
+func HandleCommands(ctx context.Context, cmdCh chan TxCmd_t, dataCh chan TxData_t) {
 
 	dataChan = dataCh
 
-	bandSelector = newSelector(const_BAND_LIST, cfg.Band)
+	bandSelector = newSelector(const_BAND_LIST, config_Band)
 
-	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, cfg.WideSymbolrate)
-	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, cfg.WideFrequency)
+	wideSymbolRate = newSelector(const_WIDE_SYMBOLRATE_LIST, config_WideSymbolrate)
+	wideFrequency = newSelector(const_WIDE_FREQUENCY_LIST, config_WideFrequency)
 
-	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, cfg.NarrowSymbolrate)
-	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, cfg.NarrowFrequency)
+	narrowSymbolRate = newSelector(const_NARROW_SYMBOLRATE_LIST, config_NarrowSymbolrate)
+	narrowFrequency = newSelector(const_NARROW_FREQUENCY_LIST, config_NarrowFrequency)
 
-	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, cfg.VeryNarrowSymbolRate)
-	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, cfg.VeryNarrowFrequency)
+	veryNarrowSymbolRate = newSelector(const_VERY_NARROW_SYMBOLRATE_LIST, config_VeryNarrowSymbolRate)
+	veryNarrowFrequency = newSelector(const_VERY_NARROW_FREQUENCY_LIST, config_VeryNarrowFrequency)
 
-	wideMode = newSelector(const_WIDE_MODE_LIST, cfg.WideMode)
-	narrowMode = newSelector(const_NARROW_MODE_LIST, cfg.WideMode)
-	veryNarrowMode = newSelector(const_VERY_NARROW_MODE_LIST, cfg.WideMode)
+	wideMode = newSelector(const_WIDE_MODE_LIST, config_WideMode)
+	narrowMode = newSelector(const_NARROW_MODE_LIST, config_WideMode)
+	veryNarrowMode = newSelector(const_VERY_NARROW_MODE_LIST, config_WideMode)
 
-	wideCodecs = newSelector(const_WIDE_CODECS_LIST, cfg.WideCodecs)
-	narrowCodecs = newSelector(const_NARROW_CODECS_LIST, cfg.NarrowCdecs)
-	veryNarrowCodecs = newSelector(const_VERY_NARROW_CODECS_LIST, cfg.VeryNarrowCodecs)
+	wideCodecs = newSelector(const_WIDE_CODECS_LIST, config_WideCodecs)
+	narrowCodecs = newSelector(const_NARROW_CODECS_LIST, config_NarrowCdecs)
+	veryNarrowCodecs = newSelector(const_VERY_NARROW_CODECS_LIST, config_VeryNarrowCodecs)
 
-	wideConstellation = newSelector(const_WIDE_CONSTELLATION_LIST, cfg.WideConstellation)
-	narrowConstellation = newSelector(const_NARROW_CONSTELLATION_LIST, cfg.NarrowConstellation)
-	veryNarrowConstellation = newSelector(const_VERY_NARROW_CONSTELLATION_LIST, cfg.VeryNarrorConstellation)
+	wideConstellation = newSelector(const_WIDE_CONSTELLATION_LIST, config_WideConstellation)
+	narrowConstellation = newSelector(const_NARROW_CONSTELLATION_LIST, config_NarrowConstellation)
+	veryNarrowConstellation = newSelector(const_VERY_NARROW_CONSTELLATION_LIST, config_VeryNarrorConstellation)
 
-	wideFec = newSelector(const_WIDE_FEC_LIST, cfg.WideFec)
-	narrowFec = newSelector(const_NARROW_FEC_LIST, cfg.NarrowFec)
-	veryNarrowFec = newSelector(const_VERY_NARROW_FEC_LIST, cfg.VeryNarrowFec)
+	wideFec = newSelector(const_WIDE_FEC_LIST, config_WideFec)
+	narrowFec = newSelector(const_NARROW_FEC_LIST, config_NarrowFec)
+	veryNarrowFec = newSelector(const_VERY_NARROW_FEC_LIST, config_VeryNarrowFec)
 
-	wideVideoBitRate = newSelector(const_WIDE_VIDEO_BITRATE_LIST, cfg.WideVideoBitRate)
-	narrowVideoBitRate = newSelector(const_NARROW_VIDEO_BITRATE_LIST, cfg.NarrowVideoBitRate)
-	veryNarrowVideoBitRate = newSelector(const_VERY_NARROW_VIDEO_BITRATE_LIST, cfg.VeryNarrowVideoBitRate)
+	wideVideoBitRate = newSelector(const_WIDE_VIDEO_BITRATE_LIST, config_WideVideoBitRate)
+	narrowVideoBitRate = newSelector(const_NARROW_VIDEO_BITRATE_LIST, config_NarrowVideoBitRate)
+	veryNarrowVideoBitRate = newSelector(const_VERY_NARROW_VIDEO_BITRATE_LIST, config_VeryNarrowVideoBitRate)
 
-	wideAudioBitRate = newSelector(const_WIDE_AUDIO_BITRATE_LIST, cfg.WideAudioBitRate)
-	narrowAudioBitRate = newSelector(const_NARROW_AUDIO_BITRATE_LIST, cfg.NarrowAudioBitRate)
-	veryNarrowAudioBitRate = newSelector(const_VERY_NARROW_AUDIO_BITRATE_LIST, cfg.VeryNarrowAudioBitRate)
+	wideAudioBitRate = newSelector(const_WIDE_AUDIO_BITRATE_LIST, config_WideAudioBitRate)
+	narrowAudioBitRate = newSelector(const_NARROW_AUDIO_BITRATE_LIST, config_NarrowAudioBitRate)
+	veryNarrowAudioBitRate = newSelector(const_VERY_NARROW_AUDIO_BITRATE_LIST, config_VeryNarrowAudioBitRate)
 
-	wideResolution = newSelector(const_WIDE_RESOLUTION_LIST, cfg.WideResolution)
-	narrowResolution = newSelector(const_NARROW_RESOLUTION_LIST, cfg.NarrowResolution)
-	veryNarrowResolution = newSelector(const_VERY_NARROW_RESOLUTION_LIST, cfg.VeryNarrowResolution)
+	wideResolution = newSelector(const_WIDE_RESOLUTION_LIST, config_WideResolution)
+	narrowResolution = newSelector(const_NARROW_RESOLUTION_LIST, config_NarrowResolution)
+	veryNarrowResolution = newSelector(const_VERY_NARROW_RESOLUTION_LIST, config_VeryNarrowResolution)
 
-	wideSpare2 = newSelector(const_WIDE_SPARE2_LIST, cfg.WideSpare2)
-	narrowSpare2 = newSelector(const_NARROW_SPARE2_LIST, cfg.NarrowSpare2)
-	veryNarrowSpare2 = newSelector(const_VERY_NARROW_SPARE2_LIST, cfg.VeryNarrowSpare2)
+	wideSpare2 = newSelector(const_WIDE_SPARE2_LIST, config_WideSpare2)
+	narrowSpare2 = newSelector(const_NARROW_SPARE2_LIST, config_NarrowSpare2)
+	veryNarrowSpare2 = newSelector(const_VERY_NARROW_SPARE2_LIST, config_VeryNarrowSpare2)
 
-	wideGain = newSelector(const_WIDE_GAIN_LIST, cfg.WideGain)
-	narrowGain = newSelector(const_NARROW_GAIN_LIST, cfg.NarrowGain)
-	veryNarrowGain = newSelector(const_VERY_NARROW_GAIN_LIST, cfg.VeryNarrowGain)
+	wideGain = newSelector(const_WIDE_GAIN_LIST, config_WideGain)
+	narrowGain = newSelector(const_NARROW_GAIN_LIST, config_NarrowGain)
+	veryNarrowGain = newSelector(const_VERY_NARROW_GAIN_LIST, config_VeryNarrowGain)
 
 	switchBand()
 

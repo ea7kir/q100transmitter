@@ -27,3 +27,4 @@ ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
 
 [Install]
 WantedBy=graphical.target  network-online.target
+

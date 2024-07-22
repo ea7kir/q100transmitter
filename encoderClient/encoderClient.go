@@ -33,17 +33,25 @@ Misc Stream/Secondary Stream UDP(unicast/multicast) URL: udp://192.168.3.10:8282
 SRT: Disabled
 */
 
+const (
+	// config_StreamIP   = "192.168.3.10"
+	// config_StreamPort = "8282"
+	config_ConfigIP   = "192.168.3.1"
+	config_ConfigPORT = "55555"
+)
+
 type (
 	// API
 	EncConfig_t struct {
-		Codecs                string
-		AudioBitRate          string
-		VideoBitRate          string
-		Resolution            string
-		Spare2                string
-		StreamIP              string // "udp://192.168.3.10:8282"
-		StreamPort            string
-		ConfigIP              string // 192.168.3.1"
+		Codecs       string
+		AudioBitRate string
+		VideoBitRate string
+		Resolution   string
+		// Spare2       string
+		// StreamIP              string // "udp://192.168.3.10:8282"
+		// StreamPort            string
+		// ConfigIP              string // 192.168.3.1"
+		// ConfigPort            string
 		audio_bitrate         string // "64000" or "32000"
 		audio_sample_rate     string // "44100" or "48000"
 		audio_bits_per_sample string // "16"
@@ -65,12 +73,17 @@ type (
 )
 
 var (
-	arg EncConfig_t
+	arg = EncConfig_t{}
 )
 
 // API
-func Initialize(cfg EncConfig_t) {
-	arg = cfg
+func Start() {
+
+	// arg.StreamIP = config_StreamIP
+	// arg.StreamPort = config_ConfigPORT
+	// arg.ConfigIP = config_ConfigIP
+	// arg.ConfigPort = cfg.ConfigPort
+
 	// settings not used by the GUI
 	arg.audio_sample_rate = "44100" // or "48000"
 	arg.audio_bits_per_sample = "16"
@@ -99,9 +112,9 @@ func Stop() {
 
 func SetParams(cfg *EncConfig_t) error {
 	const (
-		PORT = "55555"
-		// SUCCESS = "#8001,23,06,OK!"
-		// FAIL    = "#8001,23,06,ERR!"
+	// PORT = "55555"
+	// SUCCESS = "#8001,23,06,OK!"
+	// FAIL    = "#8001,23,06,ERR!"
 	)
 	var (
 		cmdStr     string
@@ -114,7 +127,7 @@ func SetParams(cfg *EncConfig_t) error {
 	const MAXTRIES = 10
 	var conn net.Conn
 
-	url := fmt.Sprintf("%s:%s", arg.ConfigIP, PORT)
+	url := fmt.Sprintf("%s:%s", config_ConfigIP, config_ConfigPORT)
 	log.Printf("INFO Connecting to: %s", url)
 
 	for i := 1; i <= MAXTRIES; i++ {

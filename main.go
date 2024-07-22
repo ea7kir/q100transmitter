@@ -37,93 +37,16 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-// application directory for the configuration data
-// const appFolder = "/home/pi/Q100/q100transmitter/"
-
-// configuration data
-var (
-	spConfig = spClient.SpConfig_t{
-		// Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/",
-		// Origin: "http://eshail.batc.org.uk/wb",
-		Origin: "https://eshail.batc.org.uk/",
-		Url:    "wss://eshail.batc.org.uk/wb/fft/fft_ea7kirsatcontroller:443/wss",
-	}
-	svrConfig = paClient.SvrConfig_t{
-		Url:  "paserver.local",
-		Port: 9999, //8765,
-	}
-	encConfig = encoderClient.EncConfig_t{
-		// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
-		// AudioBitRate: "64000",     // 32000 | 64000
-		// VideoBitRate: "350",       // 32...16384
-		// // alter the following with caution
-		StreamIP:   "192.168.3.10",
-		StreamPort: "8282",
-		ConfigIP:   "192.168.3.1",
-	}
-	plConfig = plutoClient.PlConfig_t{
-		// configure setting not provided by the GUI
-		// Provider: "",
-		// Service:  "",
-		// alter the following with caution
-		// CalibrationMode: "nocalib",
-		// Pcr_pts:         "800",
-		// Pat_period:      "200",
-		// Roll_off:        "0.35",
-		// Pilots:          "off",
-		// Frame:           "LongFrame",
-		// H265box:         "undefined",
-		// Remux:           "1",
-		Url: "pluto.local", // or maybe "192.168.2.1"
-	}
-	txConfig = txControl.TxConfig_t{
-		Band:                    "Narrow",
-		WideSymbolrate:          "1000",
-		NarrowSymbolrate:        "333",
-		VeryNarrowSymbolRate:    "125",
-		WideFrequency:           "2405.25 / 09",
-		NarrowFrequency:         "2409.75 / 27",
-		VeryNarrowFrequency:     "2406.50 / 14",
-		WideMode:                "DVB-S2",
-		NarrowMode:              "DVB-S2",
-		VeryNarrowMode:          "DVB-S2",
-		WideCodecs:              "H265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
-		NarrowCdecs:             "H265 ACC",
-		VeryNarrowCodecs:        "H265 ACC",
-		WideConstellation:       "QPSK",
-		NarrowConstellation:     "QPSK",
-		VeryNarrorConstellation: "QPSK",
-		WideFec:                 "3/4",
-		NarrowFec:               "3/4",
-		VeryNarrowFec:           "3/4",
-		WideVideoBitRate:        "440", // 32...16384
-		NarrowVideoBitRate:      "340",
-		VeryNarrowVideoBitRate:  "310",
-		WideAudioBitRate:        "64000", // 32000 | 64000
-		NarrowAudioBitRate:      "64000",
-		VeryNarrowAudioBitRate:  "32000",
-		WideResolution:          "1080p", // 720p | 1080p
-		NarrowResolution:        "1080p",
-		VeryNarrowResolution:    "720p",
-		WideSpare2:              "sp2-a",
-		NarrowSpare2:            "sp2-a",
-		VeryNarrowSpare2:        "sp2-a",
-		WideGain:                "-15",
-		NarrowGain:              "-14",
-		VeryNarrowGain:          "-20",
-	}
-)
-
 // local data
 var (
 	// tuCmd        txControl.TxCmd_t
-	txCmdChannel = make(chan txControl.TxCmd_t, 5)
-	txData       txControl.TxData_t
-	tuChannel    = make(chan txControl.TxData_t, 5)
-	spData       spClient.SpData_t
-	spChannel    = make(chan spClient.SpData_t, 5) //, 5)
-	svrData      paClient.SvrData_t
-	svrChannel   = make(chan paClient.SvrData_t, 5) //, 5)
+	txCmdChan  = make(chan txControl.TxCmd_t, 5)
+	txData     txControl.TxData_t
+	txDataChan = make(chan txControl.TxData_t, 5)
+	spData     spClient.SpData_t
+	spDataChan = make(chan spClient.SpData_t, 5) //, 5)
+	paData     paClient.SvrData_t
+	paDataChan = make(chan paClient.SvrData_t, 5) //, 5)
 )
 
 // profile from the Mac
@@ -138,23 +61,22 @@ func main() {
 	// read callsign from /home/pi/Q100/callsign
 	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
 	if err != nil {
-		log.Fatalf("FATAL   ünable read callsign: %err", err)
+		log.Fatalf("FATAL failed to read callsign: %err", err)
 	}
-	plConfig.Provider = string(bytes)
-	// current Pluto firmware doesn't provide a way to set this
-	plConfig.Service = "n/a"
+	provider := string(bytes)
+	service := "n/a" // current Pluto firmware doesn't provide a way to set this
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	go spClient.ReadSpectrumServer(ctx, spConfig, spChannel)
-	go paClient.ReadPaServer(ctx, svrConfig, svrChannel)
+	go spClient.ReadSpectrumServer(ctx, spDataChan)
+	go paClient.ReadPaServer(ctx, paDataChan)
 
 	// TODO: move these into txControl na react to ctx cancel
-	encoderClient.Initialize(encConfig) // TODO: implment with ctx
-	plutoClient.Initialize(plConfig)    // TODO: implment with ctx
-	pttSwitch.Initialize()              // TODO: implment with ctx
+	encoderClient.Start()                // TODO: implment with ctx
+	plutoClient.Start(provider, service) // TODO: implment with ctx
+	pttSwitch.Start()                    // TODO: implment with ctx
 
-	go txControl.HandleCommands(ctx, txConfig, txCmdChannel, tuChannel)
+	go txControl.HandleCommands(ctx, txCmdChan, txDataChan)
 
 	go func() {
 		os.Setenv("DISPLAY", ":0") // required for X11
@@ -172,9 +94,9 @@ func main() {
 		time.Sleep(time.Second * 3)
 
 		// TODO: move these into txControl na react to ctx cancel
-		pttSwitch.Stop()
-		plutoClient.Stop()
-		encoderClient.Stop()
+		pttSwitch.Stop()     // TODO replace with ctx
+		plutoClient.Stop()   // TODO replace with ctx
+		encoderClient.Stop() // TODO replace with ctx
 
 		if !true { // change to true for powerdown
 			log.Printf("INFO ----- q100transmitter will poweroff -----")
@@ -225,11 +147,11 @@ func loop(w *app.Window) error {
 			log.Printf("INTERRUPT")
 			return nil
 			// w.Perform(system.ActionClose) // panics
-		case txData = <-tuChannel:
+		case txData = <-txDataChan:
 			w.Invalidate()
-		case svrData = <-svrChannel:
+		case paData = <-paDataChan:
 			w.Invalidate()
-		case spData = <-spChannel:
+		case spData = <-spDataChan:
 			w.Invalidate()
 		}
 
@@ -248,82 +170,82 @@ func loop(w *app.Window) error {
 				// w.Perform(system.ActionClose) // panics
 			}
 			if ui.decBand.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecBand
+				txCmdChan <- txControl.CmdDecBand
 			}
 			if ui.incBand.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncBand
+				txCmdChan <- txControl.CmdIncBand
 			}
 			if ui.decSymbolRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecSymbolRate
+				txCmdChan <- txControl.CmdDecSymbolRate
 			}
 			if ui.incSymbolRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncSymbolRate
+				txCmdChan <- txControl.CmdIncSymbolRate
 			}
 			if ui.decFrequency.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecFrequency
+				txCmdChan <- txControl.CmdDecFrequency
 			}
 			if ui.incFrequency.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncFrequency
+				txCmdChan <- txControl.CmdIncFrequency
 			}
 			if ui.decMode.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecMode
+				txCmdChan <- txControl.CmdDecMode
 			}
 			if ui.incMode.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncMode
+				txCmdChan <- txControl.CmdIncMode
 			}
 			if ui.decCodecs.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecCodecs
+				txCmdChan <- txControl.CmdDecCodecs
 			}
 			if ui.incCodecs.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncCodecs
+				txCmdChan <- txControl.CmdIncCodecs
 			}
 			if ui.decConstellation.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecConstellation
+				txCmdChan <- txControl.CmdDecConstellation
 			}
 			if ui.incConstellation.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncConstaellation
+				txCmdChan <- txControl.CmdIncConstaellation
 			}
 			if ui.decFec.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecFec
+				txCmdChan <- txControl.CmdDecFec
 			}
 			if ui.incFec.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncFec
+				txCmdChan <- txControl.CmdIncFec
 			}
 			if ui.decVideoBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecVideoBitRate
+				txCmdChan <- txControl.CmdDecVideoBitRate
 			}
 			if ui.incVideoBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncVideoBitRate
+				txCmdChan <- txControl.CmdIncVideoBitRate
 			}
 			if ui.decAudioBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecAudioBitRate
+				txCmdChan <- txControl.CmdDecAudioBitRate
 			}
 			if ui.incAudioBitRate.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncAudioBitRate
+				txCmdChan <- txControl.CmdIncAudioBitRate
 			}
 			if ui.decResolution.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecResolution
+				txCmdChan <- txControl.CmdDecResolution
 			}
 			if ui.incResolution.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncResolution
+				txCmdChan <- txControl.CmdIncResolution
 			}
 			if ui.decSpare2.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecSpare2
+				txCmdChan <- txControl.CmdDecSpare2
 			}
 			if ui.incSpare2.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncSpare2
+				txCmdChan <- txControl.CmdIncSpare2
 			}
 			if ui.decGain.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdDecGain
+				txCmdChan <- txControl.CmdDecGain
 			}
 			if ui.incGain.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdIncGain
+				txCmdChan <- txControl.CmdIncGain
 			}
 			if ui.tune.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdTune
+				txCmdChan <- txControl.CmdTune
 			}
 			if ui.ptt.Clicked(gtx) {
-				txCmdChannel <- txControl.CmdPtt
+				txCmdChan <- txControl.CmdPtt
 			}
 
 			// set the screen background to to dark grey
@@ -424,7 +346,7 @@ func (ui *UI) q100_Label(gtx C, label string, txtColor color.NRGBA) D {
 
 // Returns 1 row of 2 buttons and a label for About, Status and Shutdown
 func (ui *UI) q100_TopStatusRow(gtx C) D {
-	const btnWidth = 30
+	const btnWidth = 50
 	inset := layout.Inset{
 		Top:    2,
 		Bottom: 2,
@@ -442,7 +364,7 @@ func (ui *UI) q100_TopStatusRow(gtx C) D {
 			})
 		}),
 		layout.Flexed(1, func(gtx C) D {
-			return ui.q100_Label(gtx, svrData.Status, q100color.labelOrange)
+			return ui.q100_Label(gtx, paData.Status, q100color.labelOrange)
 		}),
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
@@ -491,7 +413,7 @@ func (ui *UI) q100_Selector(gtx C, dec, inc *widget.Clickable, value string, btn
 
 // Returns 1 row of 3 Selectors for Band SymbolRate and Frequency
 func (ui *UI) q100_MainTuningRow(gtx C) D {
-	const btnWidth = 0
+	const btnWidth = 50
 
 	return layout.Flex{
 		Axis:    layout.Horizontal,
@@ -567,8 +489,8 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 
 // returns a column of 3 rows of [label__  label__]
 func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]string) D {
-	const btnWidth = 0
-	const lblWidth = 65 //123 //65
+	const btnWidth = 50
+	const lblWidth = 85 //65 //123 //65
 
 	return layout.Flex{
 		Axis: layout.Vertical,

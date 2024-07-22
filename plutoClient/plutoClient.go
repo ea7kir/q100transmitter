@@ -52,6 +52,10 @@ sshpass -panalog scp /home/pi/settings.txt root@pluto.local:/www/
 sshpass -panalog scp /home/pi/settings.txt root@192.168.2.1:/www/  # not working
 */
 
+const (
+	config_Url = "pluto.local" // or maybe "192.168.2.1"
+)
+
 type (
 	PlConfig_t struct {
 		Frequency       string // "2409.75"
@@ -68,18 +72,18 @@ type (
 		frame           string // "LongFrame"
 		h265box         string // "undefined"
 		remux           string // "1"
-		Provider        string // "EA7KIR"
-		Service         string // "Michael"
-		Url             string // "pluto.local" or "192.168.2.1",
+		provider        string // "EA7KIR"
+		service         string // "Michael"
 	}
 )
 
 var (
-	arg PlConfig_t
+	arg = PlConfig_t{}
 )
 
-func Initialize(cfg PlConfig_t) {
-	arg = cfg
+func Start(provider, service string) {
+	arg.provider = provider
+	arg.service = service
 	arg.calibrationMode = "nocalib"
 	arg.pcr_pts = "800"
 	arg.pat_period = "200"
@@ -118,7 +122,7 @@ func SetParams(cfg *PlConfig_t) {
 
 func writePluto() {
 	settings := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
-		arg.Provider,
+		arg.provider,
 		arg.Frequency,
 		arg.Mode,
 		arg.Constellation,
@@ -141,7 +145,7 @@ func writePluto() {
 	)
 
 	var (
-		plutoDestination = "root@" + arg.Url + ":/www/"
+		plutoDestination = "root@" + config_Url + ":/www/"
 	)
 
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)

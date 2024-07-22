@@ -16,6 +16,11 @@ import (
 	"time"
 )
 
+const (
+	config_PaUrl  = "paserver.local"
+	config_PaPort = 9999 //8765,
+)
+
 type (
 	SvrConfig_t struct {
 		Url  string
@@ -30,12 +35,12 @@ type (
 
 // http://www.inanzzz.com/index.php/post/j3n1/creating-a-concurrent-tcp-client-and-server-example-with-golang
 
-func ReadPaServer(ctx context.Context, cfg SvrConfig_t, ch chan SvrData_t) {
+func ReadPaServer(ctx context.Context, ch chan SvrData_t) {
 	sd := SvrData_t{}
 	// sd.Status = "Connecting..."
 	// ch <- sd
 
-	url := fmt.Sprintf("%s:%d", cfg.Url, cfg.Port)
+	url := fmt.Sprintf("%s:%d", config_PaUrl, config_PaPort)
 	log.Printf("INFO connecting to %v", url)
 
 	const MAXTRIES = 10
