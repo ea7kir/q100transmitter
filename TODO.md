@@ -7,11 +7,8 @@
 - stop using the cp2pluto script
 - add wiring schematic photos and better info to the doc folder
 - test install.sh
-- revisit qLog log levels
 - revise what data to monitor
 - revise what parameters to use
 - tidy the user interface
 - improve marker widths
-- revist shutdown
 
-And rewite the entire thing !!
