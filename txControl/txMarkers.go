@@ -7,7 +7,7 @@ package txControl
 var (
 	// TODO: calculatee a mathematical values
 	const_frequencyCentre = map[string]float32{
-		// "2402.00 / 00": 103, // Beacon not required for Tx
+		// "2402.00 / 00": 103, // Beacon not required for transmit
 		"2403.25 / 01": 230,
 		"2403.50 / 02": 256,
 		"2403.75 / 03": 281,
