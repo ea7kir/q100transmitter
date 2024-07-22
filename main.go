@@ -37,73 +37,6 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-// application directory for the configuration data
-// const appFolder = "/home/pi/Q100/q100transmitter/"
-
-// configuration data
-var (
-	// encConfig = encoderClient.EncConfig_t{
-	// 	// Codecs:       "H.265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
-	// 	// AudioBitRate: "64000",     // 32000 | 64000
-	// 	// VideoBitRate: "350",       // 32...16384
-	// 	// // alter the following with caution
-	// 	StreamIP:   "192.168.3.10",
-	// 	StreamPort: "8282",
-	// 	ConfigIP:   "192.168.3.1",
-	// }
-	// plutoConfig = plutoClient.PlConfig_t{
-	// 	// configure setting not provided by the GUI
-	// 	// Provider: "",
-	// 	// Service:  "",
-	// 	// alter the following with caution
-	// 	// CalibrationMode: "nocalib",
-	// 	// Pcr_pts:         "800",
-	// 	// Pat_period:      "200",
-	// 	// Roll_off:        "0.35",
-	// 	// Pilots:          "off",
-	// 	// Frame:           "LongFrame",
-	// 	// H265box:         "undefined",
-	// 	// Remux:           "1",
-	// 	Url: "pluto.local", // or maybe "192.168.2.1"
-	// }
-	txConfig = txControl.TxConfig_t{
-		Band:                    "Narrow",
-		WideSymbolrate:          "1000",
-		NarrowSymbolrate:        "333",
-		VeryNarrowSymbolRate:    "125",
-		WideFrequency:           "2405.25 / 09",
-		NarrowFrequency:         "2409.75 / 27",
-		VeryNarrowFrequency:     "2406.50 / 14",
-		WideMode:                "DVB-S2",
-		NarrowMode:              "DVB-S2",
-		VeryNarrowMode:          "DVB-S2",
-		WideCodecs:              "H265 ACC", // H.264 ACC | H.264 G711u | H.265 ACC | H.265 G711u
-		NarrowCdecs:             "H265 ACC",
-		VeryNarrowCodecs:        "H265 ACC",
-		WideConstellation:       "QPSK",
-		NarrowConstellation:     "QPSK",
-		VeryNarrorConstellation: "QPSK",
-		WideFec:                 "3/4",
-		NarrowFec:               "3/4",
-		VeryNarrowFec:           "3/4",
-		WideVideoBitRate:        "440", // 32...16384
-		NarrowVideoBitRate:      "340",
-		VeryNarrowVideoBitRate:  "310",
-		WideAudioBitRate:        "64000", // 32000 | 64000
-		NarrowAudioBitRate:      "64000",
-		VeryNarrowAudioBitRate:  "32000",
-		WideResolution:          "720p", // 720p | 1080p
-		NarrowResolution:        "720p",
-		VeryNarrowResolution:    "720p",
-		WideSpare2:              "sp2-a",
-		NarrowSpare2:            "sp2-a",
-		VeryNarrowSpare2:        "sp2-a",
-		WideGain:                "-15",
-		NarrowGain:              "-14",
-		VeryNarrowGain:          "-20",
-	}
-)
-
 // local data
 var (
 	// tuCmd        txControl.TxCmd_t
@@ -143,7 +76,7 @@ func main() {
 	plutoClient.Start(provider, service) // TODO: implment with ctx
 	pttSwitch.Start()                    // TODO: implment with ctx
 
-	go txControl.HandleCommands(ctx, txConfig, txCmdChan, txDataChan)
+	go txControl.HandleCommands(ctx, txCmdChan, txDataChan)
 
 	go func() {
 		os.Setenv("DISPLAY", ":0") // required for X11
