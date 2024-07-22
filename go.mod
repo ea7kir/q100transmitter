@@ -1,9 +1,5 @@
 module q100transmitter
 
-// updated to GO 1.22 on March 2 2024
-// updated to go-gpiocdev 0.9.0 April 25 2024
-// updated to gioui v0.6.1 on April 30 2024
-
 go 1.22.5
 
 require (

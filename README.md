@@ -11,6 +11,7 @@ Control and monitor a DATV transmiter with a touch screen.
 - Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
 - EA7KIR TX Remote PCB
 - DDMALL HEV-10 HDMI Video Encoder
+- Requires q100paserver to connect with
 
 **A keyboard and mouse are not required at any time**
 ## Connections
