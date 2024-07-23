@@ -92,10 +92,10 @@ func Start(provider, service string) {
 	arg.frame = "LongFrame"
 	arg.h265box = "undefined"
 	arg.remux = "1"
+	log.Printf("plutoClient has started")
 }
 
 func Stop() {
-	log.Printf("INFO plutoClient will stop... - NOT IMPLEMENTED")
 	// now delete the local  settings file
 	// ************* END dummy send using script
 
@@ -106,6 +106,7 @@ func Stop() {
 	// if err != nil {
 	// 	log.Printf("WARN  Failed to delete settings.txt: %s", err)
 	// }
+	log.Printf("plutoClient has stopped")
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.

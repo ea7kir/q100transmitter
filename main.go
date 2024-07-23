@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"image"
 	"image/color"
 	"log"
@@ -26,6 +27,7 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
+	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -40,13 +42,13 @@ import (
 // local data
 var (
 	// tuCmd        txControl.TxCmd_t
-	txCmdChan  = make(chan txControl.TxCmd_t, 5)
+	txCmdChan  = make(chan txControl.TxCmd_t)
 	txData     txControl.TxData_t
-	txDataChan = make(chan txControl.TxData_t, 5)
+	txDataChan = make(chan txControl.TxData_t)
 	spData     spClient.SpData_t
-	spDataChan = make(chan spClient.SpData_t, 5) //, 5)
+	spDataChan = make(chan spClient.SpData_t, 1)
 	paData     paClient.SvrData_t
-	paDataChan = make(chan paClient.SvrData_t, 5) //, 5)
+	paDataChan = make(chan paClient.SvrData_t)
 )
 
 // profile from the Mac
@@ -57,6 +59,11 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	log.Printf("INFO ----- q100transmitter Opened -----")
+
+	var shutdown bool
+	flag.BoolVar(&shutdown, "shutdown", false, "close and poweroff")
+	flag.Parse()
+	// fmt.Println("shudown: ", shutdown)
 
 	// read callsign from /home/pi/Q100/callsign
 	bytes, err := os.ReadFile("/home/pi/Q100/callsign")
@@ -89,7 +96,7 @@ func main() {
 		}
 
 		cancel()
-		log.Printf("CANCEL IN MAIN ----- cancel() called")
+		// log.Printf("CANCEL IN MAIN ----- cancel() called")
 		// allow time to cancel all functions
 		time.Sleep(time.Second * 3)
 
@@ -98,7 +105,7 @@ func main() {
 		plutoClient.Stop()   // TODO replace with ctx
 		encoderClient.Stop() // TODO replace with ctx
 
-		if !true { // change to true for powerdown
+		if shutdown {
 			log.Printf("INFO ----- q100transmitter will poweroff -----")
 			time.Sleep(1 * time.Second)
 			cmd := exec.Command("sudo", "poweroff")
@@ -142,11 +149,7 @@ func loop(w *app.Window) error {
 		case <-interrupt:
 			// When the context cancels, assign the done channel to nil to
 			// prevent it from firing over and over.
-			// ctx.Done() = nil
-			interrupt = nil // TODO: is this neccessat?
-			log.Printf("INTERRUPT")
-			return nil
-			// w.Perform(system.ActionClose) // panics
+			w.Perform(system.ActionClose)
 		case txData = <-txDataChan:
 			w.Invalidate()
 		case paData = <-paDataChan:
@@ -164,10 +167,8 @@ func loop(w *app.Window) error {
 				showAboutBox()
 			}
 			if ui.shutdown.Clicked(gtx) {
-				interrupt <- syscall.SIGINT
-				// TODO: try using continue
-				// return nil
-				// w.Perform(system.ActionClose) // panics
+				// interrupt <- syscall.SIGINT
+				w.Perform(system.ActionClose)
 			}
 			if ui.decBand.Clicked(gtx) {
 				txCmdChan <- txControl.CmdDecBand
