@@ -104,10 +104,11 @@ func Start() {
 	// qp1: iqp, the value range is [0, 50]
 	// qp2: pqp, the value range is [0, 50]
 	// qp3: bqp
+	log.Printf("encoderClient has started")
 }
 
 func Stop() {
-	log.Printf("INFO encoderClient will stop... - NOT IMPLEMENTED")
+	log.Printf("encoderClient has stopped")
 }
 
 func SetParams(cfg *EncConfig_t) error {

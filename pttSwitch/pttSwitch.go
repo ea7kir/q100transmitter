@@ -51,11 +51,11 @@ func Start() {
 	}
 	muteEnable = muteEnableLine
 	muteEnable.SetValue(kLOW)
+	log.Printf("pttSwitch has started")
 }
 
 // API
 func Stop() {
-	log.Printf("INFO PTTr will stop... - NOT IMPLEMENTED")
 	SetPtt(false)
 	hvc349Control.SetValue(kHIGH)
 	muteEnable.SetValue(kLOW)
@@ -64,6 +64,7 @@ func Stop() {
 	hvc349Control.Close()
 	muteEnable.Reconfigure(gpiocdev.AsInput)
 	muteEnable.Close()
+	log.Printf("pttSwitch has stopped")
 }
 
 // API
