@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Install Q100 Transmitter on Raspberry Pi 4
+# Install Q100 Transmitter on txtouch.local
 # Orignal design by Michael, EA7KIR
-
-# updated to GO 1.25 on July 6 2024
 
 GOVERSION=1.22.5
 
@@ -32,7 +30,11 @@ while true; do
     esac
 done
 
+echo "
 ###################################################
+Update Pi OS
+###################################################
+"
 
 echo Update Pi OS
 sudo apt update
@@ -40,7 +42,11 @@ sudo apt -y full-upgrade
 sudo apt -y autoremove
 sudo apt clean
 
+echo "
 ###################################################
+Making changes to config.txt
+###################################################
+"
 
 echo Making changes to config.txt
 
@@ -52,9 +58,11 @@ sudo sh -c "echo 'dtoverlay=disable-wifi' >> /boot/config.txt"
 echo Disable Bluetooth
 sudo sh -c "echo 'dtoverlay=disable-bt' >> /boot/config.txt"
 
+echo "
 ###################################################
-
-echo Making changes to .profile
+Making changes to .profile
+###################################################
+"
 
 sudo sh -c "echo '\n# EA7KIR Additions' >> /home/pi/.profile"
 
@@ -64,54 +72,87 @@ echo -e 'export DISPLAY=:0; xset s noblank; xset s off; xset -dpms' >> /home/pi/
 echo Adding go path to .profile
 echo -e 'export PATH=$PATH:/usr/local/go/bin' >> /home/pi/.profile
 
+echo "
 ###################################################
+Installing Go $GOVERSION
+###################################################
+"
 
-echo Installing Go $GOVERSION
 GOFILE=go$GOVERSION.linux-arm64.tar.gz
 cd /usr/local
 sudo wget https://go.dev/dl/$GOFILE
 sudo tar -C /usr/local -xzf $GOFILE
 cd
 
-echo Installing gioui dependencies
+echo "
+###################################################
+Installing gioui dependencies
+###################################################
+"
+
 sudo apt -y install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
-echo Installing gioui tools
-# currently, allow 'go mod tidy' to instal gioui v0.6.1
-#/usr/local/go/bin/go install gioui.org/cmd/gogio@latest
-
+echo "
 ###################################################
+Installing gioui tools
+###################################################
+"
 
-echo Installing IIO devices
+/usr/local/go/bin/go install gioui.org/cmd/gogio@latest
+
+echo "
+###################################################
+Installing IIO devices
+###################################################
+"
+
 sudo apt -y install libiio-utils
 
-echo Installing sshpass
+echo "
+###################################################
+Installing sshpass
+###################################################
+"
+
 sudo apt -y install sshpass
 
+echo "
 ###################################################
+Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
+###################################################
+"
 
-echo Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
 mkdir /home/pi/.ssh
 wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
 
-echo Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
+echo "
+###################################################
+Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
+###################################################
+"
+
 sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/scripts/53-adi-plutosdr-usb.rules
 sudo udevadm control --reload-rules
 
+echo "
 ###################################################
+Copying q100transmitter.service
+###################################################
+"
 
-echo Copying q100transmitter.service
 cd /home/pi/Q100/q100transmitter/etc
 sudo cp q100transmitter.service /etc/systemd/system/
 sudo chmod 644 /etc/systemd/system/q100transmitter.service
 sudo systemctl daemon-reload
 cd
 
+echo "
 ###################################################
+Configure routing
+###################################################
+"
 
-echo Configure routing
-
-echo Editing /etc/network/interfaces
+# Editing /etc/network/interfaces
 TXT="
 auto eth1
     iface eth1 inet static
@@ -120,7 +161,7 @@ auto eth1
 "
 echo "$TXT" | sudo tee --append /etc/network/interfaces
 
-echo Enable port forwarding
+# Enable port forwarding
 sudo sysctl net.ipv4.ip_forward # check if port forwarding is enabled
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf # change to 1
 sudo sysctl -p # confirm port forwarding is active
@@ -128,7 +169,7 @@ lsmod | grep nf # check if nftables is running as a kernel module
 sudo systemctl enable nftables
 sudo systemctl start nftables
 
-echo Adding table
+# Adding table
 sudo nft list ruleset # check which rules are active
 sudo nft flush ruleset # to start over
 sudo nft add table nat
@@ -136,28 +177,32 @@ sudo nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }
 sudo sudo nft add rule nat postrouting masquerade
 sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
 
-echo Forward the ENCODER streams to the PLUTO
+# Forward the ENCODER streams to the PLUTO
 sudo nft add rule nat prerouting iif eth1 udp dport 7272 dnat to 192.168.2.1
 sudo nft add rule nat prerouting iif eth1 udp dport 8282 dnat to 192.168.2.1
 
-echo Enable access to ENCODER from the LAN during debug/development
-echo    ie. access as: http://txtouch.local:8083
+# Enable access to ENCODER from the LAN during debug/development
+#    ie. access as: http://txtouch.local:8083
 sudo nft add rule nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
 
-echo Enable access to PLUTO from the LAN during debug/development
-echo    ie. access as: http://txtouch.local:8082
+# Enable access to PLUTO from the LAN during debug/development
+#    ie. access as: http://txtouch.local:8082
 sudo nft add rule nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
 
-echo Checking the rules
+# Checking the rules
 sudo nft list ruleset
 
-echo Making the rules persist
+# Making the rules persist
 sudo cp /etc/nftables.conf /etc/nftables.backup
 sudo nft list ruleset | sudo tee /etc/nftables.conf
 
+echo "
 ###################################################
+Prevent this script form being executed again
+###################################################
+"
 
-chmod -x /home/pi/Q100/etc/install.sh # to prevent it from being run a second time
+chmod -x /home/pi/Q100/etc/install.sh
 
 echo "
 INSTALL HAS COMPLETED
@@ -184,6 +229,8 @@ INSTALL HAS COMPLETED
     go build .
     sudo systemctl enable q100transmitter
     sudo systemctl start q100transmitter
+
+    The App should now be ruuning on the touch screen
 
 "
 
