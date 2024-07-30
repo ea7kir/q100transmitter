@@ -31,7 +31,7 @@ const (
 	config_NarrowConstellation     = "QPSK"
 	config_VeryNarrorConstellation = "QPSK"
 	config_WideFec                 = "3/4"
-	config_NarrowFec               = "3/4"
+	config_NarrowFec               = "2/3"
 	config_VeryNarrowFec           = "3/4"
 	config_WideVideoBitRate        = "440" // 32...16384
 	config_NarrowVideoBitRate      = "340"
@@ -51,43 +51,6 @@ const (
 )
 
 type (
-	// TxConfig_t struct {
-	// 	Band                    string
-	// 	WideFrequency           string
-	// 	WideSymbolrate          string
-	// 	NarrowFrequency         string
-	// 	NarrowSymbolrate        string
-	// 	VeryNarrowFrequency     string
-	// 	VeryNarrowSymbolRate    string
-	// 	WideMode                string
-	// 	NarrowMode              string
-	// 	VeryNarrowMode          string
-	// 	WideCodecs              string
-	// 	NarrowCdecs             string
-	// 	VeryNarrowCodecs        string
-	// 	WideConstellation       string
-	// 	NarrowConstellation     string
-	// 	VeryNarrorConstellation string
-	// 	WideFec                 string
-	// 	NarrowFec               string
-	// 	VeryNarrowFec           string
-	// 	WideVideoBitRate        string
-	// 	NarrowVideoBitRate      string
-	// 	VeryNarrowVideoBitRate  string
-	// 	WideAudioBitRate        string
-	// 	NarrowAudioBitRate      string
-	// 	VeryNarrowAudioBitRate  string
-	// 	WideResolution          string
-	// 	NarrowResolution        string
-	// 	VeryNarrowResolution    string
-	// 	WideSpare2              string
-	// 	NarrowSpare2            string
-	// 	VeryNarrowSpare2        string
-	// 	WideGain                string
-	// 	NarrowGain              string
-	// 	VeryNarrowGain          string
-	// }
-
 	TxData_t struct {
 		CurBand          string
 		CurSymbolRate    string
