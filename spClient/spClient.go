@@ -40,6 +40,19 @@ func ReadSpectrumServer(ctx context.Context, spDataChan chan<- SpData_t) {
 	var ws *websocket.Conn
 	var err error
 
+	//////// SECOND VERSION //////////////////////////////////////////////////
+	// var wsConfig *websocket.Config
+	// wsConfig, err = websocket.NewConfig(config_Url, config_Origin)
+	// if err != nil {
+	// 	log.Fatalf("FATAL: %v", err)
+	// }
+	// ws, err = websocket.DialConfig(wsConfig)
+	// if err != nil {
+	// 	log.Fatalf("FATAL: %v", err.Error())
+	// }
+	////////////////////////////////////////////
+
+	///////// FIRST VERSION ////////////////////
 	// TODO: needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
 	//	which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	const MAXTRIES = 10
@@ -47,7 +60,6 @@ func ReadSpectrumServer(ctx context.Context, spDataChan chan<- SpData_t) {
 		log.Printf("INFO Dial attempt %v", i)
 		ws, err = websocket.Dial(config_Url, "", config_Origin)
 		if err == nil {
-			// ws = new_ws
 			break
 		}
 		if i == MAXTRIES {
@@ -55,6 +67,7 @@ func ReadSpectrumServer(ctx context.Context, spDataChan chan<- SpData_t) {
 		}
 		time.Sleep(time.Millisecond * 500)
 	}
+	//////////////////////////////////////////////
 
 	var spData = SpData_t{
 		Yp:          make([]float32, config_NumPoints),

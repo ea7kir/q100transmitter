@@ -1,14 +1,15 @@
 ## TODO:
 
-- display callsign
-- spectrumClient.go needs a timeout. see https://pkg.go.dev/nhooyr.io/websocket
-    - which uses: ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-    - also need timeout for paClient.go
+- test install.sh
+- test update.sh
 - stop using the cp2pluto script
 - add wiring schematic photos and better info to the doc folder
-- test install.sh
-- revise what data to monitor
+- revise what data to monitor - eg nulls
 - revise what parameters to use
-- tidy the user interface
 - improve marker widths
+- more to do in spClient to deal with doubling / fast changes /etc
 
+## Maybe one day
+
+- move from Bullseye to Bookworm
+    - this will mean using Network Manager !

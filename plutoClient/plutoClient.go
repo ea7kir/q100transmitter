@@ -87,7 +87,7 @@ func Start(provider, service string) {
 	arg.calibrationMode = "nocalib"
 	arg.pcr_pts = "800"
 	arg.pat_period = "200"
-	arg.roll_off = "0.35"
+	arg.roll_off = "0.20"
 	arg.pilots = "off"
 	arg.frame = "LongFrame"
 	arg.h265box = "undefined"

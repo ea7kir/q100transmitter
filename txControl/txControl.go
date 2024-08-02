@@ -31,7 +31,7 @@ const (
 	config_NarrowConstellation     = "QPSK"
 	config_VeryNarrorConstellation = "QPSK"
 	config_WideFec                 = "3/4"
-	config_NarrowFec               = "3/4"
+	config_NarrowFec               = "2/3"
 	config_VeryNarrowFec           = "3/4"
 	config_WideVideoBitRate        = "440" // 32...16384
 	config_NarrowVideoBitRate      = "340"
@@ -51,43 +51,6 @@ const (
 )
 
 type (
-	// TxConfig_t struct {
-	// 	Band                    string
-	// 	WideFrequency           string
-	// 	WideSymbolrate          string
-	// 	NarrowFrequency         string
-	// 	NarrowSymbolrate        string
-	// 	VeryNarrowFrequency     string
-	// 	VeryNarrowSymbolRate    string
-	// 	WideMode                string
-	// 	NarrowMode              string
-	// 	VeryNarrowMode          string
-	// 	WideCodecs              string
-	// 	NarrowCdecs             string
-	// 	VeryNarrowCodecs        string
-	// 	WideConstellation       string
-	// 	NarrowConstellation     string
-	// 	VeryNarrorConstellation string
-	// 	WideFec                 string
-	// 	NarrowFec               string
-	// 	VeryNarrowFec           string
-	// 	WideVideoBitRate        string
-	// 	NarrowVideoBitRate      string
-	// 	VeryNarrowVideoBitRate  string
-	// 	WideAudioBitRate        string
-	// 	NarrowAudioBitRate      string
-	// 	VeryNarrowAudioBitRate  string
-	// 	WideResolution          string
-	// 	NarrowResolution        string
-	// 	VeryNarrowResolution    string
-	// 	WideSpare2              string
-	// 	NarrowSpare2            string
-	// 	VeryNarrowSpare2        string
-	// 	WideGain                string
-	// 	NarrowGain              string
-	// 	VeryNarrowGain          string
-	// }
-
 	TxData_t struct {
 		CurBand          string
 		CurSymbolRate    string
@@ -245,7 +208,7 @@ var (
 		"380", "390", "400", "410", "420", "430", "440", "450", "460", "470", "480", "490", "410", "420", "430", "440", "450", "460", "470", "480", "490", "500",
 	}
 	const_NARROW_VIDEO_BITRATE_LIST = []string{
-		"180", "190", "200", "210", "220", "230", "240", "250", "260", "270", "280", "290", "300", "310", "320", "330", "340", "350", "360", "370", "380", "390",
+		"180", "190", "200", "210", "220", "230", "240", "250", "260", "270", "280", "290", "300", "310", "320", "330", "340", "350", "360", "370", "380", "390", "400", "410", "420", "430", "440", "450",
 	}
 	const_VERY_NARROW_VIDEO_BITRATE_LIST = []string{
 		"180", "190", "200", "210", "220", "230", "240", "250", "260", "270", "280", "290", "300", "310", "320", "330", "340", "350", "360", "370", "380", "390",
@@ -255,7 +218,7 @@ var (
 		// "32000", "48000", "64000", // 48000 unsupported
 	}
 	const_NARROW_AUDIO_BITRATE_LIST = []string{
-		"32000", "64000",
+		"32000", "48000", "64000",
 		// "32000", "48000", "64000", // 48000 unsupported
 	}
 	const_VERY_NARROW_AUDIO_BITRATE_LIST = []string{
