@@ -1,7 +1,5 @@
 ## TODO:
 
-- test install.sh
-- test update.sh
 - stop using the cp2pluto script
 - add wiring schematic photos and better info to the doc folder
 - revise what data to monitor - eg nulls

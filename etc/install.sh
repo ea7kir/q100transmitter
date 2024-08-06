@@ -219,6 +219,7 @@ INSTALL HAS COMPLETED
 
     ssh pi@txtouch.local
 
+    IMPORTANT
     It's neccessary to login to the Pluto just once to authenticate:
     ssh root@pluto.local  # with password analog. Logout by entering exit.
 
