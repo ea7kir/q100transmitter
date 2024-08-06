@@ -31,13 +31,13 @@ const (
 	config_NarrowConstellation     = "QPSK"
 	config_VeryNarrorConstellation = "QPSK"
 	config_WideFec                 = "3/4"
-	config_NarrowFec               = "2/3"
+	config_NarrowFec               = "3/4"
 	config_VeryNarrowFec           = "3/4"
 	config_WideVideoBitRate        = "440" // 32...16384
 	config_NarrowVideoBitRate      = "340"
 	config_VeryNarrowVideoBitRate  = "310"
 	config_WideAudioBitRate        = "64000" // 32000 | 64000
-	config_NarrowAudioBitRate      = "64000"
+	config_NarrowAudioBitRate      = "48000"
 	config_VeryNarrowAudioBitRate  = "32000"
 	config_WideResolution          = "720p" // 720p | 1080p
 	config_NarrowResolution        = "720p"
