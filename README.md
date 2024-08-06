@@ -49,7 +49,7 @@ mkdir /home/pi/Q100
 cd /home/pi/Q100
 git clone https://github.com/ea7kir/q100transmitter.git
 
-chmod +x /home/pi/Q100/q100transmitter/install.sh
+chmod +x /home/pi/Q100/q100transmitter/etc/install.sh
 /home/pi/Q100/q100transmitter/etc/install.sh
 ```
 

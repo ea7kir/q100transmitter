@@ -202,7 +202,7 @@ Prevent this script form being executed again
 ###################################################
 "
 
-chmod -x /home/pi/Q100/etc/install.sh
+chmod -x /home/pi/Q100/q100transmitter/etc/install.sh
 
 echo "
 INSTALL HAS COMPLETED
