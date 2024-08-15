@@ -17,7 +17,7 @@ Control and monitor a DATV transmiter with a touch screen.
 ## Connections
 TODO: add schenatics
 ## Installing
-NOTE: CURRENTLY REQUIRES PI OS BULLSEYE 64-BIT (FULL DESKTOP VERSION)
+NOTE: CURRENTLY REQUIRES PI OS BULLSEYE 64-BIT - smallest desktop version
 
 ### Using Raspberry Pi Imager v1.8.5:
 ```
