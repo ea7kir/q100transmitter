@@ -3,7 +3,12 @@
 # Install Q100 Transmitter on txtouch.local
 # Orignal design by Michael, EA7KIR
 
+# CONFIFIGURATION
 GOVERSION=1.22.5
+GIOUIVERSION=7.1
+LAN=eth0
+PLUTO=eth2
+ENCODER=eth1
 
 whoami | grep -q pi
 if [ $? != 0 ]; then
@@ -22,7 +27,7 @@ echo $callsign > /home/pi/Q100/callsign
 echo saved to Q100/callsign
 
 while true; do
-    read -p "Install q100transmitter using Go version $GOVERSION (y/n)? " answer
+    read -p "Install q100transmitter using Go version $GOVERSION and GIO $GIOUIVERSION (y/n)? " answer
     case ${answer:0:1} in
         y|Y ) break;;
         n|N ) exit;;
@@ -98,7 +103,7 @@ Installing gioui tools
 ###################################################
 "
 
-/usr/local/go/bin/go install gioui.org/cmd/gogio@latest
+/usr/local/go/bin/go install gioui.org/cmd/gogio@$GIOUIVERSION
 
 echo "
 ###################################################
@@ -154,8 +159,8 @@ Configure routing
 
 # Editing /etc/network/interfaces
 TXT="
-auto eth1
-    iface eth1 inet static
+auto $ENCODER
+    iface $ENCODER static
         address 192.168.3.10
         netmask 255.255.255.0
 "
@@ -178,16 +183,16 @@ sudo sudo nft add rule nat postrouting masquerade
 sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
 
 # Forward the ENCODER streams to the PLUTO
-sudo nft add rule nat prerouting iif eth1 udp dport 7272 dnat to 192.168.2.1
-sudo nft add rule nat prerouting iif eth1 udp dport 8282 dnat to 192.168.2.1
+sudo nft add rule nat prerouting iif $ENCODER udp dport 7272 dnat to 192.168.2.1
+sudo nft add rule nat prerouting iif $ENCODER udp dport 8282 dnat to 192.168.2.1
 
 # Enable access to ENCODER from the LAN during debug/development
 #    ie. access as: http://txtouch.local:8083
-sudo nft add rule nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
+sudo nft add rule nat prerouting iif $LAN tcp dport 8083 dnat to 192.168.3.1:80
 
 # Enable access to PLUTO from the LAN during debug/development
 #    ie. access as: http://txtouch.local:8082
-sudo nft add rule nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
+sudo nft add rule nat prerouting iif $LAN tcp dport 8082 dnat to 192.168.2.1:80
 
 # Checking the rules
 sudo nft list ruleset
