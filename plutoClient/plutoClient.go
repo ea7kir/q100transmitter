@@ -122,7 +122,7 @@ func SetParams(cfg *PlConfig_t) {
 }
 
 func writePluto() {
-	settings := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
+	settings := fmt.Sprintf("callsign %vfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
 		arg.provider,
 		arg.Frequency,
 		arg.Mode,
