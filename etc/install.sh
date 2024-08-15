@@ -136,7 +136,7 @@ Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rul
 ###################################################
 "
 
-sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/scripts/53-adi-plutosdr-usb.rules
+sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/53-adi-plutosdr-usb.rules
 sudo udevadm control --reload-rules
 
 echo "
