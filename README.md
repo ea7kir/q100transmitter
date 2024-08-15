@@ -21,7 +21,7 @@ NOTE: CURRENTLY REQUIRES PI OS BULLSEYE 64-BIT (FULL DESKTOP VERSION)
 
 ### Using Raspberry Pi Imager v1.8.5:
 ```
-CHOOSE OS: Raspberry Pi OS (other) -> Raspberry Pi OS (64-bit)
+CHOOSE OS: Raspberry Pi OS (other) -> Raspberry Pi OS (LEGACY, 64-bit)
 
 CONFIGURE:
 	Set hostname:			txtouch
