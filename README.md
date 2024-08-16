@@ -1,7 +1,7 @@
 # Q-100 Transmitter
-Control and monitor a DATV transmiter with a touch screen.
-
+### Control and monitor a DATV transmiter with a touch screen.
 ![tx](doc/tx.jpeg)
+### REQUIRES Raspberry PI OS (64-BIT) - the Bookworm Desktop version
 
 ## Hardware
 - Raspberry Pi 4B with 4GB RAM (minimum)
@@ -11,17 +11,27 @@ Control and monitor a DATV transmiter with a touch screen.
 - Analog Devices EVAL-CN0417-EBZ 2.4GHz RF Power Amplifier
 - EA7KIR TX Remote PCB
 - DDMALL HEV-10 HDMI Video Encoder
-- Requires q100paserver to connect with
+- AXIS Electronics AX88772 Ethernet to USB adapter 
+- Requires the paserver to live on the LAN
 
-**A keyboard and mouse are not required at any time**
 ## Connections
-TODO: add schenatics
+- 5 volt supply to Encoder and Raspberry Pi
+- HDMI video to Encoder connector
+- LAN to Raspberry Pi RJ45 connector
+- Encoder RJ45 to ethnernet/usb adpater
+- ethnernet/usb adpater to bottom Raspberry Pi USB3 connector
+- Pluto middle USB to top Raspberry Pi USB3 connector (yes, Pluto is powered from RPI)
+- GPIO to TX Remote PCB
+- GPIO to HMC349 RF Switch
+
 ## Installing
-NOTE: CURRENTLY REQUIRES PI OS BULLSEYE 64-BIT - smallest desktop version
+**A keyboard and mouse are not required at any time**
 
 ### Using Raspberry Pi Imager v1.8.5:
 ```
-CHOOSE OS: Raspberry Pi OS (other) -> Raspberry Pi OS (LEGACY, 64-bit)
+CHOOSE Raspberry Pi Device: Raspberry Pi 4 
+
+CHOOSE Operating Sysytem: Raspberry Pi OS (64-bit)
 
 CONFIGURE:
 	Set hostname:			txtouch

@@ -6,8 +6,9 @@
 - revise what parameters to use
 - improve marker widths
 - more to do in spClient to deal with doubling / fast changes /etc
+- SOLVE network connections sometimes coming up in wrong order
+    - hint: NetworkManager is a pain in the arse !
 
 ## Maybe one day
 
-- move from Bullseye to Bookworm
-    - this will mean using Network Manager !
+- move from Bookworm Desktop to Bookworm Lite or FreeBSD

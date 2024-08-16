@@ -1,5 +1,5 @@
 /*
- *  Q-100 Transmitter
+ *  Q-100 q100transmitter
  *  Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
  */
 
@@ -58,7 +58,7 @@ var (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	log.Printf("INFO ----- q100transmitter Opened -----")
+	log.Printf("INFO ----- q100transmitter opened -----")
 
 	var shutdown bool
 	flag.BoolVar(&shutdown, "shutdown", false, "close and poweroff")
@@ -87,9 +87,9 @@ func main() {
 
 	go func() {
 		os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?
-		os.Setenv("DISPLAY", ":0")                     // required for X11. Compile wit: go build --tags nowayland .
-		// os.Setenv("WAYLAND_DISPLAY", "wayland-1") // required for wayland. Compile with: go build --tags nox11 .
-		app.Size(800, 480) // I don't know if this is help in any way
+		// os.Setenv("DISPLAY", ":0")                     // required for X11. Compile wit: go build --tags nowayland .
+		os.Setenv("WAYLAND_DISPLAY", "wayland-1") // required for wayland. Compile with: go build --tags nox11 .
+		app.Size(800, 480)                        // I don't know if this is help in any way
 		var w app.Window
 		w.Option(app.Fullscreen.Option())
 
@@ -117,7 +117,7 @@ func main() {
 			cmd.Wait()
 		}
 
-		log.Printf("INFO ----- q100transmitter Closed -----")
+		log.Printf("INFO ----- q100transmitter closed -----")
 		// log.Close()
 		os.Exit(0)
 	}()
@@ -363,7 +363,7 @@ func (ui *UI) q100_TopStatusRow(gtx C) D {
 		layout.Rigid(func(gtx C) D {
 			return inset.Layout(gtx, func(gtx C) D {
 				gtx.Constraints.Min.X = gtx.Dp(btnWidth)
-				return ui.q100_Button(gtx, &ui.about, "Q-100 Transmitter", false, q100color.buttonGrey)
+				return ui.q100_Button(gtx, &ui.about, "QO-100 Transmitter", false, q100color.buttonGrey)
 			})
 		}),
 		layout.Flexed(1, func(gtx C) D {

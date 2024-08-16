@@ -53,7 +53,11 @@ sshpass -panalog scp /home/pi/settings.txt root@192.168.2.1:/www/  # not working
 */
 
 const (
-	config_Url = "pluto.local" // or maybe "192.168.2.1"
+	cp2plutoScript   = "/home/pi/Q100/q100transmitter/etc/cp2pluto"
+	settingsFileName = "/home/pi/Q100/settings.txt"
+	// plutoDestination = "root@pluto.local:/www/"
+	// plutoDestination = "root@192.168.2.1:/www/"
+	plutoDestination = "plutosdr:/www/"
 )
 
 type (
@@ -139,15 +143,6 @@ func writePluto() {
 		arg.remux)
 
 	// log.Printf("INFO 1: save to settings.txt to a local folder: \n%v\n", settings)
-
-	const (
-		cp2plutoScript   = "/home/pi/Q100/q100transmitter/etc/cp2pluto"
-		settingsFileName = "/home/pi/Q100/settings.txt"
-	)
-
-	var (
-		plutoDestination = "root@" + config_Url + ":/www/"
-	)
 
 	f, err := os.OpenFile(settingsFileName, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {

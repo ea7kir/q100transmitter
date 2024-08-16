@@ -12,7 +12,7 @@
 # sudo systemctl disable q100transmitter
 
 [Unit]
-Description=Q-100 Transmitter
+Description=Q-100 q100transmitter
 Wants=graphical.target network-online.target
 After=graphical.target network-online.target
 

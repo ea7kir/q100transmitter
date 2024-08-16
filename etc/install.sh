@@ -7,8 +7,14 @@
 GOVERSION=1.22.5
 GIOUIVERSION=7.1
 LAN=eth0
-PLUTO=eth2
-ENCODER=eth1
+PLUTO=eth1
+ENCODER=eth2
+
+# DEVICE         TYPE      STATE                                  CONNECTION         
+# eth0           ethernet  connected                              Wired connection 1 
+# eth1           ethernet  connected                              Wired connection 2 
+# lo             loopback  connected (externally)                 lo                 
+# eth2           ethernet  connecting (getting IP configuration)  Wired connection 3 
 
 whoami | grep -q pi
 if [ $? != 0 ]; then
@@ -27,7 +33,7 @@ echo $callsign > /home/pi/Q100/callsign
 echo saved to Q100/callsign
 
 while true; do
-    read -p "Install q100transmitter using Go version $GOVERSION and GIO $GIOUIVERSION (y/n)? " answer
+    read -p "Install q100transmitter using Go $GOVERSION and GIO $GIOUIVERSION (y/n)? " answer
     case ${answer:0:1} in
         y|Y ) break;;
         n|N ) exit;;
@@ -43,25 +49,25 @@ Update Pi OS
 
 echo Update Pi OS
 sudo apt update
-sudo apt -y upgrade
+sudo apt -y full-upgrade
 sudo apt -y autoremove
 sudo apt clean
 
-echo "
-###################################################
-Making changes to config.txt
-###################################################
-"
+# echo "
+# ###################################################
+# Making changes to config.txt TODO:
+# ###################################################
+# "
 
-echo Making changes to config.txt
+# echo Making changes to config.txt
 
-sudo sh -c "echo '\n# EA7KIR Additions' >> /boot/config.txt"
+# sudo sh -c "echo '\n# EA7KIR Additions' >> /boot/firmware/config.txt"
 
-echo Disable Wifi
-sudo sh -c "echo 'dtoverlay=disable-wifi' >> /boot/config.txt"
+# echo Disable Wifi
+# sudo sh -c "echo 'dtoverlay=disable-wifi' >> /boot/firmware/config.txt"
 
-echo Disable Bluetooth
-sudo sh -c "echo 'dtoverlay=disable-bt' >> /boot/config.txt"
+# echo Disable Bluetooth
+# sudo sh -c "echo 'dtoverlay=disable-bt' >> /boot/firmware/config.txt"
 
 echo "
 ###################################################
@@ -71,8 +77,8 @@ Making changes to .profile
 
 sudo sh -c "echo '\n# EA7KIR Additions' >> /home/pi/.profile"
 
-echo Disbale Screen Blanking in .profile
-echo -e 'export DISPLAY=:0; xset s noblank; xset s off; xset -dpms' >> /home/pi/.profile
+# echo Disbale Screen Blanking in .profile
+# echo -e 'export DISPLAY=:0; xset s noblank; xset s off; xset -dpms' >> /home/pi/.profile
 
 echo Adding go path to .profile
 echo -e 'export PATH=$PATH:/usr/local/go/bin' >> /home/pi/.profile
@@ -99,7 +105,7 @@ sudo apt -y install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbco
 
 echo "
 ###################################################
-Installing gioui tools
+Installing gioui tools $GIOUIVERSION
 ###################################################
 "
 
@@ -127,17 +133,17 @@ Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
 ###################################################
 "
 
-mkdir /home/pi/.ssh
+#mkdir /home/pi/.ssh
 wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
 
-echo "
-###################################################
-Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
-###################################################
-"
+# echo "
+# ###################################################
+# Installing plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules to /etc/udev/rules.d/
+# ###################################################
+# "
 
-sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/53-adi-plutosdr-usb.rules
-sudo udevadm control --reload-rules
+# sudo wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr-fw/master/scripts/53-adi-plutosdr-usb.rules -O /etc/udev/rules.d/53-adi-plutosdr-usb.rules
+# sudo udevadm control --reload-rules
 
 echo "
 ###################################################
@@ -157,14 +163,14 @@ Configure routing
 ###################################################
 "
 
-# Editing /etc/network/interfaces
-TXT="
-auto $ENCODER
-    iface $ENCODER static
-        address 192.168.3.10
-        netmask 255.255.255.0
-"
-echo "$TXT" | sudo tee --append /etc/network/interfaces
+# # Editing /etc/network/interfaces
+# TXT="
+# auto eth1
+#     iface eth1 inet static
+#         address 192.168.3.10
+#         netmask 255.255.255.0
+# "
+# echo "$TXT" | sudo tee --append /etc/network/interfaces
 
 # Enable port forwarding
 sudo sysctl net.ipv4.ip_forward # check if port forwarding is enabled
@@ -203,7 +209,20 @@ sudo nft list ruleset | sudo tee /etc/nftables.conf
 
 echo "
 ###################################################
-Prevent this script form being executed again
+Bring up the encoder using nmcli
+###################################################
+"
+
+# This appears to work
+sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
+sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.3.0
+#sudo nmcli con mod Wired\ connection\ 3 ipv4.dns 8.8.8.8
+sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
+sudo nmcli con up Wired\ connection\ 3
+
+echo "
+###################################################
+Prevent this script from being executed again
 ###################################################
 "
 
@@ -211,7 +230,8 @@ chmod -x /home/pi/Q100/q100transmitter/etc/install.sh
 
 echo "
 INSTALL HAS COMPLETED
-    after rebooting...
+
+    AFTER REBOOTING:
 
     Ues your finger to configure some Desktop settings:
 
@@ -220,23 +240,20 @@ INSTALL HAS COMPLETED
     Raspberry Pi Configuration
 	    System set Network at Boot to ON
 
-    Then login from your PC, Mc, or Linux computer
+    Then login from your PC, Mac, or Linux computer
 
     ssh pi@txtouch.local
 
-    IMPORTANT
-    It's neccessary to login to the Pluto just once to authenticate:
-    ssh root@pluto.local  # with password analog. Logout by entering exit.
+    IMPORTANT: login to the Pluto just once to authenticate
+        using passwod 'analog', then 'exit'
 
-    Then execute the following commands
+    ssh plutosdr
 
     cd Q100/q100transmitter
     go mod tidy
-    go build --tags nowayland .
+    go build .
     sudo systemctl enable q100transmitter
     sudo systemctl start q100transmitter
-
-    The App should now be ruuning on the touch screen
 
 "
 

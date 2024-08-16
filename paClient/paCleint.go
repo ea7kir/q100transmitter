@@ -88,7 +88,7 @@ func ReadPaServer(ctx context.Context, ch chan SvrData_t) {
 				sd.Status = strings.TrimSpace(serverResponse)
 				ch <- sd
 			case io.EOF:
-				log.Printf("WARN  server closed the connection")
+				log.Printf("WARN server closed the connection")
 				sd.Status = "Server closed the connection"
 				ch <- sd
 				return
