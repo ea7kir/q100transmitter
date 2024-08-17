@@ -46,7 +46,7 @@ const (
 	config_NarrowSpare2            = "sp2-a"
 	config_VeryNarrowSpare2        = "sp2-a"
 	config_WideGain                = "-15"
-	config_NarrowGain              = "-14"
+	config_NarrowGain              = "-15"
 	config_VeryNarrowGain          = "-20"
 )
 
