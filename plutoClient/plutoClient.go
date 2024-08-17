@@ -55,9 +55,9 @@ sshpass -panalog scp /home/pi/settings.txt root@192.168.2.1:/www/  # not working
 const (
 	cp2plutoScript   = "/home/pi/Q100/q100transmitter/etc/cp2pluto"
 	settingsFileName = "/home/pi/Q100/settings.txt"
-	// plutoDestination = "root@pluto.local:/www/"
+	plutoDestination = "root@pluto.local:/www/"
 	// plutoDestination = "root@192.168.2.1:/www/"
-	plutoDestination = "plutosdr:/www/"
+	// plutoDestination = "plutosdr:/www/"
 )
 
 type (
