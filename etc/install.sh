@@ -264,7 +264,7 @@ INSTALL HAS COMPLETED
 
     cd Q100/q100transmitter
     go mod tidy
-    go build .
+    go build --tags nox11 .
     sudo systemctl enable q100transmitter
     sudo systemctl start q100transmitter
 
