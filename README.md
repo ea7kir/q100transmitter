@@ -72,7 +72,7 @@ Raspberry Pi Configuration
 Login from a PC, Mac, or Linux and login to the Pluto to authenticate and exit
 ```
 ssh pi@txtouch.local
-ssh root@pluto.local # password 'analog' and 'exit'
+ssh root@192.168.2.1 # password 'analog' and 'exit'
 exit
 ```
 ```

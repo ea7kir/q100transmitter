@@ -133,8 +133,13 @@ Installing plutosdr_scripts/master/ssh_config to /home/pi/.ssh/config
 ###################################################
 "
 
-#mkdir /home/pi/.ssh
-wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O ~/.ssh/config
+# see: https://wiki.analog.com/university/tools/pluto/drivers/linux
+# TODO: copy from the etc folder
+mkdir /home/pi/.ssh
+touch /home/pi/.ssh/known_hosts
+wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/ssh_config -O /home/pi/.ssh/config
+# first time use: login as: ssh root@192.168.2.1
+# later logins can use: ssh plutosdr or: sshpass -p analog ssh plutosdr
 
 # echo "
 # ###################################################
