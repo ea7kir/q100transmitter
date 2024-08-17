@@ -209,14 +209,18 @@ sudo nft list ruleset | sudo tee /etc/nftables.conf
 
 echo "
 ###################################################
-Bring up the encoder using nmcli
+Bring up connections in manusl
 ###################################################
 "
 
-# This appears to work
+# pluto
+sudo nmcli con mod Wired\ connection\ 2 ipv4.addresses 192.168.2.10/24
+sudo nmcli con mod Wired\ connection\ 2 ipv4.gateway 192.168.2.0
+sudo nmcli con mod Wired\ connection\ 2 ipv4.method manual
+sudo nmcli con up Wired\ connection\ 2
+# encoder
 sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
-sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.1.1
-#sudo nmcli con mod Wired\ connection\ 3 ipv4.dns 8.8.8.8
+sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.3.0
 sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
 sudo nmcli con up Wired\ connection\ 3
 
