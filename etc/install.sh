@@ -219,6 +219,7 @@ sudo nmcli con down Wired\ connection\ 1
 sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses 192.168.1.150/24
 sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway 192.168.1.1
 sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
+sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
 sudo nmcli con up Wired\ connection\ 1
 # pluto
 sudo nmcli con down Wired\ connection\ 2
@@ -242,33 +243,12 @@ Prevent this script from being executed again
 chmod -x /home/pi/Q100/q100transmitter/etc/install.sh
 
 echo "
-INSTALL HAS COMPLETED
-
-    AFTER REBOOTING:
-
-    Ues your finger to configure some Desktop settings:
-
-    Appearance Settings
-	    Disable Wastebasket & External Disks
-    Raspberry Pi Configuration
-	    System set Network at Boot to ON
-
-    Then login from your PC, Mac, or Linux computer
-
-    ssh pi@txtouch.local
-
-    IMPORTANT: login to the Pluto just once to authenticate
-        using passwod 'analog', then 'exit'
-
-    ssh plutosdr
-
-    cd Q100/q100transmitter
-    go mod tidy
-    go build --tags nox11 .
-    sudo systemctl enable q100transmitter
-    sudo systemctl start q100transmitter
-
+###################################################
+Rebooting in 5 seconds...
+###################################################
 "
+
+sleep 5
 
 while true; do
     read -p "I have read the above, so continue (y/n)? " answer
