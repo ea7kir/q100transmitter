@@ -58,12 +58,30 @@ ssh pi@txtouch.local
 mkdir /home/pi/Q100
 cd /home/pi/Q100
 git clone https://github.com/ea7kir/q100transmitter.git
-
 chmod +x /home/pi/Q100/q100transmitter/etc/install.sh
 /home/pi/Q100/q100transmitter/etc/install.sh
 ```
-
-THEN FOLLOW THE INSTRUCTIONS TO CONFIGURE THE DESKTOP
+### After rebboting
+Use your finger to configure some Desktop settings:
+```
+Appearance Settings
+    Disable Wastebasket & External Disks
+Raspberry Pi Configuration
+    System set Network at Boot to ON
+```
+Login from a PC, Mac, or Linux and login to the Pluto to authenticate and exit
+```
+ssh pi@txtouch.local
+ssh root@pluto.local # password 'analog' and 'exit'
+exit
+```
+```
+cd Q100/q100transmitter
+go mod tidy
+go build --tags nox11 .
+sudo systemctl enable q100transmitter
+sudo systemctl start q100transmitter
+```
 
 ## License
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
