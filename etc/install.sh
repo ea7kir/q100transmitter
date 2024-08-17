@@ -220,9 +220,8 @@ sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses 192.168.1.150/24
 sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway 192.168.1.1
 sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
 sudo nmcli con up Wired\ connection\ 1
-
 # pluto
-sudo nmcli con down Wired\ connection\ 1
+sudo nmcli con down Wired\ connection\ 2
 sudo nmcli con mod Wired\ connection\ 2 ipv4.addresses 192.168.2.10/24
 #sudo nmcli con mod Wired\ connection\ 2 ipv4.gateway 192.168.2.0
 sudo nmcli con mod Wired\ connection\ 2 ipv4.method manual
