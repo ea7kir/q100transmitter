@@ -6,15 +6,20 @@
 # CONFIFIGURATION
 GOVERSION=1.22.5
 GIOUIVERSION=7.1
+IPADDRESS=192.168.1.150
+ROUTER=192.168.1.1
 LAN=eth0
 PLUTO=eth1
 ENCODER=eth2
 
-# DEVICE         TYPE      STATE                                  CONNECTION         
-# eth0           ethernet  connected                              Wired connection 1 
-# eth1           ethernet  connected                              Wired connection 2 
-# lo             loopback  connected (externally)                 lo                 
-# eth2           ethernet  connecting (getting IP configuration)  Wired connection 3 
+# mcli device
+# DEVICE         TYPE      STATE                   CONNECTION         
+# eth0           ethernet  connected               Wired connection 1 
+# eth1           ethernet  connected               Wired connection 2 
+# eth2           ethernet  connected               Wired connection 3 
+# lo             loopback  connected (externally)  lo                 
+# wlan0          wifi      disconnected            --                 
+# p2p-dev-wlan0  wifi-p2p  disconnected            --  
 
 whoami | grep -q pi
 if [ $? != 0 ]; then
@@ -221,8 +226,8 @@ Bring up connections in manusl
 
 # lan
 sudo nmcli con down Wired\ connection\ 1
-sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses 192.168.1.150/24
-sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway 192.168.1.1
+sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses $IPADDRESS/24
+sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway $ROUTER
 sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
 sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
 sudo nmcli con up Wired\ connection\ 1
@@ -239,6 +244,8 @@ sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
 sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
 sudo nmcli con up Wired\ connection\ 3
 
+sleep 5 # allow the router dns service to catch up
+
 echo "
 ###################################################
 Prevent this script from being executed again
@@ -249,11 +256,9 @@ chmod -x /home/pi/Q100/q100transmitter/etc/install.sh
 
 echo "
 ###################################################
-Rebooting in 5 seconds...
+INSTALL HAS COMPLETED
 ###################################################
 "
-
-sleep 5
 
 while true; do
     read -p "I have read the above, so continue (y/n)? " answer

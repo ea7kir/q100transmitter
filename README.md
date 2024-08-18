@@ -15,12 +15,13 @@
 - Requires the paserver to live on the LAN
 
 ## Connections
+- Wired internet connection (not wifi)
 - 5 volt supply to Encoder and Raspberry Pi
 - HDMI video to Encoder connector
 - LAN to Raspberry Pi RJ45 connector
 - Encoder RJ45 to ethnernet/usb adpater
-- ethnernet/usb adpater to bottom Raspberry Pi USB3 connector
-- Pluto middle USB to top Raspberry Pi USB3 connector (yes, Pluto is powered from RPI)
+- Ethnernet/usb adpater to upper Raspberry Pi USB2 connector
+- Pluto middle USB to lower Raspberry Pi USB2 connector (yes, Pluto is powered from RPI)
 - GPIO to TX Remote PCB
 - GPIO to HMC349 RF Switch
 
@@ -79,9 +80,17 @@ exit
 cd Q100/q100transmitter
 go mod tidy
 go build --tags nox11 .
+```
+And execute it with
+```
+./q100transmitter
+```
+If all goes well it can be run at boot, by enabling auto run at boot
+```
 sudo systemctl enable q100transmitter
 sudo systemctl start q100transmitter
 ```
+Note: omit the -shutdown flag in the service file to prevent a full shutdown if required
 
 ## License
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
