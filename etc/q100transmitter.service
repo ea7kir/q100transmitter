@@ -24,7 +24,10 @@ StandardError=append:/home/pi/Q100/transmitter.log
 #Environment="XDG_RUNTIME_DIR=/run/user/1000"
 Environment="DISPLAY=:0"
 WorkingDirectory=/home/pi/Q100/q100transmitter
-ExecStart=/home/pi/Q100/q100transmitter/q100transmitter -shutdown
+
+# append -shutdown to implement poweroff on exit
+ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
+# ExecStart=/home/pi/Q100/q100transmitter/q100transmitter -shutdown
 
 [Install]
 WantedBy=graphical.target  network-online.target
