@@ -45,19 +45,12 @@ wget https://raw.githubusercontent.com/analogdevicesinc/plutosdr_scripts/master/
 sudo apt install sshpass
 
 Now I can ssh and scp like this...
-
-sshpass -panalog ssh root@pluto.local
-sshpass -panalog ssh root@192.168.2.1 # not working
-sshpass -panalog scp /home/pi/settings.txt root@pluto.local:/www/
-sshpass -panalog scp /home/pi/settings.txt root@192.168.2.1:/www/  # not working
+sshpass -p analog scp -O /home/pi/Q100/settings.temp plutosdr:/www/settings.txt
 */
 
 const (
-	cp2plutoScript   = "/home/pi/Q100/q100transmitter/etc/cp2pluto"
-	settingsFileName = "/home/pi/Q100/settings.txt"
-	// plutoDestina÷tion = "root@pluto.local:/www/"
-	// plutoDestination = "root@192.168.2.1:/www/"
-	plutoDestination = "plutosdr:/www/"
+	settingsFileName = "/home/pi/Q100/settings.temp"
+	plutoDestination = "plutosdr:/www/settings.txt"
 )
 
 type (
@@ -100,17 +93,11 @@ func Start(provider, service string) {
 }
 
 func Stop() {
-	// now delete the local  settings file
-	// ************* END dummy send using script
-
-	// TODO: do it without using a script
-
-	// can't do this until file is closed.
-	// err = os.Remove(settingsFileName)
-	// if err != nil {
-	// 	log.Printf("WARN  Failed to delete settings.txt: %s", err)
-	// }
-	log.Printf("plutoClient has stopped")
+	err := os.Remove(settingsFileName)
+	if err != nil {
+		log.Printf("WARN: Failed to remove %v: %s", settingsFileName, err)
+	}
+	log.Printf("INFO: plutoClient has stopped")
 }
 
 // Called from tuner to copy the params into a folder in the Pluto.
@@ -126,7 +113,7 @@ func SetParams(cfg *PlConfig_t) {
 }
 
 func writePluto() {
-	settings := fmt.Sprintf("callsign %vfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
+	settings := fmt.Sprintf("callsign %v\nfreq %v\nmode %v\nmod %v\nsr %v\nfec %v\npilots %v\nframe %v\npower %v\nrolloff %v\npcrpts %v\npatperiod %v\nh265box %v\nremux %v\n\n",
 		arg.provider,
 		arg.Frequency,
 		arg.Mode,
@@ -148,29 +135,20 @@ func writePluto() {
 	if err != nil {
 		log.Fatalf("FATAL   %s", err)
 	}
-	defer f.Close()
-
 	_, err = f.WriteString(settings)
 	if err != nil {
 		log.Fatalf("FATAL   %s", err)
 	}
-	// log.Printf("INFO Pluto settings saved to local file: %s", settingsFileName)
+	f.Close()
 
-	// Sending to Pluto on the smd line
-	// /usr/bin/sshpass -panalog /usr/bin/scp /home/pi/settings.txt root@pluto.local:/www/ > /dev/null 2>&1
-
-	// ************* BEGIN dummy send using script
-
-	// args :=
-	cmd := exec.Command(cp2plutoScript, // TODO: args here are currently ignored by the script
-		// "/usr/bin/sshpass",
-		// "-panalog",
-		// "/usr/bin/scp",
-		settingsFileName,
-		plutoDestination,
-	)
-	_, err = cmd.Output()
+	cmd := exec.Command("sshpass", "-p", "analog", "scp", "-O", settingsFileName, plutoDestination)
+	log.Printf("INFO: Copying settings to pluto")
+	err = cmd.Run()
 	if err != nil {
-		log.Fatalf("FATAL   Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
+		log.Fatalf("FATAL: Failed to send %s to %s pluto: %s", settingsFileName, plutoDestination, err)
 	}
+	// err = os.Remove(settingsFileName)
+	// if err != nil {
+	// 	log.Fatalf("FATAL: Failed to remove %v: %v", settingsFileName, err)
+	// }
 }

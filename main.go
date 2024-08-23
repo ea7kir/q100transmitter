@@ -20,6 +20,7 @@ import (
 	"q100transmitter/pttSwitch"
 	"q100transmitter/spClient"
 	"q100transmitter/txControl"
+	"strings"
 	"syscall"
 	"time"
 
@@ -70,7 +71,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("FATAL failed to read callsign: %err", err)
 	}
-	provider := string(bytes)
+	str := string(bytes)
+	provider := strings.TrimSpace(str)
 	service := "n/a" // current Pluto firmware doesn't provide a way to set this
 
 	ctx, cancel := context.WithCancel(context.Background())
