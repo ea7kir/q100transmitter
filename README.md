@@ -50,7 +50,7 @@ SAVE and WRITE
 
 Insert the card into the Raspberry Pi and switch on
 
-WARNING: the Pi may reboot during the install, so please allow it to complete
+NOTE: the Pi will reboot during the install, so please allow it to complete
 
 ### Remote login from a Mac, PC or Linux host
 ```
@@ -62,15 +62,16 @@ git clone https://github.com/ea7kir/q100transmitter.git
 chmod +x /home/pi/Q100/q100transmitter/etc/install.sh
 /home/pi/Q100/q100transmitter/etc/install.sh
 ```
-### After rebboting
+### After rebooting
 Use your finger to configure some Desktop settings:
 ```
 Appearance Settings
     Disable Wastebasket & External Disks
 Raspberry Pi Configuration
     System set Network at Boot to ON
+If updates are available, install then now
 ```
-Login from a PC, Mac, or Linux and login to the Pluto to authenticate and exit
+Login from a PC, Mac, or Linux computer and login to the Pluto to authenticate and exit
 ```
 ssh pi@txtouch.local
 ssh root@192.168.2.1 # password 'analog' and 'exit'
@@ -81,16 +82,16 @@ cd Q100/q100transmitter
 go mod tidy
 go build --tags nox11 .
 ```
-And execute it with
+Execute q100transmitter rom the current directory
 ```
 ./q100transmitter
 ```
-If all goes well it can be run at boot, by enabling auto run at boot
+If all went well it can be executed at boot by enabling systemctl
 ```
 sudo systemctl enable q100transmitter
 sudo systemctl start q100transmitter
 ```
-Note: omit the -shutdown flag in the service file to prevent a full shutdown if required
+Note: add or omit the ```-shutdown``` flag in the service file to allow a full shutdown as required
 
 ## License
 Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
