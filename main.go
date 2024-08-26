@@ -167,89 +167,64 @@ func loop(w *app.Window) error {
 			return event.Err
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, event)
-			if ui.about.Clicked(gtx) {
+
+			switch {
+			case ui.about.Clicked(gtx):
 				showAboutBox()
-			}
-			if ui.shutdown.Clicked(gtx) {
+			case ui.shutdown.Clicked(gtx):
 				// interrupt <- syscall.SIGINT
 				w.Perform(system.ActionClose)
-			}
-			if ui.decBand.Clicked(gtx) {
+			case ui.decBand.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecBand
-			}
-			if ui.incBand.Clicked(gtx) {
+			case ui.incBand.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncBand
-			}
-			if ui.decSymbolRate.Clicked(gtx) {
+			case ui.decSymbolRate.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecSymbolRate
-			}
-			if ui.incSymbolRate.Clicked(gtx) {
+			case ui.incSymbolRate.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncSymbolRate
-			}
-			if ui.decFrequency.Clicked(gtx) {
+			case ui.decFrequency.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecFrequency
-			}
-			if ui.incFrequency.Clicked(gtx) {
+			case ui.incFrequency.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncFrequency
-			}
-			if ui.decMode.Clicked(gtx) {
+			case ui.decMode.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecMode
-			}
-			if ui.incMode.Clicked(gtx) {
+			case ui.incMode.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncMode
-			}
-			if ui.decCodecs.Clicked(gtx) {
+			case ui.decCodecs.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecCodecs
-			}
-			if ui.incCodecs.Clicked(gtx) {
+			case ui.incCodecs.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncCodecs
-			}
-			if ui.decConstellation.Clicked(gtx) {
+			case ui.decConstellation.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecConstellation
-			}
-			if ui.incConstellation.Clicked(gtx) {
+			case ui.incConstellation.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncConstaellation
-			}
-			if ui.decFec.Clicked(gtx) {
+			case ui.decFec.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecFec
-			}
-			if ui.incFec.Clicked(gtx) {
+			case ui.incFec.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncFec
-			}
-			if ui.decVideoBitRate.Clicked(gtx) {
+			case ui.decVideoBitRate.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecVideoBitRate
-			}
-			if ui.incVideoBitRate.Clicked(gtx) {
+			case ui.incVideoBitRate.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncVideoBitRate
-			}
-			if ui.decAudioBitRate.Clicked(gtx) {
+			case ui.decAudioBitRate.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecAudioBitRate
-			}
-			if ui.incAudioBitRate.Clicked(gtx) {
+			case ui.incAudioBitRate.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncAudioBitRate
-			}
-			if ui.decResolution.Clicked(gtx) {
+			case ui.decResolution.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecResolution
-			}
-			if ui.incResolution.Clicked(gtx) {
+			case ui.incResolution.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncResolution
-			}
-			if ui.decSpare2.Clicked(gtx) {
+			case ui.decSpare2.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecSpare2
-			}
-			if ui.incSpare2.Clicked(gtx) {
+			case ui.incSpare2.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncSpare2
-			}
-			if ui.decGain.Clicked(gtx) {
+			case ui.decGain.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecGain
-			}
-			if ui.incGain.Clicked(gtx) {
+			case ui.incGain.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncGain
-			}
-			if ui.tune.Clicked(gtx) {
+			case ui.tune.Clicked(gtx):
 				txCmdChan <- txControl.CmdTune
-			}
-			if ui.ptt.Clicked(gtx) {
+			case ui.ptt.Clicked(gtx):
 				txCmdChan <- txControl.CmdPtt
 			}
 
