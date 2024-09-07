@@ -153,6 +153,7 @@ func loop(w *app.Window) error {
 		case <-interrupt:
 			// When the context cancels, assign the done channel to nil to
 			// prevent it from firing over and over.
+			interrupt = nil
 			w.Perform(system.ActionClose)
 		case txData = <-txDataChan:
 			w.Invalidate()
@@ -172,8 +173,8 @@ func loop(w *app.Window) error {
 			case ui.about.Clicked(gtx):
 				showAboutBox()
 			case ui.shutdown.Clicked(gtx):
-				// interrupt <- syscall.SIGINT
-				w.Perform(system.ActionClose)
+				interrupt <- syscall.SIGINT
+				// w.Perform(system.ActionClose)
 			case ui.decBand.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecBand
 			case ui.incBand.Clicked(gtx):
