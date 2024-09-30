@@ -95,7 +95,8 @@ func Start(provider, service string) {
 func Stop() {
 	err := os.Remove(settingsFileName)
 	if err != nil {
-		log.Printf("WARN: Failed to remove %v: %s", settingsFileName, err)
+		// it may or not exist, so who cares?
+		// log.Printf("WARN: Failed to remove %v: %s", settingsFileName, err)
 	}
 	log.Printf("INFO: plutoClient has stopped")
 }

@@ -287,6 +287,21 @@ type (
 	D = layout.Dimensions
 )
 
+/*********************************************************************************
+
+[ [ button ]  [ label_____________________________________________ ]  [ button ] ]
+
+[ [ ------------------------ q100_SpectrumDisplay ---------------------------- ] ]
+
+[    [ button label button ]  [ button label button ]  [ button label button ]   ]
+
+[ [ q100_Selector __ ]   [ q100_Selector___ ]   [ q100_Selector___ ]  [ button ] ]
+[ [ q100_Selector___ ]   [ q100_Selector___ ]   [ q100_Selector___ ]             ]
+[ [ q100_Selector___ ]   [ q100_Selector___ ]   [ q100_Selector___ ]             ]
+[ [ q100_Selector___ ]   [ q100_Selector___ ]   [ q100_Selector___ ]  [ button ] ]
+
+*********************************************************************************/
+
 // Returns an About box
 func showAboutBox() {
 	// TODO: implement an about box
@@ -468,7 +483,7 @@ func (ui *UI) q100_SpectrumDisplay(gtx C) D {
 	)
 }
 
-// returns a column of 3 rows of [label__  label__]
+// returns a column of 3 rows of [q100_Selector___]
 func (ui *UI) q100_Column3Rows(gtx C, dec, inc [3]*widget.Clickable, value [3]string) D {
 	const btnWidth = 50
 	const lblWidth = 85 //65 //123 //65
