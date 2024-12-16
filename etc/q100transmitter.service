@@ -21,8 +21,9 @@ User=pi
 Group=pi
 StandardOutput=append:/home/pi/Q100/transmitter.log
 StandardError=append:/home/pi/Q100/transmitter.log
-#Environment="XDG_RUNTIME_DIR=/run/user/1000"
-Environment="DISPLAY=:0"
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
+# Environment="DISPLAY=:0"
+Environment="WAYLAND_DISPLAY=wayland-1"
 WorkingDirectory=/home/pi/Q100/q100transmitter
 
 # append -shutdown to implement poweroff on exit

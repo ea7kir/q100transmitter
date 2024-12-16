@@ -57,6 +57,8 @@ var (
 // go tool pprof -http=":" pprof.q100transmitter.samples.cpu.001.pb.gz
 
 func main() {
+	time.Sleep(3 * time.Second)
+
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	log.Printf("INFO ----- q100transmitter opened -----")
@@ -88,10 +90,19 @@ func main() {
 	go txControl.HandleCommands(ctx, txCmdChan, txDataChan)
 
 	go func() {
-		os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?
-		// os.Setenv("DISPLAY", ":0")                     // required for X11. Compile wit: go build --tags nowayland .
-		os.Setenv("WAYLAND_DISPLAY", "wayland-1") // required for wayland. Compile with: go build --tags nox11 .
-		app.Size(800, 480)                        // I don't know if this is help in any way
+		const WINDOW_MANAGER = 2 // 1 = X!!, 2 = Wayfire, = Labwc
+		switch WINDOW_MANAGER {
+		case 1: // X11
+			os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?
+			os.Setenv("DISPLAY", ":0")                     // required for X11. Compile wit: go build --tags nowayland .
+		case 2: // Wayfire
+			os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?
+			os.Setenv("WAYLAND_DISPLAY", "wayland-1")      // required for wayland. Compile with: go build --tags nox11 .
+		case 3: // Labwc
+			os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?
+			// os.Setenv("WAYLAND_DISPLAY", "wayland-1")      // required for wayland. Compile with: go build --tags nox11 .
+		}
+
 		var w app.Window
 		w.Option(app.Fullscreen.Option())
 
