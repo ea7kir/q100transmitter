@@ -4,7 +4,7 @@
 # Orignal design by Michael, EA7KIR
 
 # CONFIFIGURATION
-GOVERSION=1.23.1
+GOVERSION=1.23.4
 GIOUIVERSION=7.1
 IPADDRESS=192.168.1.150
 ROUTER=192.168.1.1
@@ -199,16 +199,16 @@ sudo sudo nft add rule nat postrouting masquerade
 sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
 
 # Forward the ENCODER streams to the PLUTO
-sudo nft add rule nat prerouting iif $ENCODER udp dport 7272 dnat to 192.168.2.1
-sudo nft add rule nat prerouting iif $ENCODER udp dport 8282 dnat to 192.168.2.1
+sudo nft add rule nat prerouting iif eth2 udp dport 7272 dnat to 192.168.2.1
+sudo nft add rule nat prerouting iif eth2 udp dport 8282 dnat to 192.168.2.1
 
 # Enable access to ENCODER from the LAN during debug/development
 #    ie. access as: http://txtouch.local:8083
-sudo nft add rule nat prerouting iif $LAN tcp dport 8083 dnat to 192.168.3.1:80
+sudo nft add rule nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
 
 # Enable access to PLUTO from the LAN during debug/development
 #    ie. access as: http://txtouch.local:8082
-sudo nft add rule nat prerouting iif $LAN tcp dport 8082 dnat to 192.168.2.1:80
+sudo nft add rule nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
 
 # Checking the rules
 sudo nft list ruleset
@@ -226,24 +226,32 @@ Bring up connections in manusl
 
 # lan
 sudo nmcli con down Wired\ connection\ 1
-sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses $IPADDRESS/24
-sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway $ROUTER
-sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
-sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
+# sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses $IPADDRESS/24
+# sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway $ROUTER
+# sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
+# sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
+sleep 5 # allow the router dns service to catch up
 sudo nmcli con up Wired\ connection\ 1
+sleep 5 # allow the router dns service to catch up
 # pluto
 sudo nmcli con down Wired\ connection\ 2
+sleep 5 # allow the router dns service to catch up
 sudo nmcli con mod Wired\ connection\ 2 ipv4.addresses 192.168.2.10/24
+sleep 5 # allow the router dns service to catch up
 #sudo nmcli con mod Wired\ connection\ 2 ipv4.gateway 192.168.2.0
 sudo nmcli con mod Wired\ connection\ 2 ipv4.method manual
+sleep 5 # allow the router dns service to catch up
 sudo nmcli con up Wired\ connection\ 2
+sleep 5 # allow the router dns service to catch up
 # encoder
 sudo nmcli con down Wired\ connection\ 3
+sleep 5 # allow the router dns service to catch up
 sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
+sleep 5 # allow the router dns service to catch up
 #sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.3.0
 sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
+sleep 5 # allow the router dns service to catch up
 sudo nmcli con up Wired\ connection\ 3
-
 sleep 5 # allow the router dns service to catch up
 
 echo "
