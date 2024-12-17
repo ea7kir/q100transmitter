@@ -12,7 +12,7 @@ LAN=eth0
 PLUTO=eth1
 ENCODER=eth2
 
-# mcli device
+# nmcli device
 # DEVICE         TYPE      STATE                   CONNECTION         
 # eth0           ethernet  connected               Wired connection 1 
 # eth1           ethernet  connected               Wired connection 2 
