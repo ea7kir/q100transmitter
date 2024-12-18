@@ -77,6 +77,11 @@ ssh pi@txtouch.local
 ssh root@192.168.2.1 # password 'analog' and 'exit'
 exit
 ```
+Bookwork defaults Labwc, but this doesn't work yet, so change to Wayfire
+```
+sudo raspi-config ## 6 Advanced Options->A6 Wayland->W2 Wayfire window manager
+```
+This will need another reboot
 ```
 cd Q100/q100transmitter
 go mod tidy

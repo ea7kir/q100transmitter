@@ -6,11 +6,11 @@
 # CONFIFIGURATION
 GOVERSION=1.23.4
 GIOUIVERSION=7.1
-IPADDRESS=192.168.1.150
-ROUTER=192.168.1.1
-LAN=eth0
-PLUTO=eth1
-ENCODER=eth2
+# IPADDRESS=192.168.1.150
+# ROUTER=192.168.1.1
+# LAN=eth0
+# PLUTO=eth1
+# ENCODER=eth2
 
 # nmcli device
 # DEVICE         TYPE      STATE                   CONNECTION         
@@ -173,6 +173,10 @@ Configure routing
 ###################################################
 "
 
+# https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+
+# https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-NetworkManager_Tools#sec-NetworkManager_Tools
+
 # # Editing /etc/network/interfaces
 # TXT="
 # auto eth1
@@ -220,39 +224,60 @@ sudo nft list ruleset | sudo tee /etc/nftables.conf
 
 echo "
 ###################################################
-Bring up connections in manusl
+Rename and bring up connections in manual
 ###################################################
 "
 
 # lan
 sudo nmcli con down Wired\ connection\ 1
-# sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses $IPADDRESS/24
-# sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway $ROUTER
-# sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
-# sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
-sleep 5 # allow the router dns service to catch up
-sudo nmcli con up Wired\ connection\ 1
-sleep 5 # allow the router dns service to catch up
+sudo nmcli con mod Wired\ connection\ 1 connectio.id myLAN
+sudo nmcli con up myLAN
+sleep 1
+
 # pluto
 sudo nmcli con down Wired\ connection\ 2
-sleep 5 # allow the router dns service to catch up
-sudo nmcli con mod Wired\ connection\ 2 ipv4.addresses 192.168.2.10/24
-sleep 5 # allow the router dns service to catch up
-#sudo nmcli con mod Wired\ connection\ 2 ipv4.gateway 192.168.2.0
-sudo nmcli con mod Wired\ connection\ 2 ipv4.method manual
-sleep 5 # allow the router dns service to catch up
-sudo nmcli con up Wired\ connection\ 2
-sleep 5 # allow the router dns service to catch up
-# encoder
+sudo nmcli con mod Wired\ connection\ 2 connectio.id myPluto
+sudo nmcli con mod myPluto ipv4.addresses 192.168.2.10/24
+sudo nmcli con up myPluto
+sleep 1
+
+#encoder
 sudo nmcli con down Wired\ connection\ 3
-sleep 5 # allow the router dns service to catch up
-sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
-sleep 5 # allow the router dns service to catch up
-#sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.3.0
-sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
-sleep 5 # allow the router dns service to catch up
-sudo nmcli con up Wired\ connection\ 3
-sleep 5 # allow the router dns service to catch up
+sudo nmcli con mod Wired\ connection\ 3 connectio.id myEncoder
+sudo nmcli con mod myEncoder ipv4.addresses 192.168.3.10/24
+sudo nmcli con up myEncoder
+sleep 1
+
+
+# # lan
+# sudo nmcli con down Wired\ connection\ 1
+# # sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses $IPADDRESS/24
+# # sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway $ROUTER
+# # sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
+# # sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
+# sleep 5 # allow the router dns service to catch up
+# sudo nmcli con up Wired\ connection\ 1
+# sleep 5 # allow the router dns service to catch up
+# # pluto
+# sudo nmcli con down Wired\ connection\ 2
+# sleep 5 # allow the router dns service to catch up
+# sudo nmcli con mod Wired\ connection\ 2 ipv4.addresses 192.168.2.10/24
+# sleep 5 # allow the router dns service to catch up
+# #sudo nmcli con mod Wired\ connection\ 2 ipv4.gateway 192.168.2.0
+# sudo nmcli con mod Wired\ connection\ 2 ipv4.method manual
+# sleep 5 # allow the router dns service to catch up
+# sudo nmcli con up Wired\ connection\ 2
+# sleep 5 # allow the router dns service to catch up
+# # encoder
+# sudo nmcli con down Wired\ connection\ 3
+# sleep 5 # allow the router dns service to catch up
+# sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
+# sleep 5 # allow the router dns service to catch up
+# #sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.3.0
+# sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
+# sleep 5 # allow the router dns service to catch up
+# sudo nmcli con up Wired\ connection\ 3
+# sleep 5 # allow the router dns service to catch up
 
 echo "
 ###################################################
