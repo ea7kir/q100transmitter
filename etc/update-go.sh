@@ -4,6 +4,12 @@ GOVERSION=1.23.4
 
 GOFILE=go$GOVERSION.linux-arm64.tar.gz
 
+echo "
+###################################################
+Update Go to $GOVERSION
+###################################################
+"
+
 cd /usr/local
 sudo wget https://go.dev/dl/$GOFILE
 sudo rm -rf /usr/local/go 

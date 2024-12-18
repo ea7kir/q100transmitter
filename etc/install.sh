@@ -46,17 +46,17 @@ while true; do
     esac
 done
 
-echo "
-###################################################
-Update Pi OS
-###################################################
-"
+# echo "
+# ###################################################
+# Update Pi OS
+# ###################################################
+# "
 
-echo Update Pi OS
-sudo apt update
-sudo apt -y full-upgrade
-sudo apt -y autoremove
-sudo apt clean
+# echo Update Pi OS
+# sudo apt update
+# sudo apt -y full-upgrade
+# sudo apt -y autoremove
+# sudo apt clean
 
 # echo "
 # ###################################################
@@ -167,117 +167,191 @@ sudo chmod 644 /etc/systemd/system/q100transmitter.service
 sudo systemctl daemon-reload
 cd
 
+
+# ############## OLD VERSION ########################################################
+# echo "
+# ###################################################
+# Configure routing
+# ###################################################
+# "
+
+# # https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+
+# # https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-NetworkManager_Tools#sec-NetworkManager_Tools
+
+# # # Editing /etc/network/interfaces
+# # TXT="
+# # auto eth1
+# #     iface eth1 inet static
+# #         address 192.168.3.10
+# #         netmask 255.255.255.0
+# # "
+# # echo "$TXT" | sudo tee --append /etc/network/interfaces
+
+# # Enable port forwarding
+# sudo sysctl net.ipv4.ip_forward # check if port forwarding is enabled
+# sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf # change to 1
+# sudo sysctl -p # confirm port forwarding is active
+# lsmod | grep nf # check if nftables is running as a kernel module
+# sudo systemctl enable nftables
+# sudo systemctl start nftables
+
+# # Adding table
+# sudo nft list ruleset # check which rules are active
+# sudo nft flush ruleset # to start over
+# sudo nft add table nat
+# sudo nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
+# sudo sudo nft add rule nat postrouting masquerade
+# sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
+
+# # Forward the ENCODER streams to the PLUTO
+# sudo nft add rule nat prerouting iif eth2 udp dport 7272 dnat to 192.168.2.1
+# sudo nft add rule nat prerouting iif eth2 udp dport 8282 dnat to 192.168.2.1
+
+# # Enable access to ENCODER from the LAN during debug/development
+# #    ie. access as: http://txtouch.local:8083
+# sudo nft add rule nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
+
+# # Enable access to PLUTO from the LAN during debug/development
+# #    ie. access as: http://txtouch.local:8082
+# sudo nft add rule nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
+
+# # Checking the rules
+# sudo nft list ruleset
+
+# # Making the rules persist
+# sudo cp /etc/nftables.conf /etc/nftables.backup
+# sudo nft list ruleset | sudo tee /etc/nftables.conf
+
+
+# echo "
+# ###################################################
+# Rename and bring up connections in manual
+# ###################################################
+# "
+
+# # lan
+# sudo nmcli con down Wired\ connection\ 1
+# sudo nmcli con mod Wired\ connection\ 1 connectio.id myLAN
+# sudo nmcli con up myLAN
+# sleep 1
+
+# # pluto
+# sudo nmcli con down Wired\ connection\ 2
+# sudo nmcli con mod Wired\ connection\ 2 connectio.id myPluto
+# sudo nmcli con mod myPluto ipv4.addresses 192.168.2.10/24
+# sudo nmcli con up myPluto
+# sleep 1
+
+# #encoder
+# sudo nmcli con down Wired\ connection\ 3
+# sudo nmcli con mod Wired\ connection\ 3 connectio.id myEncoder
+# sudo nmcli con mod myEncoder ipv4.addresses 192.168.3.10/24
+# sudo nmcli con up myEncoder
+# sleep 1
+
+# ############# ENDOF OLD ########################################################
+
+################ NEW VERSION ###########################################
+
 echo "
 ###################################################
-Configure routing
+NetworkManager configure for TxTouch
+	will start in 5 seconds
 ###################################################
 "
 
-# https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+sleep 5
 
-# https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/networking_guide/sec-NetworkManager_Tools#sec-NetworkManager_Tools
+echo "
+###################################################
+Get the Encoder connected
+    assuming it's connected to eth2
+###################################################
+"
+nmcli dev
+sudo nmcli con add con-name Wired\ connection\ 3 type ethernet ifname eth2 ipv4.method manual ipv4.address 192.168.3.10/24
+nmcli dev
 
-# # Editing /etc/network/interfaces
-# TXT="
-# auto eth1
-#     iface eth1 inet static
-#         address 192.168.3.10
-#         netmask 255.255.255.0
+# echo "
+# ###################################################
+# Rename the known connection names
+# 	and persist on boot
+# ###################################################
 # "
-# echo "$TXT" | sudo tee --append /etc/network/interfaces
 
-# Enable port forwarding
+# nmcli dev
+# sudo nmcli con mod Wired\ connection\ 1 connection.id Lan
+# sudo nmcli con mod Wired\ connection\ 2 connection.id Pluto
+# sudo nmcli con mod Wired\ connection\ 3 connection.id Encoder
+# nmcli dev
+
+echo "
+###################################################
+Enable port forwarding
+###################################################
+"
+
 sudo sysctl net.ipv4.ip_forward # check if port forwarding is enabled
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf # change to 1
 sudo sysctl -p # confirm port forwarding is active
 lsmod | grep nf # check if nftables is running as a kernel module
-sudo systemctl enable nftables
-sudo systemctl start nftables
-
-# Adding table
-sudo nft list ruleset # check which rules are active
-sudo nft flush ruleset # to start over
-sudo nft add table nat
-sudo nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
-sudo sudo nft add rule nat postrouting masquerade
-sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
-
-# Forward the ENCODER streams to the PLUTO
-sudo nft add rule nat prerouting iif eth2 udp dport 7272 dnat to 192.168.2.1
-sudo nft add rule nat prerouting iif eth2 udp dport 8282 dnat to 192.168.2.1
-
-# Enable access to ENCODER from the LAN during debug/development
-#    ie. access as: http://txtouch.local:8083
-sudo nft add rule nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
-
-# Enable access to PLUTO from the LAN during debug/development
-#    ie. access as: http://txtouch.local:8082
-sudo nft add rule nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
-
-# Checking the rules
-sudo nft list ruleset
-
-# Making the rules persist
-sudo cp /etc/nftables.conf /etc/nftables.backup
-sudo nft list ruleset | sudo tee /etc/nftables.conf
-
 
 echo "
 ###################################################
-Rename and bring up connections in manual
+Enable nftables
 ###################################################
 "
 
-# lan
-sudo nmcli con down Wired\ connection\ 1
-sudo nmcli con mod Wired\ connection\ 1 connectio.id myLAN
-sudo nmcli con up myLAN
-sleep 1
+sudo systemctl enable nftables
+sudo systemctl start nftables
 
-# pluto
-sudo nmcli con down Wired\ connection\ 2
-sudo nmcli con mod Wired\ connection\ 2 connectio.id myPluto
-sudo nmcli con mod myPluto ipv4.addresses 192.168.2.10/24
-sudo nmcli con up myPluto
-sleep 1
+echo "
+###################################################
+Add my-nat network translation table
+###################################################
+"
 
-#encoder
-sudo nmcli con down Wired\ connection\ 3
-sudo nmcli con mod Wired\ connection\ 3 connectio.id myEncoder
-sudo nmcli con mod myEncoder ipv4.addresses 192.168.3.10/24
-sudo nmcli con up myEncoder
-sleep 1
+sudo nft list ruleset # check which rules are active
+sudo nft flush ruleset # to start over
+sudo nft add table my-nat
+sudo nft 'add chain my-nat postrouting { type nat hook postrouting priority 100 ; }'
+sudo sudo nft add rule my-nat postrouting masquerade
+sudo nft 'add chain my-nat prerouting { type nat hook prerouting priority -100; }'
 
+sudo nft list ruleset # check which rules are active
 
-# # lan
-# sudo nmcli con down Wired\ connection\ 1
-# # sudo nmcli con mod Wired\ connection\ 1 ipv4.addresses $IPADDRESS/24
-# # sudo nmcli con mod Wired\ connection\ 1 ipv4.gateway $ROUTER
-# # sudo nmcli con mod Wired\ connection\ 1 ipv4.method manual
-# # sudo nmcli con mod Wired\ connection\ 1 ipv4.dns 8.8.8.8
-# sleep 5 # allow the router dns service to catch up
-# sudo nmcli con up Wired\ connection\ 1
-# sleep 5 # allow the router dns service to catch up
-# # pluto
-# sudo nmcli con down Wired\ connection\ 2
-# sleep 5 # allow the router dns service to catch up
-# sudo nmcli con mod Wired\ connection\ 2 ipv4.addresses 192.168.2.10/24
-# sleep 5 # allow the router dns service to catch up
-# #sudo nmcli con mod Wired\ connection\ 2 ipv4.gateway 192.168.2.0
-# sudo nmcli con mod Wired\ connection\ 2 ipv4.method manual
-# sleep 5 # allow the router dns service to catch up
-# sudo nmcli con up Wired\ connection\ 2
-# sleep 5 # allow the router dns service to catch up
-# # encoder
-# sudo nmcli con down Wired\ connection\ 3
-# sleep 5 # allow the router dns service to catch up
-# sudo nmcli con mod Wired\ connection\ 3 ipv4.addresses 192.168.3.10/24
-# sleep 5 # allow the router dns service to catch up
-# #sudo nmcli con mod Wired\ connection\ 3 ipv4.gateway 192.168.3.0
-# sudo nmcli con mod Wired\ connection\ 3 ipv4.method manual
-# sleep 5 # allow the router dns service to catch up
-# sudo nmcli con up Wired\ connection\ 3
-# sleep 5 # allow the router dns service to catch up
+echo "
+###################################################
+Enable access to PLUTO from the LAN during debug/development
+	ie. access as: http://txtouch.local:8082
+###################################################
+"
+
+sudo nft add rule my-nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
+
+echo "
+###################################################
+Enable access to ENCODER from the LAN during debug/development
+	ie. access as: http://txtouch.local:8083
+###################################################
+"
+
+sudo nft add rule my-nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
+
+echo "
+###################################################
+Making the rules persist
+    do not save the backup to /etc/nftables.backup
+###################################################
+"
+
+sudo cp /etc/nftables.conf /home/pi/nftables.backup # save a backup copy
+sudo nft list ruleset | sudo tee /etc/nftables.conf # persist the table
+
+sleep 5
+
+#############END OF NEW #################################################
 
 echo "
 ###################################################
