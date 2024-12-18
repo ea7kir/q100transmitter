@@ -7,7 +7,7 @@ require (
 	github.com/ajstarks/giocanvas v0.0.0-20240910153826-156eb16ef4e1
 	github.com/warthog618/go-gpiocdev v0.9.1
 	golang.org/x/image v0.23.0
-	golang.org/x/net v0.32.0
+	golang.org/x/net v0.33.0
 )
 
 require (

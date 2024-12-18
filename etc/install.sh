@@ -341,6 +341,15 @@ sudo nft add rule my-nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:
 
 echo "
 ###################################################
+Forward the ENCODER streams to the PLUTO
+###################################################
+"
+
+sudo nft add rule my-nat prerouting iif eth2 udp dport 7272 dnat to 192.168.2.1
+sudo nft add rule my-nat prerouting iif eth2 udp dport 8282 dnat to 192.168.2.1
+
+echo "
+###################################################
 Making the rules persist
     do not save the backup to /etc/nftables.backup
 ###################################################
