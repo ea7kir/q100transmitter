@@ -271,6 +271,8 @@ Get the Encoder connected
 "
 nmcli dev
 sudo nmcli con add con-name Wired\ connection\ 3 type ethernet ifname eth2 ipv4.method manual ipv4.address 192.168.3.10/24
+# sudo nmcli dev mod eth2 ipv4.addresses 192.168.3.10/24
+# sudo 
 nmcli dev
 
 # echo "
