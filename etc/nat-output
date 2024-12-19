@@ -1,0 +1,20 @@
+#!/usr/sbin/nft -f
+
+# nftables output format
+
+flush table nat
+
+table ip my-nat {
+	chain postrouting {
+		type nat hook postrouting priority srcnat; policy accept;
+		masquerade
+	}
+
+	chain prerouting {
+		type nat hook prerouting priority dstnat; policy accept;
+		iif "eth2" udp dport 7272 dnat to 192.168.2.1
+		iif "eth2" udp dport 8282 dnat to 192.168.2.1
+		iif "eth0" tcp dport 8082 dnat to 192.168.2.1:80
+		iif "eth0" tcp dport 8083 dnat to 192.168.3.1:80
+	}
+}

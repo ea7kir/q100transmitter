@@ -308,16 +308,16 @@ sudo systemctl start nftables
 
 echo "
 ###################################################
-Add my-nat network translation table
+Add nat-table network translation table
 ###################################################
 "
 
 sudo nft list ruleset # check which rules are active
 sudo nft flush ruleset # to start over
-sudo nft add table my-nat
-sudo nft 'add chain my-nat postrouting { type nat hook postrouting priority 100 ; }'
-sudo sudo nft add rule my-nat postrouting masquerade
-sudo nft 'add chain my-nat prerouting { type nat hook prerouting priority -100; }'
+sudo nft add table nat-table
+sudo nft 'add chain nat-table postrouting { type nat hook postrouting priority 100 ; }'
+sudo nft add rule nat-table postrouting masquerade
+sudo nft 'add chain nat-table prerouting { type nat hook prerouting priority -100; }'
 
 sudo nft list ruleset # check which rules are active
 
@@ -328,7 +328,7 @@ Enable access to PLUTO from the LAN during debug/development
 ###################################################
 "
 
-sudo nft add rule my-nat prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
+sudo nft add rule nat-table prerouting iif eth0 tcp dport 8082 dnat to 192.168.2.1:80
 
 echo "
 ###################################################
@@ -337,7 +337,7 @@ Enable access to ENCODER from the LAN during debug/development
 ###################################################
 "
 
-sudo nft add rule my-nat prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
+sudo nft add rule nat-table prerouting iif eth0 tcp dport 8083 dnat to 192.168.3.1:80
 
 echo "
 ###################################################
@@ -345,8 +345,8 @@ Forward the ENCODER streams to the PLUTO
 ###################################################
 "
 
-sudo nft add rule my-nat prerouting iif eth2 udp dport 7272 dnat to 192.168.2.1
-sudo nft add rule my-nat prerouting iif eth2 udp dport 8282 dnat to 192.168.2.1
+sudo nft add rule nat-table prerouting iif eth2 udp dport 7272 dnat to 192.168.2.1
+sudo nft add rule nat-table prerouting iif eth2 udp dport 8282 dnat to 192.168.2.1
 
 echo "
 ###################################################
