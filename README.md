@@ -75,11 +75,10 @@ chmod +x /home/pi/Q100/q100transmitter/etc/install.sh
 ### After rebooting
 Use your finger to configure some Desktop settings:
 ```
+If updates are available, install then now
+
 Appearance Settings
     Disable Wastebasket & External Disks
-Raspberry Pi Configuration
-    System set Network at Boot to ON
-If updates are available, install then now
 ```
 Login from a PC, Mac, or Linux computer and login to the Pluto to authenticate and exit
 ```
