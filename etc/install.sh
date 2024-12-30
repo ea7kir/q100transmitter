@@ -24,9 +24,9 @@ if [ $? != 0 ]; then
   exit
 fi
 
-hostname | grep -q txtouch
+hostname | grep -q TxTouch
 if [ $? != 0 ]; then
-  echo Install must be performed on host txtouch
+  echo Install must be performed on host TxTouch
   exit
 fi
 
