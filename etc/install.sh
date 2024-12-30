@@ -7,7 +7,7 @@
 GOVERSION=1.23.4
 GIOUIVERSION=v0.7.1
 
-# This where we hope for is all goes well
+# This is what we hope for if all goes well
 
 # nmcli device
 # DEVICE         TYPE      STATE                   CONNECTION         
@@ -15,8 +15,7 @@ GIOUIVERSION=v0.7.1
 # eth1           ethernet  connected               Wired connection 2 
 # eth2           ethernet  connected               Wired connection 3 
 # lo             loopback  connected (externally)  lo                 
-# wlan0          wifi      disconnected            --                 
-# p2p-dev-wlan0  wifi-p2p  disconnected            --  
+# wlan0          wifi      unavailable             --                 
 
 whoami | grep -q pi
 if [ $? != 0 ]; then
