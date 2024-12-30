@@ -5,7 +5,7 @@
 
 # CONFIFIGURATION
 GOVERSION=1.23.4
-GIOUIVERSION=7.1
+GIOUIVERSION=v0.7.1
 
 # This where we hope for is all goes well
 
@@ -106,7 +106,7 @@ Installing gioui dependencies
 ###################################################
 "
 
-sudo apt -y install pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
+sudo apt -y install gcc pkg-config libwayland-dev libx11-dev libx11-xcb-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
 echo "
 ###################################################
@@ -180,16 +180,14 @@ Re-Configure eth1 and eth2
 
 # Pluto
 sudo nmcli con down "Wired connection 2"
-sudo nmcli con mod "Wired connection 2" ipv4.addresses 192.168.2.10/24
-# sudo nmcli con mod "Wired connection 2" ipv4.gateway 192.168.2.0
-sudo nmcli con mod "Wired connection 2" ipv4.method manual
+sudo nmcli con mod "Wired connection 2" ipv4.addresses 192.168.2.10/24 ipv4.method manual ipv6.method ignore
+sudo nmcli con mod "Wired connection 2" ipv4.gateway 192.168.2.10
 sudo nmcli con up "Wired connection 2"
 
 # Encoder
 sudo nmcli con down "Wired connection 3"
-sudo nmcli con mod "Wired connection 3" ipv4.addresses 192.168.3.10/24
-# sudo nmcli con mod "Wired connection 3" ipv4.gateway 192.168.3.0
-sudo nmcli con mod "Wired connection 3" ipv4.method manual
+sudo nmcli con mod "Wired connection 3" ipv4.addresses 192.168.3.10/24 ipv4.method manual ipv6.method ignore
+sudo nmcli con mod "Wired connection 3" ipv4.gateway 192.168.3.10
 sudo nmcli con up "Wired connection 3"
 
 sleep 5
