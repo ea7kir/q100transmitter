@@ -35,7 +35,7 @@ CHOOSE Raspberry Pi Device: Raspberry Pi 4
 CHOOSE Operating Sysytem: Raspberry Pi OS (64-bit)
 
 CONFIGURE:
-	Set hostname:			txtouch
+	Set hostname:			TxTouch
 	Enable SSH
 		Use password authentication
 	Set username and password
