@@ -175,19 +175,26 @@ Re-Configure eth1 and eth2
 ###################################################
 "
 
-# TODO: these need a gateway-addr and an IP6 addrs
-#   I think there's a way to config IP4 and IP6 with one command
+# take them all down, so we can them bring them
+# back up in order of priority
+sudo nmcli con down "Wired connection 1"
+sudo nmcli con down "Wired connection 2"
+sudo nmcli con down "Wired connection 3"
+
+# eth0
+sudo nmcli con mod "Wired connection 1" ipv4.gateway 192.168.1.1 ipv4.method auto
 
 # Pluto
-sudo nmcli con down "Wired connection 2"
 sudo nmcli con mod "Wired connection 2" ipv4.addresses 192.168.2.10/24 ipv4.method manual ipv6.method ignore
 sudo nmcli con mod "Wired connection 2" ipv4.gateway 192.168.2.10
-sudo nmcli con up "Wired connection 2"
 
 # Encoder
-sudo nmcli con down "Wired connection 3"
 sudo nmcli con mod "Wired connection 3" ipv4.addresses 192.168.3.10/24 ipv4.method manual ipv6.method ignore
 sudo nmcli con mod "Wired connection 3" ipv4.gateway 192.168.3.10
+
+# bring them up in order of priority
+sudo nmcli con up "Wired connection 1"
+sudo nmcli con up "Wired connection 2"
 sudo nmcli con up "Wired connection 3"
 
 sleep 5
