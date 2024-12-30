@@ -53,16 +53,6 @@ Insert the card into the Raspberry Pi and switch on
 NOTE: the Pi will reboot during the install, so please allow it to complete
 
 ### Remote login from a Mac, PC or Linux host
-It's neccessay to update BEFORE proceeding with the install
-
-This is to give time for eth0, eth1 and eth2 to come up.
-
-This can be checked with...
-```
-nmcli dev
-```
-
-### Remote login again from a Mac, PC or Linux host
 ```
 ssh pi@txtouch.local
 
