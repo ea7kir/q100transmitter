@@ -1,5 +1,7 @@
 #!/bin/bash
 
+##  NEDS UPDATING
+
 # Install Q100 Transmitter on txtouch.local
 # Orignal design by Michael, EA7KIR
 
