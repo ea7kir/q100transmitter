@@ -90,7 +90,7 @@ func main() {
 	go txControl.HandleCommands(ctx, txCmdChan, txDataChan)
 
 	go func() {
-		const WINDOW_MANAGER = 1 // 1 = X!!, 2 = Wayfire, = Labwc
+		const WINDOW_MANAGER = 2 // 1 = X!!, 2 = Wayfire, = Labwc
 		switch WINDOW_MANAGER {
 		case 1: // X11
 			os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?

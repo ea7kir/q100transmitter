@@ -1,0 +1,311 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fswiss\fcharset0 Helvetica;\f2\fmodern\fcharset0 CourierNewPSMT;
+\f3\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red175\green57\blue238;\red51\green184\blue29;
+\red67\green0\blue241;\red30\green74\blue22;\red154\green158\blue29;\red97\green97\blue97;\red0\green0\blue0;
+\red57\green192\blue38;\red86\green32\blue244;\red56\green185\blue199;\red202\green51\blue35;\red170\green171\blue37;
+\red37\green90\blue29;\red116\green116\blue116;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c74902\c35294\c94902;\cssrgb\c22353\c75294\c14902;
+\cssrgb\c33725\c12549\c95686;\cssrgb\c14510\c35294\c11373;\cssrgb\c66667\c67059\c14510;\cssrgb\c45490\c45490\c45490;\csgray\c0;
+\cssrgb\c25706\c77963\c19557;\cssrgb\c41681\c25958\c96648;\cssrgb\c25546\c77007\c82023;\cssrgb\c83899\c28663\c18026;\cssrgb\c72331\c71682\c18599;
+\csgenericrgb\c14346\c35449\c11344;\csgenericrgb\c45371\c45371\c45371;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww15900\viewh17980\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf2 \expnd0\expndtw0\kerning0
+Following Rob\'92s December 31st email advice - 31 December\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf3 1. Check eth2 Initialization\
+\
+After reboot, check the status of eth2:\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf3 nmcli dev
+\f1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs22 \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  nmcli dev\
+DEVICE  TYPE      STATE                                  CONNECTION         \
+\pard\pardeftab720\partightenfactor0
+\cf4 eth0\cf2     \cf4 ethernet\cf2   \cf4 connected\cf2                               \cf4 Wired connection 1\cf2  \cf4 \
+eth1\cf2     \cf4 ethernet\cf2   \cf4 connected\cf2                               \cf4 Wired connection 2\cf2  \cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf6 lo\cf2       \cf6 loopback\cf2   \cf6 connected (externally)\cf2                  \cf6 lo\cf2                  \
+\pard\pardeftab720\partightenfactor0
+\cf7 eth2\cf2     \cf7 ethernet\cf2   \cf7 connecting (getting IP configuration)\cf2   \cf7 Wired connection 3\cf2  \cf7 \
+\pard\pardeftab720\partightenfactor0
+\cf8 wlan0\cf2    \cf8 wifi\cf2       \cf8 unavailable\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2\fs24 \cf3 ip addr show eth2
+\f1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs22 \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  ip addr show eth2\
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\
+    link/ether 00:0e:c6:75:b5:c7 brd ff:ff:ff:ff:ff:ff\
+    inet6 fe80::da89:9e58:788f:a790/64 scope link noprefixroute \
+       valid_lft forever preferred_lft forever\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf3 \
+If eth2 is missing or not configured with a link-local address (169.254.x.x), it means the interface isn\'92t being properly initialized.\
+\
+2. Force Initialization of eth2\
+\
+Ensure that eth2 is assigned an IP address, even if the Encoder isn't powered on.\
+\
+Option A: Assign a Static IP\
+\
+You can configure a static IP address for eth2 in /etc/network/interfaces or using nmcli:\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf3 sudo nmcli con mod "Wired connection 3" ipv4.addresses 192.168.3.10/24 ipv4.method manual
+\f1 \
+
+\f2 sudo nmcli con up "Wired connection 3"
+\f1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs22 \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  sudo nmcli con mod "Wired connection 3" ipv4.addresses 192.168.3.10/24 ipv4.method manual\
+
+\f3\b \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  sudo nmcli con up "Wired connection 3"\
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/9)\
+\
+
+\f3\b \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  sudo reboot\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \AppleTypeServices\AppleTypeServicesF65539 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs22 \AppleTypeServices \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  nmcli dev\
+DEVICE  TYPE      STATE                   CONNECTION         \
+\pard\pardeftab720\partightenfactor0
+\cf4 eth0\cf2     \cf4 ethernet\cf2   \cf4 connected\cf2                \cf4 Wired connection 1\cf2  \cf4 \
+eth1\cf2     \cf4 ethernet\cf2   \cf4 connected\cf2                \cf4 Wired connection 2\cf2  \cf4 \
+eth2\cf2     \cf4 ethernet\cf2   \cf4 connected\cf2                \cf4 Wired connection 3\cf2  \cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf6 lo\cf2       \cf6 loopback\cf2   \cf6 connected (externally)\cf2   \cf6 lo\cf2                  \cf6 \
+\pard\pardeftab720\partightenfactor0
+\cf8 wlan0\cf2    \cf8 wifi\cf2       \cf8 unavailable\cf2              \cf8 --\cf2                  \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \AppleTypeServices\AppleTypeServicesF65539 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f3\b\fs22 \AppleTypeServices \cf4 pi@TxTouch
+\f0\b0 \cf2 :
+\f3\b \cf5 ~ $
+\f0\b0 \cf2  ip addr show eth2\
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\
+    link/ether 00:0e:c6:75:b5:c7 brd ff:ff:ff:ff:ff:ff\
+    inet 192.168.3.10/24 brd 192.168.3.255 scope global noprefixroute eth2\
+       valid_lft forever preferred_lft forever\
+    inet6 fe80::da89:9e58:788f:a790/64 scope link noprefixroute \
+       valid_lft forever preferred_lft forever\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 So far so good. On to part 3. Update nftables Rules \
+This is a fresh OS install with only the sefault 
+\f0\fs22 \cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 /etc/nftables.conf\'85.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f3\b \cf10 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  cat /etc/nftables.conf\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf12 #\cf10 !\cf12 /usr/sbin/nft -f\cf9 \
+\
+\cf13 flush\cf9  \cf10 ruleset\cf9 \
+\
+\cf10 table\cf9  \cf14 inet\cf9  filter \cf10 \{\cf9 \
+        \cf10 chain\cf9  input \cf10 \{\cf9 \
+                \cf10 type\cf9  filter \cf10 hook\cf9  input \cf10 priority\cf9  filter\cf10 ;\cf9 \
+        \cf10 \}\cf9 \
+        \cf10 chain\cf9  forward \cf10 \{\cf9 \
+                \cf10 type\cf9  filter \cf10 hook\cf9  forward \cf10 priority\cf9  filter\cf10 ;\cf9 \
+        \cf10 \}\cf9 \
+        \cf10 chain\cf9  output \cf10 \{\cf9 \
+                \cf10 type\cf9  filter \cf10 hook\cf9  output \cf10 priority\cf9  filter\cf10 ;\cf9 \
+        \cf10 \}\cf9 \
+\cf10 \}\cf9 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 So I need to configure my own routing using my \'93fix-routes.sh\'94 file\'85\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f3\b\fs22 \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  cat /etc/nftables.conf\
+table ip nat-table \{\
+	chain postrouting \{\
+		type nat hook postrouting priority srcnat; policy accept;\
+		masquerade\
+	\}\
+\
+	chain prerouting \{\
+		type nat hook prerouting priority dstnat; policy accept;\
+		iif "eth2" udp dport 7272 dnat to 192.168.2.1\
+		iif "eth2" udp dport 8282 dnat to 192.168.2.1\
+		iif "eth0" tcp dport 8082 dnat to 192.168.2.1:80\
+		iif "eth0" tcp dport 8083 dnat to 192.168.3.1:80\
+	\}\
+\}\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f3\b\fs22 \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  sudo sed -i 's/iif "eth2"/iifname "eth2"/g' /etc/nftables.conf\
+
+\f3\b \cf10 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  cat /etc/nftables.conf \
+table ip nat-table \{\
+	chain postrouting \{\
+		type nat hook postrouting priority srcnat; policy accept;\
+		masquerade\
+	\}\
+\
+	chain prerouting \{\
+		type nat hook prerouting priority dstnat; policy accept;\
+		iifname "eth2" udp dport 7272 dnat to 192.168.2.1\
+		iifname "eth2" udp dport 8282 dnat to 192.168.2.1\
+		iif "eth0" tcp dport 8082 dnat to 192.168.2.1:80\
+		iif "eth0" tcp dport 8083 dnat to 192.168.3.1:80\
+	\}\
+\}\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+So far so good. On to part 4. Persist Interface Configurartion\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f3\b\fs22 \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  sudo nmcli con up "Wired connection 3"\
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/5)\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+So far so good. On to part 5. Restart the System and Verify\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f3\b\fs22 \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  sudo reboot\
+\
+
+\f3\b \cf10 pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  nmcli dev\
+DEVICE  TYPE      STATE                   CONNECTION         \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf10 eth0\cf9     \cf10 ethernet\cf9   \cf10 connected\cf9                \cf10 Wired connection 1\cf9  \
+\cf10 eth1\cf9     \cf10 ethernet\cf9   \cf10 connected\cf9                \cf10 Wired connection 2\cf9  \
+\cf10 eth2\cf9     \cf10 ethernet\cf9   \cf10 connected\cf9                \cf10 Wired connection 3\cf9  \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf15 lo\cf9       \cf15 loopback\cf9   \cf15 connected (externally)\cf9   \cf15 lo\cf9                  \
+\cf16 wlan0\cf9    \cf16 wifi\cf9       \cf16 unavailable\cf9              \cf16 --\cf9                  \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f3\b \cf10 \
+pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  ip addr show eth2\
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\
+    link/ether 00:0e:c6:75:b5:c7 brd ff:ff:ff:ff:ff:ff\
+    inet 192.168.3.10/24 brd 192.168.3.255 scope global noprefixroute eth2\
+       valid_lft forever preferred_lft forever\
+    inet6 fe80::da89:9e58:788f:a790/64 scope link noprefixroute \
+       valid_lft forever preferred_lft forever\
+
+\f3\b \cf10 \
+pi@TxTouch
+\f0\b0 \cf9 :
+\f3\b \cf11 ~ $
+\f0\b0 \cf9  sudo nft list ruleset\
+table ip nat-table \{\
+	chain postrouting \{\
+		type nat hook postrouting priority srcnat; policy accept;\
+		masquerade\
+	\}\
+\
+	chain prerouting \{\
+		type nat hook prerouting priority dstnat; policy accept;\
+		iifname "eth2" udp dport 7272 dnat to 192.168.2.1\
+		iifname "eth2" udp dport 8282 dnat to 192.168.2.1\
+		iif "eth0" tcp dport 8082 dnat to 192.168.2.1:80\
+		iif "eth0" tcp dport 8083 dnat to 192.168.3.1:80\
+	\}\
+\}\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 So far so good. Now to Test the stream from the Encoder to Pluto\
+\
+1. I can access the Encoder and Pluto from Safari on my iMac\
+2. The Pluto Transport stream anaysis page show activity, but there is no video\
+3. I can ping google.com from the Pi (on previous attemps this hasn\'92t always been possible)\
+4. To test some more, I\'92ll need to install my q100transmitter application which requires an OS upgrade\
+5. Afer upgrading I ran the verififacation steps again and the result were the same.\
+6. installed q100transmitter and all dependences, compiled and ran - IT WORKS !\
+7. Lucky Seven, but will it survive a shutdown and run from my systemctl service? YES !\
+\
+end.\
+}
