@@ -7,7 +7,7 @@
 
 # CONFIFIGURATION
 GOVERSION=1.23.4
-GIOUIVERSION=v0.7.1
+GIOUIVERSION=v0.8.0
 
 # This is what we hope for if all goes well
 

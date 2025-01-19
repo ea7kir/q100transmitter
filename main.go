@@ -100,9 +100,10 @@ func main() {
 			os.Setenv("WAYLAND_DISPLAY", "wayland-1")      // required for wayland. Compile with: go build --tags nox11 .
 		case 3: // Labwc
 			os.Setenv("XDG_RUNTIME_DIR", "/run/user/1000") // TODO: is 1000 corrrect?
-			// os.Setenv("WAYLAND_DISPLAY", "wayland-1")      // required for wayland. Compile with: go build --tags nox11 .
+			os.Setenv("WAYLAND_DISPLAY", "wayland-0")      // required for Labwc. Compile with: go build --tags nox11 .
 		}
 
+		app.Size(800, 480) // I don't know if this is help in any way
 		var w app.Window
 		w.Option(app.Fullscreen.Option())
 
