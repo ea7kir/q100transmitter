@@ -85,12 +85,12 @@ func Start() {
 	// arg.ConfigPort = cfg.ConfigPort
 
 	// settings not used by the GUI
-	arg.audio_sample_rate = "44100" // or "48000"
+	arg.audio_sample_rate = "44100" // 32000, 44100 or "48000"
 	arg.audio_bits_per_sample = "16"
 
 	arg.chn = "0" // The main stream is 0, and the sub stream is 1.
 	// arg.bps = ""       // video encoding bit rate, in bps. Range is [32-16384]
-	arg.fps = "25" // video encoding frame rate.
+	arg.fps = "15" // video encoding frame rate.
 	// arg.res_w = "1280" // The horizontal resolution of the encoded video.
 	// arg.res_h = "720"  // The vertical resolution of the encoded video.
 	// arg._type = ""     // video encoding format, H.264 is 0, H.265 is 1

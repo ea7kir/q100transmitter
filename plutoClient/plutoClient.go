@@ -101,10 +101,25 @@ func Stop() {
 	log.Printf("INFO: plutoClient has stopped")
 }
 
+// func frequencyOffset(inFreqStr string) string {
+// 	var offset = 10499.250 / 10499.231 // NOT CORRECT
+// 	value, err := strconv.ParseFloat(inFreqStr, 32)
+// 	if err != nil {
+// 		// do something sensible
+// 	}
+// 	float := value * offset
+// 	outFreqStr := fmt.Sprintf("%.3f", float)
+// 	log.Printf("------------ in %s out %s", inFreqStr, outFreqStr)
+// 	return outFreqStr
+// }
+
 // Called from tuner to copy the params into a folder in the Pluto.
 func SetParams(cfg *PlConfig_t) {
 	// overide settings provided by the GUI
 	arg.Frequency = strings.Fields(cfg.Frequency)[0] // remove " / 27" etc
+	//
+	// arg.Frequency = frequencyOffset(arg.Frequency)
+	//
 	arg.Mode = strings.Replace(cfg.Mode, "-", "", 1) // remove "-""
 	arg.Constellation = cfg.Constellation
 	arg.SymbolRate = cfg.SymbolRate

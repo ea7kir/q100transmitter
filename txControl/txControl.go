@@ -34,10 +34,10 @@ const (
 	config_NarrowFec               = "3/4"
 	config_VeryNarrowFec           = "3/4"
 	config_WideVideoBitRate        = "1100" // 32...16384
-	config_NarrowVideoBitRate      = "340"
+	config_NarrowVideoBitRate      = "380"
 	config_VeryNarrowVideoBitRate  = "250"
 	config_WideAudioBitRate        = "48000" // 32000 | 48000 | 64000
-	config_NarrowAudioBitRate      = "48000"
+	config_NarrowAudioBitRate      = "32000"
 	config_VeryNarrowAudioBitRate  = "32000"
 	config_WideResolution          = "720p" // 720p | 1080p
 	config_NarrowResolution        = "720p"
