@@ -227,10 +227,10 @@ func loop(w *app.Window) error {
 				txCmdChan <- txControl.CmdDecResolution
 			case ui.incResolution.Clicked(gtx):
 				txCmdChan <- txControl.CmdIncResolution
-			case ui.decSpare2.Clicked(gtx):
-				txCmdChan <- txControl.CmdDecSpare2
-			case ui.incSpare2.Clicked(gtx):
-				txCmdChan <- txControl.CmdIncSpare2
+			case ui.decFrameRate.Clicked(gtx):
+				txCmdChan <- txControl.CmdDecFrameRate
+			case ui.incFrameRate.Clicked(gtx):
+				txCmdChan <- txControl.CmdIncFrameRate
 			case ui.decGain.Clicked(gtx):
 				txCmdChan <- txControl.CmdDecGain
 			case ui.incGain.Clicked(gtx):
@@ -287,7 +287,7 @@ type UI struct {
 	decVideoBitRate, incVideoBitRate   widget.Clickable
 	decAudioBitRate, incAudioBitRate   widget.Clickable
 	decResolution, incResolution       widget.Clickable
-	decSpare2, incSpare2               widget.Clickable
+	decFrameRate, incFrameRate         widget.Clickable
 	decGain, incGain                   widget.Clickable
 	tune, ptt                          widget.Clickable
 	th                                 *material.Theme
@@ -557,9 +557,9 @@ func (ui *UI) q100_3x3selectorMatrixPlus2buttons(gtx C) D {
 	inc2 := [3]*widget.Clickable{&ui.incMode, &ui.incConstellation, &ui.incFec}
 	val2 := [3]string{txData.CurMode, txData.CurConstellation, txData.CurFec}
 
-	dec3 := [3]*widget.Clickable{&ui.decResolution, &ui.decSpare2, &ui.decGain}
-	inc3 := [3]*widget.Clickable{&ui.incResolution, &ui.incSpare2, &ui.incGain}
-	val3 := [3]string{txData.CurResolution, txData.CurSpare2, txData.CurGain}
+	dec3 := [3]*widget.Clickable{&ui.decResolution, &ui.decFrameRate, &ui.decGain}
+	inc3 := [3]*widget.Clickable{&ui.incResolution, &ui.incFrameRate, &ui.incGain}
+	val3 := [3]string{txData.CurResolution, txData.CurFrameRate, txData.CurGain}
 
 	return layout.Flex{
 		Axis: layout.Horizontal,

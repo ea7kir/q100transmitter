@@ -47,7 +47,7 @@ type (
 		AudioBitRate string
 		VideoBitRate string
 		Resolution   string
-		// Spare2       string
+		FrameRate    string
 		// StreamIP              string // "udp://192.168.3.10:8282"
 		// StreamPort            string
 		// ConfigIP              string // 192.168.3.1"
@@ -90,7 +90,7 @@ func Start() {
 
 	arg.chn = "0" // The main stream is 0, and the sub stream is 1.
 	// arg.bps = ""       // video encoding bit rate, in bps. Range is [32-16384]
-	arg.fps = "15" // video encoding frame rate.
+	// arg.fps = "25" // video encoding frame rate.
 	// arg.res_w = "1280" // The horizontal resolution of the encoded video.
 	// arg.res_h = "720"  // The vertical resolution of the encoded video.
 	// arg._type = ""     // video encoding format, H.264 is 0, H.265 is 1
@@ -195,6 +195,9 @@ func SetParams(cfg *EncConfig_t) error {
 		arg.res_w = "1920"
 		arg.res_h = "1080"
 	}
+
+	// update fps
+	arg.fps = cfg.FrameRate
 
 	arg.bps = cfg.VideoBitRate
 	// Command format: @0001,22,06,chn,bps,fps,res_w,res_h,type,gop,pro<ile,rc_mode,qp1,qp2,qp3!

@@ -42,9 +42,9 @@ const (
 	config_WideResolution          = "720p" // 720p | 1080p
 	config_NarrowResolution        = "720p"
 	config_VeryNarrowResolution    = "720p"
-	config_WideSpare2              = "sp2-a"
-	config_NarrowSpare2            = "sp2-a"
-	config_VeryNarrowSpare2        = "sp2-a"
+	config_WideFrameRate           = "25"
+	config_NarrowFrameRate         = "25"
+	config_VeryNarrowFrameRate     = "25"
 	config_WideGain                = "-7"
 	config_NarrowGain              = "-15"
 	config_VeryNarrowGain          = "-20"
@@ -62,7 +62,7 @@ type (
 		CurVideoBitRate  string
 		CurAudioBitRate  string
 		CurResolution    string
-		CurSpare2        string
+		CurFrameRate     string
 		CurGain          string
 		MarkerCentre     float32
 		MarkerWidth      float32
@@ -91,7 +91,7 @@ var (
 	videoBitRateSelector  selector_t
 	audioBitRateSelector  selector_t
 	resolutionSelector    selector_t
-	spare2Selector        selector_t
+	frameRateSelector     selector_t
 	gainSelector          selector_t
 	isTuned               bool
 	isPtt                 bool
@@ -234,14 +234,14 @@ var (
 	const_VERY_NARROW_RESOLUTION_LIST = []string{
 		"720p", "1080p",
 	}
-	const_WIDE_SPARE2_LIST = []string{
-		"sp2-a", "sp2-b",
+	const_WIDE_FRAMERATE_LIST = []string{
+		"15", "25", "30",
 	}
-	const_NARROW_SPARE2_LIST = []string{
-		"sp2-a", "sp2-b",
+	const_NARROW_FRAMERATE_LIST = []string{
+		"15", "25", "30",
 	}
-	const_VERY_NARROW_SPARE2_LIST = []string{
-		"sp2-a", "sp2-b",
+	const_VERY_NARROW_FRAMERATE_LIST = []string{
+		"15", "25", "30",
 	}
 	const_WIDE_GAIN_LIST = []string{
 		"-16", "-15", "-14", "-13", "-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0",
@@ -280,9 +280,9 @@ var (
 	wideResolution          selector_t
 	narrowResolution        selector_t
 	veryNarrowResolution    selector_t
-	wideSpare2              selector_t
-	narrowSpare2            selector_t
-	veryNarrowSpare2        selector_t
+	wideFrameRate           selector_t
+	narrowFrameRate         selector_t
+	veryNarrowFrameRate     selector_t
 	wideGain                selector_t
 	narrowGain              selector_t
 	veryNarrowGain          selector_t
@@ -311,8 +311,8 @@ const (
 	CmdIncAudioBitRate
 	CmdDecResolution
 	CmdIncResolution
-	CmdDecSpare2
-	CmdIncSpare2
+	CmdDecFrameRate
+	CmdIncFrameRate
 	CmdDecGain
 	CmdIncGain
 	CmdTune
@@ -362,9 +362,9 @@ func HandleCommands(ctx context.Context, cmdCh chan TxCmd_t, dataCh chan TxData_
 	narrowResolution = newSelector(const_NARROW_RESOLUTION_LIST, config_NarrowResolution)
 	veryNarrowResolution = newSelector(const_VERY_NARROW_RESOLUTION_LIST, config_VeryNarrowResolution)
 
-	wideSpare2 = newSelector(const_WIDE_SPARE2_LIST, config_WideSpare2)
-	narrowSpare2 = newSelector(const_NARROW_SPARE2_LIST, config_NarrowSpare2)
-	veryNarrowSpare2 = newSelector(const_VERY_NARROW_SPARE2_LIST, config_VeryNarrowSpare2)
+	wideFrameRate = newSelector(const_WIDE_FRAMERATE_LIST, config_WideFrameRate)
+	narrowFrameRate = newSelector(const_NARROW_FRAMERATE_LIST, config_NarrowFrameRate)
+	veryNarrowFrameRate = newSelector(const_VERY_NARROW_FRAMERATE_LIST, config_VeryNarrowFrameRate)
 
 	wideGain = newSelector(const_WIDE_GAIN_LIST, config_WideGain)
 	narrowGain = newSelector(const_NARROW_GAIN_LIST, config_NarrowGain)
@@ -420,10 +420,10 @@ func HandleCommands(ctx context.Context, cmdCh chan TxCmd_t, dataCh chan TxData_
 				decSelector(&resolutionSelector)
 			case CmdIncResolution:
 				incSelector(&resolutionSelector)
-			case CmdDecSpare2:
-				decSelector(&spare2Selector)
-			case CmdIncSpare2:
-				incSelector(&spare2Selector)
+			case CmdDecFrameRate:
+				decSelector(&frameRateSelector)
+			case CmdIncFrameRate:
+				incSelector(&frameRateSelector)
 			case CmdDecGain:
 				decSelector(&gainSelector)
 			case CmdIncGain:
@@ -455,6 +455,7 @@ func setEncoder() {
 			AudioBitRate: audioBitRateSelector.value,
 			VideoBitRate: videoBitRateSelector.value,
 			Resolution:   resolutionSelector.value,
+			FrameRate:    frameRateSelector.value,
 		}
 		if err := encoderClient.SetParams(&encoderArgs); err != nil {
 			log.Printf("ERROR TUNE: %s", err)
@@ -546,7 +547,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		videoBitRateSelector = wideVideoBitRate
 		audioBitRateSelector = wideAudioBitRate
 		resolutionSelector = wideResolution
-		spare2Selector = wideSpare2
+		frameRateSelector = wideFrameRate
 		gainSelector = wideGain
 	case const_BAND_LIST[1]: // narrow
 		symbolRateSelector = narrowSymbolRate
@@ -558,7 +559,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		videoBitRateSelector = narrowVideoBitRate
 		audioBitRateSelector = narrowAudioBitRate
 		resolutionSelector = narrowResolution
-		spare2Selector = narrowSpare2
+		frameRateSelector = narrowFrameRate
 		gainSelector = narrowGain
 	case const_BAND_LIST[2]: // very narrow
 		symbolRateSelector = veryNarrowSymbolRate
@@ -570,7 +571,7 @@ func switchBand() { // TODO: should switch back to previosly use settings
 		videoBitRateSelector = veryNarrowVideoBitRate
 		audioBitRateSelector = veryNarrowAudioBitRate
 		resolutionSelector = veryNarrowResolution
-		spare2Selector = veryNarrowSpare2
+		frameRateSelector = veryNarrowFrameRate
 		gainSelector = veryNarrowGain
 	}
 	somethingChanged()
@@ -590,7 +591,7 @@ func somethingChanged() {
 	txData.CurVideoBitRate = videoBitRateSelector.value
 	txData.CurAudioBitRate = audioBitRateSelector.value
 	txData.CurResolution = resolutionSelector.value
-	txData.CurSpare2 = spare2Selector.value
+	txData.CurFrameRate = frameRateSelector.value
 	txData.CurGain = gainSelector.value
 	txData.MarkerCentre = const_frequencyCentre[frequencySelector.value] / 9.18 // NOTE: 9.18 is a temporary kludge
 	txData.MarkerWidth = const_symbolRateWidth[symbolRateSelector.value]
