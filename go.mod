@@ -1,6 +1,6 @@
 module q100transmitter
 
-go 1.24.1
+go 1.24.2
 
 require (
 	gioui.org v0.8.0

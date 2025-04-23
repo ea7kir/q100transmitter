@@ -6,7 +6,7 @@
 # Orignal design by Michael, EA7KIR
 
 # CONFIFIGURATION
-GOVERSION=1.23.5
+GOVERSION=1.24.2
 GIOUIVERSION=v0.8.0
 
 # This is what we hope for if all goes well
