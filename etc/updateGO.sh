@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GOVERSION=1.24.2
+GOVERSION=1.24.5
 
 GOFILE=go$GOVERSION.linux-arm64.tar.gz
 
