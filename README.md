@@ -1,7 +1,9 @@
 # Q-100 Transmitter
 ### Control and monitor a DATV transmiter with a touch screen.
 ![tx](doc/tx.jpeg)
-### REQUIRES Raspberry PI OS (64-BIT) - the Bookworm Desktop version
+### REQUIRES Raspberry PI OS (Legacy 64-BIT) - the Bookworm Desktop version
+# DO NOT UPDATE Pi OS !
+## Perhaps caused bye the new version of Raspeberry Pi Imager
 
 ## Hardware
 - Raspberry Pi 4B with 4GB RAM (minimum)
@@ -34,8 +36,10 @@ CHOOSE Raspberry Pi Device: Raspberry Pi 4
 
 CHOOSE Operating Sysytem: Raspberry Pi OS (64-bit)
 
+Note: this is the Debian Trixie version with a desktop environment
+
 CONFIGURE:
-	Set hostname:			TxTouch
+	Set hostname:			txtouch
 	Enable SSH
 		Use password authentication
 	Set username and password
@@ -65,7 +69,7 @@ chmod +x /home/pi/Q100/q100transmitter/etc/install.sh
 ### After rebooting
 Use your finger to configure some Desktop settings:
 ```
-If updates are available, install then now
+If updates are available, install them now
 
 Appearance Settings
     Disable Wastebasket & External Disks
@@ -86,7 +90,7 @@ cd Q100/q100transmitter
 go mod tidy
 go build --tags nox11 .
 ```
-Execute q100transmitter rom the current directory
+Execute q100transmitter from the current directory
 ```
 ./q100transmitter
 ```
@@ -98,7 +102,7 @@ sudo systemctl start q100transmitter
 Note: add or omit the ```-shutdown``` flag in the service file to allow a full shutdown as required
 
 ## License
-Copyright (c) 2023 Michael Naylor EA7KIR (https://michaelnaylor.es)
+Copyright (c) 2023 Michael Naylor EA7KIR
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
