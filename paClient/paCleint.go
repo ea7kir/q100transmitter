@@ -40,7 +40,7 @@ func ReadPaServer(ctx context.Context, ch chan SvrData_t) {
 	// sd.Status = "Connecting..."
 	// ch <- sd
 
-	url := fmt.Sprintf("%s:%d", config_PaUrl, config_PaPort)
+	url := fmt.Sprintf("%v:%d", config_PaUrl, config_PaPort)
 	log.Printf("INFO connecting to %v", url)
 
 	const MAXTRIES = 10
