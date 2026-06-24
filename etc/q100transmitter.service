@@ -27,8 +27,8 @@ Environment="WAYLAND_DISPLAY=wayland-1"
 WorkingDirectory=/home/pi/Q100/q100transmitter
 
 # append -shutdown to implement poweroff on exit
-ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
-# ExecStart=/home/pi/Q100/q100transmitter/q100transmitter -shutdown
+# ExecStart=/home/pi/Q100/q100transmitter/q100transmitter
+ExecStart=/home/pi/Q100/q100transmitter/q100transmitter -shutdown
 
 [Install]
 WantedBy=graphical.target  network-online.target
