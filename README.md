@@ -2,7 +2,8 @@
 ### Control and monitor a DATV transmiter with a touch screen.
 ![tx](doc/tx.jpeg)
 ### REQUIRES Raspberry PI OS (Legacy 64-BIT) - the Bookworm Desktop version
-# DO NOT UPDATE Pi OS !
+# IMPORTANT: THE INSTALL SCRIPT IS INCOMPLETE !!!
+# DO NOT UPDATE OS TO TRIXIE!
 ## Perhaps caused bye the new version of Raspeberry Pi Imager
 
 ## Hardware
@@ -34,22 +35,22 @@
 ```
 CHOOSE Raspberry Pi Device: Raspberry Pi 4 
 
-CHOOSE Operating Sysytem: Raspberry Pi OS (64-bit)
+CHOOSE Raspberry Pi OS (other)
 
-Note: this is the Debian Trixie version with a desktop environment
+CHOOSE Operating Sysytem: Raspberry Pi OS (Legacy 64-bit)
 
-CONFIGURE:
-	Set hostname:			txtouch
-	Enable SSH
-		Use password authentication
-	Set username and password
-		Username:			pi
-		Password: 			<password>
-	Set locale settings
-		Time zone:			<Europe/Madrid> # or wherever you are
-		Keyboard layout:	<us>
-	Eject media when finished
-SAVE and WRITE
+Note: this is the Debian Bookwork version with a desktop environment
+
+Unforunatley, the new Trixie version with labwc doesn't work
+
+Set hostname to: txtouch
+Set city, timezone, kbd layout to: <whatever>
+Set Username to: pi
+Set Password to <whatever>
+Do not set any Wifi
+Enable SSH
+Set Authenticationmechanism to: Use password autentication
+Then Write the image and wait forever...
 ```
 
 Insert the card into the Raspberry Pi and switch on
@@ -69,10 +70,12 @@ chmod +x /home/pi/Q100/q100transmitter/etc/install.sh
 ### After rebooting
 Use your finger to configure some Desktop settings:
 ```
+Appearance Settings / Taskbar
+    Set Taskbar to DSI-1
+Appearance Settings / Desktop:
+    Disable Documents, Wastebasket and External Disks for HDMI and DSI-1
+TurnOff Bluetooth
 If updates are available, install them now
-
-Appearance Settings
-    Disable Wastebasket & External Disks
 ```
 Login from a PC, Mac, or Linux computer and login to the Pluto to authenticate and exit
 ```
