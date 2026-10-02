@@ -3,17 +3,18 @@ module q100transmitter
 go 1.26.6
 
 require (
-	gioui.org v0.10.2
-	github.com/ajstarks/giocanvas v0.0.0-20260630193357-cbfa0caebdbe
+	gioui.org v0.10.3
+	github.com/ajstarks/giocanvas v0.0.0-20260929133515-575fc1abd713
 	github.com/warthog618/go-gpiocdev v0.9.1
-	golang.org/x/image v0.45.0
-	golang.org/x/net v0.58.0
+	golang.org/x/image v0.46.0
+	golang.org/x/net v0.59.0
 )
 
 require (
 	gioui.org/shader v1.0.9 // indirect
-	github.com/go-text/typesetting v0.3.4 // indirect
-	golang.org/x/exp/shiny v0.0.0-20260813180055-c1d0aacb2297 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	github.com/go-text/typesetting v0.3.5 // indirect
+	github.com/godbus/dbus/v5 v5.2.2 // indirect
+	golang.org/x/exp/shiny v0.0.0-20260908205506-85c1c2202aba // indirect
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 )
